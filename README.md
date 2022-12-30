@@ -26,9 +26,8 @@ Console.WriteLine(response.GetCompletionText());
 
 This writes:
 
-```
-The weather can vary greatly depending on location. In general, you can expect temperatures to be moderate and climate to be comfortable, but it is always best to check the forecast for your specific area.
-```
+> The weather can vary greatly depending on location. In general, you can expect temperatures to be moderate and climate to be comfortable, but it is always best to check the forecast for your specific area.
+
 
 ## Editing Quickstart
 
@@ -51,6 +50,5 @@ Console.WriteLine(response.GetEditedText());
 ```
 
 This writes:
-```
-What day of the week is it?
-```
+
+> What day of the week is it?
