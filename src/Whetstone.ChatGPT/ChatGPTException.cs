@@ -7,7 +7,7 @@ namespace Whetstone.ChatGPT;
 public class ChatGPTException : Exception
 {
 
-    public ChatGPTException([NotNull] ChatGPTError? chatGptError) : base(chatGptError?.Message)
+    public ChatGPTException(ChatGPTError? chatGptError) : base(chatGptError?.Message)
     {   
         this.ChatGPTError = chatGptError;
     }

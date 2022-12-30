@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;netstandard2.1</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>Whetstone ChatGPT</Title>
@@ -10,13 +10,26 @@
     <PackageTags>chatgpt; api</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2022</Copyright>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+   <LangVersion>10</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="packlogo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="packlogo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\README.md">
@@ -25,11 +38,8 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="packlogo.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

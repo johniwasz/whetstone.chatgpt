@@ -149,10 +149,13 @@ public class ChatGPTClient : IDisposable
 
     private async Task<T> ProcessResponseAsync<T>(HttpResponseMessage responseMessage, CancellationToken? cancellationToken) where T : class
     {
+#if NETSTANDARD2_1
+        string responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+#else
         string responseString = cancellationToken is null ?
                 await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false) :
                 await responseMessage.Content.ReadAsStringAsync(cancellationToken.Value).ConfigureAwait(false);
-
+#endif
         if (responseMessage.IsSuccessStatusCode)
         {
             if (!string.IsNullOrWhiteSpace(responseString))
@@ -177,9 +180,9 @@ public class ChatGPTClient : IDisposable
 
         throw new ChatGPTException("Unxpected code path");
     }
-    #endregion
+#endregion
 
-    #region Clean Up    
+#region Clean Up    
     ~ChatGPTClient()
     {     
         Dispose(true);
@@ -202,5 +205,5 @@ public class ChatGPTClient : IDisposable
             _isDisposed = true;
         }
     }
-    #endregion
+#endregion
 }
