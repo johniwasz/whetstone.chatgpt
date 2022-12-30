@@ -1,0 +1,36 @@
+{
+  "profiles": {
+    "Install Webhook": {
+      "commandName": "Project",
+      "commandLineArgs": "addwebhook --e devchatgpt --webhookurl https://XXXXXX.ngrok.io/api/chatgptdm"
+    },
+    "List Webhooks": {
+      "commandName": "Project",
+      "commandLineArgs": "list webhooks --e devchatgpt"
+    },
+    "List environments": {
+      "commandName": "Project",
+      "commandLineArgs": "list environments"
+    },
+    "Subscribe": {
+      "commandName": "Project",
+      "commandLineArgs": "subscribe --e devchatgpt"
+    },
+    "Unsubscribe": {
+      "commandName": "Project",
+      "commandLineArgs": "unsubscribe --e devchatgpt --u XXXXXX"
+    },
+    "List Subscriptions": {
+      "commandName": "Project",
+      "commandLineArgs": "list subscriptions --e devchatgpt"
+    },
+    {
+      "Remove Webhook": {
+        "commandName": "Project",
+        "commandLineArgs": "removewebhook --e devchatgpt --wi XXXXXXXX"
+      }
+
+    }
+    
+  }
+}

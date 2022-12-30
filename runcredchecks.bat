@@ -1,0 +1,1 @@
+docker run -v C:\Users\John\source\repos\whetstone.chatgpt:/path zricethezav/gitleaks:latest detect --no-git -v

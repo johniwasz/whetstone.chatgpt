@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Whetstone.TweetGPT.DirectMessageFunction": {      
+      "commandName": "Project",
+      "commandLineArgs": "--port 7070 --verbose",
+      "launchBrowser": false
+    }
+  }
+}

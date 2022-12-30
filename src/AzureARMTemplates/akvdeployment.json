@@ -1,0 +1,153 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tenantId": {
+      "type": "securestring",
+      "minLength": 3,
+      "maxLength": 40
+    },
+    "objectId": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using Get-AzADUser or Get-AzADServicePrincipal cmdlets."
+      }
+    },
+    "twitterAccessToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Twitter Access Token for invoking user-specific operations."
+      }
+    },
+    "twitterAccessTokenSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Twitter Access Token Secret for invoking user-specific operations."
+      }
+    },
+    "twitterConsumerKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Twitter Consumer Key for invoking public operations."
+      }
+    },
+    "twitterConsumerSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Twitter Consumer Secret for invoking public operations."
+      }
+    }
+  },
+    "resources": [
+      {
+        "name": "twitter-chatgpt-funcid",
+        "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+        "apiVersion": "2018-11-30",
+        "location": "[resourceGroup().location]"
+      },
+      {
+        "name": "twitterchatgpt-dev",
+        "type": "Microsoft.KeyVault/vaults",
+        "apiVersion": "2019-09-01",
+        "dependsOn": [
+              "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'twitter-chatgpt-funcid')]"
+            ],
+        "location": "[resourceGroup().location]",
+        "tags": {
+          "displayName": "twitterchatgpt"
+        },
+        "properties": {
+          "enabledForDeployment": true,
+          "enabledForTemplateDeployment": true,
+          "enabledForDiskEncryption": true,
+          "tenantId": "[parameters('tenantId')]",
+          "accessPolicies": [
+            {
+              "tenantId": "[parameters('tenantId')]",
+              "objectId": "[parameters('objectId')]",
+              "permissions": {
+                "keys": [
+                  "all"
+                ],
+                "secrets": [
+                  "all"
+              ]}
+            },
+              {
+              "tenantId": "[parameters('tenantId')]",
+              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'twitter-chatgpt-funcid')).principalId]",
+              "permissions": {
+                "secrets": [
+                  "Get"
+                ]
+              }
+            }
+          ],
+          "sku": {
+            "name": "standard",
+            "family": "A"
+          }
+        },
+        "resources": [
+          {
+            "type": "secrets",
+            "name": "twittercreds",
+            "apiVersion": "2016-10-01",
+            "dependsOn": [
+              "[resourceId('Microsoft.KeyVault/vaults', 'twitterchatgpt-dev')]"
+            ],
+            "properties": {
+              "value":  "[concat('{ \"AccessToken\": \"', parameters('twitterAccessToken'), '\", \"AccessTokenSecret\": \"', parameters('twitterAccessTokenSecret'), '\", \"ConsumerKey\": \"', parameters('twitterConsumerKey'),'\", \"ConsumerSecret\": \"', parameters('twitterConsumerSecret'), '\"}')]"
+            }
+          }
+        ]
+      },
+      {
+        "name": "functionName",
+        "type": "Microsoft.Web/sites",
+        "apiVersion": "2020-12-01",
+        "location": "[resourceGroup().location]",
+        "kind": "functionapp",
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/serverfarms', 'serverFarmName')]",
+          "[resourceId('Microsoft.Storage/storageAccounts', 'storageAccountName')]"
+        ],
+        "properties": {
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'serverFarmName')]",
+          "siteConfig": {
+            "appSettings": [
+              {
+                "name": "AzureWebJobsDashboard",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', 'storageAccountName', ';AccountKey=', listKeys('storageAccountID','2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "AzureWebJobsStorage",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', 'storageAccountName', ';AccountKey=', listKeys('storageAccountID','2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', 'storageAccountName', ';AccountKey=', listKeys('storageAccountID','2015-05-01-preview').key1)]"
+              },
+              {
+                "name": "WEBSITE_CONTENTSHARE",
+                "value": "[toLower('functionName')]"
+              },
+              {
+                "name": "FUNCTIONS_EXTENSION_VERSION",
+                "value": "~2"
+              },
+              {
+                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                "value": "[reference(resourceId('microsoft.insights/components/', 'applicationInsightsName'), '2015-05-01').InstrumentationKey]"
+              },
+              {
+                "name": "FUNCTIONS_WORKER_RUNTIME",
+                "value": "dotnet"
+              }
+            ]
+          }
+        }
+      }
+    ]
+
+  }
