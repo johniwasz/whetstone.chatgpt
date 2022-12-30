@@ -1,4 +1,4 @@
-[![NuGet version](https://badge.fury.io/nu/Whetstone.ChatGPT.svg)](https://badge.fury.io/nu/Whetstone.ChatGPT)
+[![NuGet version](https://badge.fury.io/nu/Whetstone.ChatGPT.svg)](https://badge.fury.io/nu/Whetstone.ChatGPT) [![CodeQL](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml/badge.svg)](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml)
 
 # Whetstone.ChatGPT
 
