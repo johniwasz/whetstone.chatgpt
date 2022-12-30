@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Whetstone.TweetGPT.ChatGPTClient.Models
+namespace Whetstone.ChatGPT.Models
 {
     public class ChatGPTCompletionResponse
     {

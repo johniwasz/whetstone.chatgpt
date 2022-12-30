@@ -24,13 +24,9 @@
       "commandName": "Project",
       "commandLineArgs": "list subscriptions --e devchatgpt"
     },
-    {
-      "Remove Webhook": {
-        "commandName": "Project",
-        "commandLineArgs": "removewebhook --e devchatgpt --wi XXXXXXXX"
-      }
-
+    "Remove Webhook": {
+      "commandName": "Project",
+      "commandLineArgs": "removewebhook --e devchatgpt --wi XXXXXXXX"
     }
-    
   }
 }

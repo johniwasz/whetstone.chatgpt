@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Whetstone.TweetGPT.ChatGPTClient.Models;
+using Whetstone.ChatGPT.Models;
 
-namespace Whetstone.TweetGPT.ChatGPTClient;
+namespace Whetstone.ChatGPT;
 
 public class ChatGPTException : Exception
 {

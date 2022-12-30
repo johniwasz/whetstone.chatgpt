@@ -11,12 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.TweetGPT.DirectMe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.WebhookCommander", "Whetstone.WebhookCommander\Whetstone.WebhookCommander.csproj", "{F2072FF8-E6DF-46EE-B890-B65F2D08B1F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whetstone.TweetGPT.ChatGPTClient", "Whetstone.TweetGPT.ChatGPTClient\Whetstone.TweetGPT.ChatGPTClient.csproj", "{88B117F1-7540-4E77-9F32-AD1E4F914A7D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{069E8DDF-0859-468C-A075-CB163C60FE0F}"
-	ProjectSection(SolutionItems) = preProject
-		ChatCGPTException.cs = ChatCGPTException.cs
-	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.ChatGPT", "Whetstone.ChatGPT\Whetstone.ChatGPT.csproj", "{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +37,10 @@ Global
 		{F2072FF8-E6DF-46EE-B890-B65F2D08B1F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2072FF8-E6DF-46EE-B890-B65F2D08B1F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2072FF8-E6DF-46EE-B890-B65F2D08B1F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{88B117F1-7540-4E77-9F32-AD1E4F914A7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88B117F1-7540-4E77-9F32-AD1E4F914A7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88B117F1-7540-4E77-9F32-AD1E4F914A7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88B117F1-7540-4E77-9F32-AD1E4F914A7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

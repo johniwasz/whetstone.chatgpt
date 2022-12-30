@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NuGet.Frameworks;
-using Whetstone.TweetGPT.ChatGPTClient;
-using Whetstone.TweetGPT.ChatGPTClient.Models;
+using Whetstone.ChatGPT;
+using Whetstone.ChatGPT.Models;
 using Xunit.Sdk;
 
 namespace Whetstone.TweetGPT.WebhookManager.Test
@@ -17,14 +17,13 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
         [Fact]
         public async Task TestGPTClientCompletion()
         {
-            string sessionToken = GetChatGPTKey();
+            string apiKey = GetChatGPTKey();
 
-            ChatClient client = new ChatClient(sessionToken);
-
+            ChatGPTClient client = new ChatGPTClient(apiKey);
 
             var gptRequest = new ChatGPTCompletionRequest
             {
-                Model = "text-davinci-001",
+                Model = ChatGPTCompletionModels.Ada,
                 Prompt = "How is the weather?",
                 Temperature = 0.9f,
                 MaxTokens = 140
@@ -35,14 +34,14 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
             Assert.NotNull(response);
             
             Assert.True(!string.IsNullOrWhiteSpace(response.Choices?[0]?.Text));
-
+            
         }
 
         [Fact]
         public async Task GPTModelsList()
         {
-            string sessionToken = GetChatGPTKey();
-            ChatClient client = new ChatClient(sessionToken);
+            string apiKey = GetChatGPTKey();
+            ChatGPTClient client = new ChatGPTClient(apiKey);
 
             ChatGPTModelsResponse modelResponse = await client.GetModelsAsync();
 
@@ -51,19 +50,59 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
             Assert.NotEmpty(modelResponse.Data);
         }
 
+        [Fact]
+        public async Task GPTModelsListWithHttpClient()
+        {
+            string apiKey = GetChatGPTKey();
+
+            using (HttpClient httpClient = new HttpClient())
+            {
+                ChatGPTClient client = new ChatGPTClient(apiKey, httpClient);
+
+                ChatGPTModelsResponse modelResponse = await client.GetModelsAsync();
+
+                Assert.NotNull(modelResponse.Data);
+
+                Assert.NotEmpty(modelResponse.Data);
+            }
+
+        }
+
 
         [Fact]
         public async Task GPTModel()
         {
-            string sessionToken = GetChatGPTKey();
-            ChatClient client = new ChatClient(sessionToken);
+            string apiKey = GetChatGPTKey();
+            ChatGPTClient client = new ChatGPTClient(apiKey);
 
-            var model = await client.GetModelAsync("text-davinci-003");
+            var model = await client.GetModelAsync("text-ada-001");
 
             Assert.NotNull(model);
 
-            //Assert.Equal(model.Data. "text-davinci-001", model.Id);
         }
+
+
+
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning disable CS8604 // Possible null reference argument.
+
+        [Fact]
+        public void NullSessionConstruction()
+        {
+            Assert.Throws<ArgumentException>(() => new ChatGPTClient(null));
+        }
+
+        [Fact]
+        public void NullHttpClientConstruction()
+        {
+            string apiKey = GetChatGPTKey();
+
+            HttpClient? client = null;
+
+            Assert.Throws<ArgumentNullException>(() => new ChatGPTClient(apiKey, client));
+        }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
         private string GetChatGPTKey()
         {
@@ -77,5 +116,7 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
 
             return chatGPTKey;
         }
+
+       
     }
 }

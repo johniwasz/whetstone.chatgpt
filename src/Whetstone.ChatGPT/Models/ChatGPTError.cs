@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 
-namespace Whetstone.TweetGPT.ChatGPTClient.Models
+namespace Whetstone.ChatGPT.Models
 {
     public class ChatGPTErrorResponse
     {

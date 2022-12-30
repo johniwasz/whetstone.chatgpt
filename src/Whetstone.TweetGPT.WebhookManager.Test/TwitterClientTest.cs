@@ -13,11 +13,11 @@ using Whetstone.TweetGPT.WebHookManager.Models;
 namespace Whetstone.TweetGPT.WebhookManager.Test
 {
 
-    public class ClientTest
+    public class TwitterClientTest
     {
 
         [Fact]
-        public async Task ClientConnect()
+        public async Task TwitterClientConnect()
         {
 
             IConfigurationRoot config = new ConfigurationBuilder()

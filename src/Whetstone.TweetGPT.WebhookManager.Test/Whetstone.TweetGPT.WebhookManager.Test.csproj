@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Whetstone.TweetGPT.ChatGPTClient\Whetstone.TweetGPT.ChatGPTClient.csproj" />
+    <ProjectReference Include="..\Whetstone.ChatGPT\Whetstone.ChatGPT.csproj" />
     <ProjectReference Include="..\Whetstone.TweetGPT.WebHookManager\Whetstone.TweetGPT.WebHookManager.csproj" />
   </ItemGroup>
 

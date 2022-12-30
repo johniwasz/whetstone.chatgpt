@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using System.Diagnostics;
 
-namespace Whetstone.TweetGPT.ChatGPTClient.Models
+namespace Whetstone.ChatGPT.Models
 {
 
     [DebuggerDisplay("Id = {Id}, OwnedBy = {OwnedBy}, CreatedAt = {CreatedAt}")]
