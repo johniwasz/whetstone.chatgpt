@@ -11,6 +11,7 @@ using System.Web;
 using Microsoft.Azure.Functions.Worker.Http;
 using Azure;
 using System.Diagnostics.Eventing.Reader;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Whetstone.TweetGPT.DirectMessageFunction
 {
@@ -18,21 +19,27 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
     {
         private readonly HttpRequestData _request;
         private readonly HttpResponseData _response;
-        private string _requestBody;
         private bool _isBodyRead = false;
+        private string? _requestBody;
 
-        public WebhooksRequestHandlerForAzureFunction(HttpRequestData request)
+        public WebhooksRequestHandlerForAzureFunction(HttpRequestData? request)
         {
-            _request = request;
+            _request = request ?? throw new ArgumentNullException(nameof(request));
             _response = request.CreateResponse();
         }
 
-        public async Task<string> GetJsonFromBodyAsync()
+        public async Task<string?> GetJsonFromBodyAsync()
         {
+            
             if (!_isBodyRead)
             {
-                _requestBody = await new StreamReader(_request.Body).ReadToEndAsync().ConfigureAwait(false);
+                string requestBody = await new StreamReader(_request.Body).ReadToEndAsync().ConfigureAwait(false);
+                if(requestBody is null)
+                    throw new NullReferenceException("Request body is null.");
+
                 _isBodyRead = true;
+
+                _requestBody = requestBody;
             }
 
             return _requestBody;
@@ -53,8 +60,22 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
             var queryNameValuePairs = HttpUtility.ParseQueryString(_request.Url.Query);
             var query = new Dictionary<string, string[]>();
 
-            queryNameValuePairs.AllKeys.ForEach(key => query.Add(key, new[] { queryNameValuePairs[key] }));
+            if (queryNameValuePairs is not null)
+            {
+                queryNameValuePairs.AllKeys.ForEach(key =>
+                {
+                    if (!string.IsNullOrWhiteSpace(key))
+                    {
+                        var queryNameValues = queryNameValuePairs.GetValues(key);
 
+                        if (queryNameValues is not null)
+                        {
+                            query.Add(key, queryNameValues);
+                        }
+                    }
+                });
+            }
+            
             return query;
         }
 

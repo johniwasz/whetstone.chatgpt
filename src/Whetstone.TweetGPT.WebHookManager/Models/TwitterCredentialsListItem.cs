@@ -13,19 +13,19 @@ namespace Whetstone.TweetGPT.WebHookManager.Models
         public Guid Id { get; set; }
 
         
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public string ConsumerKey { get; set; }
+        public string? ConsumerKey { get; set; }
 
-        public string ConsumerSecret { get; set; }
+        public string? ConsumerSecret { get; set; }
 
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
 
-        public string AccessTokenSecret { get; set; }
+        public string? AccessTokenSecret { get; set; }
 
-        public string BearerToken { get; set; }
+        public string? BearerToken { get; set; }
 
         public bool IsEnabled { get; set; }
 

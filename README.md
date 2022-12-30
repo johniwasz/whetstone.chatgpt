@@ -4,6 +4,8 @@
 
 A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress.
 
+## Completion Quickstart
+
 ```
 string apiKey = GetChatGPTKey();
 
@@ -11,13 +13,44 @@ ChatGPTClient client = new ChatGPTClient(apiKey);
 
 var gptRequest = new ChatGPTCompletionRequest
 {
-    Model = ChatGPTCompletionModels.Ada,
+    Model = ChatGPTCompletionModels.Davinci,
     Prompt = "How is the weather?",
     Temperature = 0.9f,
     MaxTokens = 140
 };
 
-var response = await client.GetResponseAsync(gptRequest);
+var response = await client.CreateCompletionAsync(gptRequest);
 
-Console.WriteLine(response.Choices?[0]?.Text);
+Console.WriteLine(response.GetCompletionText());
+```
+
+This writes:
+
+```
+The weather can vary greatly depending on location. In general, you can expect temperatures to be moderate and climate to be comfortable, but it is always best to check the forecast for your specific area.
+```
+
+## Editing Quickstart
+
+To use submit an edit completion request:
+
+```
+string apiKey = GetChatGPTKey();
+
+ChatGPTClient client = new ChatGPTClient(apiKey);
+
+var gptEditRequest = new ChatGPTCreateEditRequest
+{             
+    Input = "What day of the wek is it?",
+    Instruction = "Fix spelling mistakes"
+};
+
+var response = await client.CreateEditAsync(gptEditRequest);
+
+Console.WriteLine(response.GetEditedText());
+```
+
+This writes:
+```
+What day of the week is it?
 ```

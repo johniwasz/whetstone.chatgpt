@@ -10,8 +10,8 @@ using Grpc.Core;
 
 public class Program
 {
-    public static IAccountActivityRequestHandler AccountActivityRequestHandler { get; set; }
-    public static ITwitterClient WebhookClient { get; set; }
+    public static IAccountActivityRequestHandler? AccountActivityRequestHandler { get; set; }
+    public static ITwitterClient? WebhookClient { get; set; }
 
     public static void Main(string[] args)
     {
@@ -37,8 +37,7 @@ public class Program
                         options.AccessTokenSecret = config["WebhookCredentials:AccessTokenSecret"];
                         options.ConsumerSecret = config["WebhookCredentials:ConsumerSecret"];
                         options.ConsumerKey = config["WebhookCredentials:ConsumerKey"];
-                    });
-                services.AddTransient<IWebhookVerifier, WebhookVerifier>();                
+                    });              
             });        
 
         WebhookServerInitialization(hostBuilder);

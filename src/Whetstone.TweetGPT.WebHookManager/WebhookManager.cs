@@ -11,8 +11,8 @@ using Tweetinvi.Models;
 using Tweetinvi.Models.DTO.Webhooks;
 using Tweetinvi.Parameters;
 using Whetstone.TweetGPT.WebHookManager.Models;
-using Microsoft.Extensions.Options;
 using Tweetinvi.Core.DTO.Webhooks;
+using Tweetinvi.Core.Models;
 
 namespace Whetstone.TweetGPT.WebHookManager
 {
@@ -41,7 +41,7 @@ namespace Whetstone.TweetGPT.WebHookManager
 
             ICreateAccountActivityWebhookParameters accountParms = new CreateAccountActivityWebhookParameters(environment, webhookUri.ToString());
 
-            IWebhook result = default;
+            IWebhook? result = null;
 
             try
             {
@@ -155,7 +155,7 @@ namespace Whetstone.TweetGPT.WebHookManager
 
         public async Task<IWebhookEnvironmentSubscriptionsDTO> GetSubscriptionsAsync(string environment)
         {
-            IWebhookEnvironmentSubscriptionsDTO subDTO = default;
+            IWebhookEnvironmentSubscriptionsDTO subDTO;
             try
             {
                 await EnsureBearerTokenAsync();
@@ -174,8 +174,12 @@ namespace Whetstone.TweetGPT.WebHookManager
             return subDTO;
         }
 
-        public async Task UnsubscribeAsync(string environment, long userId)
+        public async Task UnsubscribeAsync(string? environment, long userId)
         {
+
+            if (string.IsNullOrWhiteSpace(environment))
+                throw new ArgumentException("Environment cannot be empty", nameof(environment));
+
             try
             {
                 await EnsureBearerTokenAsync();

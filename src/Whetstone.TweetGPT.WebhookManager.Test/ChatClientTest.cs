@@ -21,6 +21,8 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
 
             ChatGPTClient client = new ChatGPTClient(apiKey);
 
+            // Using Ada in this test to keep costs down.
+
             var gptRequest = new ChatGPTCompletionRequest
             {
                 Model = ChatGPTCompletionModels.Ada,
@@ -28,13 +30,39 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
                 Temperature = 0.9f,
                 MaxTokens = 140
             };
-
-            var response = await client.GetResponseAsync(gptRequest);
+            
+            var response = await client.CreateCompletionAsync(gptRequest);
 
             Assert.NotNull(response);
             
-            Assert.True(!string.IsNullOrWhiteSpace(response.Choices?[0]?.Text));
+            Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
             
+        }
+
+        [Fact]
+        public async Task TestGPTClientEdit()
+        {
+            string apiKey = GetChatGPTKey();
+
+            ChatGPTClient client = new ChatGPTClient(apiKey);
+
+            var gptEditRequest = new ChatGPTCreateEditRequest
+            {             
+                Input = "What day of the wek is it?",
+                Instruction = "Fix spelling mistakes",
+                Temperature = 0
+            };
+
+            var response = await client.CreateEditAsync(gptEditRequest);
+
+            Assert.NotNull(response);
+
+            Assert.Equal("edit", response.Object);
+
+            string? editTextResponse = response.GetEditedText();
+
+            Assert.Contains("What day of the week is it?", editTextResponse);
+
         }
 
         [Fact]
@@ -45,9 +73,16 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
 
             ChatGPTModelsResponse modelResponse = await client.GetModelsAsync();
 
+            Assert.Equal("list", modelResponse.Object);
+
             Assert.NotNull(modelResponse.Data);
                 
             Assert.NotEmpty(modelResponse.Data);
+
+            var textModels = modelResponse.Data.Where(x => x.Id is not null && x.Id.Contains("edit"));
+
+            Assert.NotEmpty(textModels);
+
         }
 
         [Fact]
@@ -75,7 +110,7 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
             string apiKey = GetChatGPTKey();
             ChatGPTClient client = new ChatGPTClient(apiKey);
 
-            var model = await client.GetModelAsync("text-ada-001");
+            var model = await client.RetrieveModelAsync("text-ada-001");
 
             Assert.NotNull(model);
 

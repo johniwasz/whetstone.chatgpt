@@ -22,7 +22,7 @@ namespace Whetstone.TweetGPT.WebHookManager
 
         Task SubscribeAsync(string environment);
 
-        Task UnsubscribeAsync(string environment, long userId);
+        Task UnsubscribeAsync(string? environment, long userId);
 
         Task ResendWebhookValidationAsync(string environment, string webhookId);
     }

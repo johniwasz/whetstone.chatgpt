@@ -28,7 +28,9 @@ internal class SubscribeCommand : Command, ICommand
         {
             try
             {
+#pragma warning disable CS8604 // Possible null reference argument.
                 await WebhookManager.SubscribeAsync(environmentValue);
+#pragma warning restore CS8604 // Possible null reference argument.
 
                 Logger.LogInformation("Subscribed");
             }

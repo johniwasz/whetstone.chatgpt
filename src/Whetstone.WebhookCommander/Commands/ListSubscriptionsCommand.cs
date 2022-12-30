@@ -29,8 +29,10 @@ internal class ListSubscriptionsCommand : Command, ICommand
         {
             try
             {
+#pragma warning disable CS8604 // Possible null reference argument.
                 var webHookResponse = await WebhookManager.GetSubscriptionsAsync(environmentValue);
-
+#pragma warning restore CS8604 // Possible null reference argument.
+                
                 Logger.LogInformation($"ApplicationId:  {webHookResponse.ApplicationId}  Environment: {webHookResponse.Environment}");
 
                 if (webHookResponse.Subscriptions.Length == 0)

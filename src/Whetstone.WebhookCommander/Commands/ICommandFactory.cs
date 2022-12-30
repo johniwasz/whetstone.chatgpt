@@ -8,5 +8,5 @@ namespace Whetstone.WebhookCommander.Commands;
 
 internal interface ICommandFactory
 {
-    ICommand? GetCommand<T>() where T : ICommand?;
+    ICommand GetCommand<T>() where T : ICommand?;
 }

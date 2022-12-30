@@ -1,21 +1,36 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using Whetstone.ChatGPT.Models;
 
 namespace Whetstone.ChatGPT;
 
-public class ChatGPTException : Exception
+
+/// <summary>
+/// Represents an error that occurs while using the GPT-3 API Chat GPT
+/// </summary>
+public sealed class ChatGPTException : Exception
 {
 
-    public ChatGPTException(ChatGPTError? chatGptError) : base(chatGptError?.Message)
+    internal ChatGPTException(ChatGPTError? chatGptError, HttpStatusCode statusCode) : base(chatGptError?.Message)
     {   
         this.ChatGPTError = chatGptError;
+        this.StatusCode = statusCode;
     }
 
-    public ChatGPTException(string? message) : base(message)
+    internal ChatGPTException(string? message) : base(message)
     {
         
     }
 
+    /// <summary>
+    /// The error returned by the GPT-3 API. Null if exception was not generated from the API.
+    /// </summary>
     public ChatGPTError? ChatGPTError { get; private set; }
+
+
+    /// <summary>
+    /// HTTP status code returned by the GPT-3 API. Null if exception was not generated from the API.
+    /// </summary>
+    public HttpStatusCode? StatusCode { get; private set; }
 }

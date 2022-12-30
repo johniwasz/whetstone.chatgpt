@@ -74,13 +74,15 @@ if (Enum.TryParse<WebhookCommandEnum>(command, true, out WebhookCommandEnum tool
         switch (toolCommand)
         {
             case WebhookCommandEnum.AddWebhook:
-                ICommand? addWebHookCommand = commandFactory.GetCommand<AddWebhookCommand>();
+                ICommand addWebHookCommand = commandFactory.GetCommand<AddWebhookCommand>();
+
+                
 
                 await addWebHookCommand.ExecuteAsync().ConfigureAwait(false);
 
                 break;
             case WebhookCommandEnum.RemoveWebhook:
-                ICommand? removeWebHookCommand = commandFactory.GetCommand<RemoveWebhookCommand>();
+                ICommand removeWebHookCommand = commandFactory.GetCommand<RemoveWebhookCommand>();
 
                 await removeWebHookCommand.ExecuteAsync().ConfigureAwait(false);
 
@@ -98,17 +100,17 @@ if (Enum.TryParse<WebhookCommandEnum>(command, true, out WebhookCommandEnum tool
                         switch (listCommand)
                         {
                             case WebhookListCommandEnum.Subscriptions:
-                                ICommand? listSubscriptionsCommand = commandFactory.GetCommand<ListSubscriptionsCommand>();
+                                ICommand listSubscriptionsCommand = commandFactory.GetCommand<ListSubscriptionsCommand>();
 
                                 await listSubscriptionsCommand.ExecuteAsync().ConfigureAwait(false);
                                 break;
                             case WebhookListCommandEnum.Environments:
-                                ICommand? listEnvironmentsCommand = commandFactory.GetCommand<ListEnvironmentsCommand>();
+                                ICommand listEnvironmentsCommand = commandFactory.GetCommand<ListEnvironmentsCommand>();
 
                                 await listEnvironmentsCommand.ExecuteAsync().ConfigureAwait(false);
                                 break;
                             case WebhookListCommandEnum.Webhooks:
-                                ICommand? listWebhooksCommand = commandFactory.GetCommand<ListWebHooksCommand>();
+                                ICommand listWebhooksCommand = commandFactory.GetCommand<ListWebHooksCommand>();
 
                                 await listWebhooksCommand.ExecuteAsync().ConfigureAwait(false);
                                 break;
@@ -130,13 +132,13 @@ if (Enum.TryParse<WebhookCommandEnum>(command, true, out WebhookCommandEnum tool
 
                 break;
             case WebhookCommandEnum.Subscribe:
-                ICommand? subscribeCommand = commandFactory.GetCommand<SubscribeCommand>();
+                ICommand subscribeCommand = commandFactory.GetCommand<SubscribeCommand>();
 
                 await subscribeCommand.ExecuteAsync().ConfigureAwait(false);
                 break;
 
             case WebhookCommandEnum.Unsubscribe:
-                ICommand? unsubscribeCommand = commandFactory.GetCommand<UnsubscribeCommand>();
+                ICommand unsubscribeCommand = commandFactory.GetCommand<UnsubscribeCommand>();
 
                 await unsubscribeCommand.ExecuteAsync().ConfigureAwait(false);
                 break;
@@ -153,7 +155,7 @@ if (Enum.TryParse<WebhookCommandEnum>(command, true, out WebhookCommandEnum tool
 
 
 
-
+/*
 WebhookCredentials GetWebhookCredentials(IConfigurationRoot config)
 {
     string? consumerKey = config[EnvironmentSettings.ENV_TWITTER_CONSUMER_KEY];
@@ -191,3 +193,4 @@ WebhookCredentials GetWebhookCredentials(IConfigurationRoot config)
     return new WebhookCredentials(accessToken, accessTokenSecret, consumerKey, consumerSecret);  
 }
 
+*/

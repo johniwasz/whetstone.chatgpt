@@ -29,7 +29,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
         private readonly List<long> _trackedStreams = new List<long>();
 
         private readonly ILogger _logger;
-        private readonly WebhookCredentials _creds;        
+        private readonly WebhookCredentials _creds;
         private readonly TwitterClient _client;
 
         public ChatCPTDirectMessageFunction(IOptions<WebhookCredentials> creds, ILogger<ChatCPTDirectMessageFunction> logger)
@@ -38,7 +38,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
 
             _creds = creds?.Value ?? throw new ArgumentNullException(nameof(creds));
 
-            _client = GetClient();            
+            _client = GetClient();
         }
 
         [Function("chatgptdm")]
@@ -112,14 +112,16 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
             return httpResp;
         }
 
-        private void MessageReceived(object sender, MessageReceivedEvent e)
+        private void MessageReceived(object? sender, MessageReceivedEvent? e)
         {
+            if (e is not null)
+            {
+                IPublishMessageParameters publishParameters = new PublishMessageParameters("Hello back from the webs", e.Sender.Id);
 
-            IPublishMessageParameters publishParameters = new PublishMessageParameters("Hello back from the webs", e.Sender.Id);
+                TwitterClient client = EnsureBearerTokenAsync(_client).Result;
 
-            TwitterClient client = EnsureBearerTokenAsync(_client).Result;
-
-            client.Messages.PublishMessageAsync(publishParameters).Wait();
+                client.Messages.PublishMessageAsync(publishParameters).Wait();
+            }
         }
 
         private async Task<TwitterClient> EnsureBearerTokenAsync(TwitterClient twitClient)

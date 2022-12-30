@@ -4,17 +4,32 @@ using System.ComponentModel;
 
 namespace Whetstone.ChatGPT.Models;
 
+
+/// <summary>
+/// Given a prompt, the model will return one or more predicted completions, and can also return the probabilities of alternative tokens at each position.
+/// </summary>
 public class ChatGPTCompletionRequest
 {
 
-    
+    /// <summary>
+    /// Initialize the completion request.
+    /// </summary>
+    /// <remarks>
+    /// Given a prompt, the model will return one or more predicted completions, and can also return the probabilities of alternative tokens at each position.
+    /// </remarks>
     public ChatGPTCompletionRequest()
     {
 
     }
 
+    /// <summary>
+    /// ID of the model to use. You can use the <see href="https://beta.openai.com/docs/api-reference/models/list">List models</see> API to see all of your available models, or see our <see href="https://beta.openai.com/docs/models/overview">Model overview</see> for descriptions of them.
+    /// </summary>
+    /// <remarks>
+    /// See <see cref="ChatGPTCompletionModels">ChatGPTCompletionModels</see> for recommended completion modesl.
+    /// </remarks>
     [JsonPropertyOrder(0)]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [JsonInclude]
     [JsonPropertyName("model")]
     public string? Model
     {
@@ -46,14 +61,14 @@ public class ChatGPTCompletionRequest
     public string? Suffix
     {
         get;
-        set;        
+        set;
     }
 
 
     /// <summary>
-    /// The maximum number of tokens to generate in the completion.
+    /// The maximum number of <see href="https://beta.openai.com/tokenizer">tokens</see> to generate in the completion.
     /// </summary>
-    /// <remarks>The token count of your prompt plus max_tokens cannot exceed the model's context length. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).</remarks>
+    /// <remarks>The token count of your prompt plus <c><MaxTokens/c> cannot exceed the model's context length. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).</remarks>
     [JsonPropertyOrder(3)]
     [DefaultValue(16)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
@@ -65,9 +80,9 @@ public class ChatGPTCompletionRequest
     }
 
     /// <summary>
-    /// What sampling temperature to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.
+    /// What <see href="https://towardsdatascience.com/how-to-sample-from-language-models-682bceb97277">sampling temperature</see> to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.
     /// </summary>
-    /// <remarks>We generally recommend altering this or top_p but not both.</remarks>
+    /// <remarks>We generally recommend altering this or <c>TopP</c> but not both.</remarks>
     [JsonPropertyOrder(4)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     [JsonPropertyName("temperature")]
@@ -80,7 +95,7 @@ public class ChatGPTCompletionRequest
     /// <summary>
     /// An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
     /// </summary>
-    /// <remarks>We generally recommend altering this or temperature but not both.</remarks>
+    /// <remarks>We generally recommend altering this or <c>Temperature</c> but not both.</remarks>
     [JsonPropertyOrder(5)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     [JsonPropertyName("top_p")]
@@ -107,7 +122,7 @@ public class ChatGPTCompletionRequest
     }
 
     /// <summary>
-    /// Whether to stream back partial progress. If set, tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data: [DONE] message.
+    /// Whether to stream back partial progress. If set, tokens will be sent as data-only <seealso href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format">server-sent</seealso> events as they become available, with the stream terminated by a data: <c>[DONE] message.</c>
     /// </summary>
     [JsonPropertyOrder(7)]
     [DefaultValue(false)]
@@ -190,11 +205,11 @@ public class ChatGPTCompletionRequest
     }
 
     /// <summary>
-    /// Generates best_of completions server-side and returns the "best" (the one with the highest log probability per token). Results cannot be streamed.
+    /// Generates <c>BestOf</c> completions server-side and returns the "best" (the one with the highest log probability per token). Results cannot be streamed.
     /// </summary>
     /// <remarks>
-    /// <para>When used with n, best_of controls the number of candidate completions and n specifies how many to return – best_of must be greater than n.</para>
-    /// <para></para>Note: Because this parameter generates many completions, it can quickly consume your token quota.Use carefully and ensure that you have reasonable settings for max_tokens and stop.</para>
+    /// <para>When used with <c>N</c>, <c>BestOf</c> controls the number of candidate completions and n specifies how many to return – <c>BestOf</c> must be greater than v.</para>
+    /// <para></para>Note: Because this parameter generates many completions, it can quickly consume your token quota.Use carefully and ensure that you have reasonable settings for <c>MaxTokens</c> and <c>Stop</c>.</para>
     /// </remarks>
     [JsonPropertyOrder(13)]
     [DefaultValue(1)]
@@ -211,7 +226,7 @@ public class ChatGPTCompletionRequest
     /// </summary>
     /// <remarks>
     /// <para>Accepts a json object that maps tokens (specified by their token ID in the GPT tokenizer) to an associated bias value from -100 to 100. You can use this tokenizer tool (which works for both GPT-2 and GPT-3) to convert text to token IDs. Mathematically, the bias is added to the logits generated by the model prior to sampling. The exact effect will vary per model, but values between -1 and 1 should decrease or increase likelihood of selection; values like -100 or 100 should result in a ban or exclusive selection of the relevant token.</para>
-    /// <para>As an example, you can pass {"50256": -100} to prevent the <|endoftext|> token from being generated.</para>
+    /// <para>As an example, you can pass <c>{"50256": -100}</c> to prevent the <|endoftext|> token from being generated.</para>
     /// <seealso href="https://beta.openai.com/docs/guides/safety-best-practices/end-user-ids">End User Ids</seealso>
     /// </remarks>
     [JsonPropertyOrder(14)]
@@ -236,6 +251,4 @@ public class ChatGPTCompletionRequest
         get;
         set;
     }
-
-
 }

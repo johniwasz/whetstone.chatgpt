@@ -23,8 +23,15 @@ internal class CommandFactory : ICommandFactory
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public ICommand? GetCommand<T>() where T : ICommand?
+    public ICommand GetCommand<T>() where T : ICommand?
     {
-        return (ICommand?)Activator.CreateInstance(typeof(T), _webhookManager, _config, _logger);
+        ICommand? command = (ICommand?) Activator.CreateInstance(typeof(T), _webhookManager, _config, _logger);
+
+        if (command is null)
+        {
+            throw new InvalidOperationException("Unable to create command");
+        }
+
+        return command;
     }
 }
