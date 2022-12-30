@@ -1,3 +1,5 @@
+[![NuGet version](https://badge.fury.io/nu/Whetstone.ChatGPT.svg)](https://badge.fury.io/nu/Whetstone.ChatGPT)
+
 # Whetstone.ChatGPT
 
 A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress.
