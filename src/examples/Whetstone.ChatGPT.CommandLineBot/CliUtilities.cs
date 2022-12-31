@@ -28,8 +28,8 @@ namespace Whetstone.ChatGPT.CommandLineBot
             helpTextBuilder.AppendLine();
 
             helpTextBuilder.AppendLine("options:");
-            helpTextBuilder.AppendLine("  --apikey <APIKEY>                         The OpenAI API Key to use. If not specified, the environment variable OPENAI_API_KEY will be used.");
-            helpTextBuilder.AppendLine("  --organization <ORGANIZATION              OpenAI organization. If not specified, the environment variable OPEN_API_ORGANIZATION is used");
+            helpTextBuilder.AppendLine("  --apikey [APIKEY]                         The OpenAI API Key to use. If not specified, the environment variable OPENAI_API_KEY will be used.");
+            helpTextBuilder.AppendLine("  --organization [ORGANIZATION]             OpenAI organization. If not specified, the environment variable OPEN_API_ORGANIZATION is used");
             helpTextBuilder.AppendLine();
             return helpTextBuilder.ToString();
         }

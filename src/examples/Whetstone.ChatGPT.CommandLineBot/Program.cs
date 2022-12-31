@@ -43,11 +43,12 @@ ChatGPTCompletionRequest completionRequest = new ChatGPTCompletionRequest
 };
 
 Console.WriteLine("Marv is a chatbot that reluctantly answers questions with sarcastic responses. Please ask a question.");
-Console.WriteLine("Use Exit or ^C to terminate");
+Console.WriteLine("Type Exit or ^C to terminate");
 Console.WriteLine();
 
 using (ChatGPTClient chatGPTClient = new ChatGPTClient(credentials))
 {
+    Console.Write("> ");
     string? userResponse = Console.ReadLine();
 
     try
@@ -67,6 +68,8 @@ using (ChatGPTClient chatGPTClient = new ChatGPTClient(credentials))
 
             completionRequest.Prompt = userPrompt;
 
+            Console.WriteLine();
+
             ChatGPTCompletionResponse? completionResponse = await chatGPTClient.CreateCompletionAsync(completionRequest);
 
             if (completionResponse is not null)
@@ -79,6 +82,8 @@ using (ChatGPTClient chatGPTClient = new ChatGPTClient(credentials))
                 Console.WriteLine(completionResponse.Usage?.TotalTokens);
                 
                 Console.WriteLine();
+
+                Console.Write("> ");
 
                 userResponse = Console.ReadLine();
             }
