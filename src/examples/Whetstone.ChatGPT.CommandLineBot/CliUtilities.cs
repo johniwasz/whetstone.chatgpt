@@ -16,9 +16,7 @@ namespace Whetstone.ChatGPT.CommandLineBot
         {
 
             StringBuilder helpTextBuilder = new StringBuilder();
-
-            var currentAsmName = System.Reflection.Assembly.GetExecutingAssembly();
-
+            
             helpTextBuilder.AppendLine("Usage: chatgpt-marv [OPTIONS]");
 
             helpTextBuilder.AppendLine();

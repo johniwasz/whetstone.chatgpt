@@ -10,7 +10,7 @@ namespace Whetstone.TweetGPT.WebHookManager
 {
     public interface IWebhookManager
     {
-        Task<IEnumerable<IWebhook>> GetWebHooksAsync(string environment);
+        Task<IEnumerable<IWebhook>?> GetWebHooksAsync(string environment);
 
         Task<IWebhookDTO?> RegisterWebhookAsync(string? environment, Uri? webhookUri);
 

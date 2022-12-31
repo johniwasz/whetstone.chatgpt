@@ -22,12 +22,15 @@ internal class ListEnvironmentsCommand : Command, ICommand
         {
             var environments = await WebhookManager.GetEnvironmentsAsync();
 
-            foreach (var retEnv in environments)
-            {                    
-                Logger.LogInformation(retEnv.Name);
-                foreach (var retHook in retEnv.Webhooks)
+            if (environments is not null)
+            {
+                foreach (var retEnv in environments)
                 {
-                    Logger.LogInformation($"   {retHook.Id}: {retHook.Url} --- {retHook.Valid}");
+                    Logger.LogInformation(retEnv.Name);
+                    foreach (var retHook in retEnv.Webhooks)
+                    {
+                        Logger.LogInformation($"   {retHook.Id}: {retHook.Url} --- {retHook.Valid}");
+                    }
                 }
             }
         }

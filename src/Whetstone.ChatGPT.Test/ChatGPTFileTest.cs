@@ -15,7 +15,7 @@ namespace Whetstone.ChatGPT.Test
     public class ChatGPTFileTest
     {
 
-        private ITestOutputHelper _testOutputHelper;
+        private readonly ITestOutputHelper _testOutputHelper;
 
         public ChatGPTFileTest(ITestOutputHelper testOutputHelper)
         {

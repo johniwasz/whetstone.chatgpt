@@ -20,7 +20,7 @@ namespace Whetstone.TweetGPT.WebHookManager
     {
         private TwitterClient _client;
 
-        private WebhookCredentials _creds;
+        private readonly WebhookCredentials _creds;
 
 
         public WebhookManager(IOptions<WebhookCredentials> creds) 
@@ -90,12 +90,12 @@ namespace Whetstone.TweetGPT.WebHookManager
 
         }
 
-        public async Task<IEnumerable<IWebhook>> GetWebHooksAsync(string environment)
+        public async Task<IEnumerable<IWebhook>?> GetWebHooksAsync(string environment)
         {
             if (string.IsNullOrWhiteSpace(environment))
                 throw new ArgumentNullException(nameof(environment));
 
-            List<IWebhook>? webhooks = new();
+            List<IWebhook>? webhooks;
 
             try
             {
