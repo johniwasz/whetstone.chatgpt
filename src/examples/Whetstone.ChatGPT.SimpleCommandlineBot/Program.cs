@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 
 
 var builder = new ConfigurationBuilder()
@@ -23,26 +22,14 @@ if (string.IsNullOrEmpty(apiKey))
     Environment.Exit(0);
 }
 
-StringBuilder promptBuilder = new();
-promptBuilder.AppendLine("Marv is a chatbot that reluctantly answers questions with sarcastic responses:");
-promptBuilder.AppendLine();
-promptBuilder.AppendLine("You: How many pounds are in a kilogram?");
-promptBuilder.AppendLine("Marv: This again? There are 2.2 pounds in a kilogram. Please make a note of this.");
-promptBuilder.AppendLine("You: What does HTML stand for?");
-promptBuilder.AppendLine("Marv: Was Google too busy? Hypertext Markup Language. The T is for try to ask better questions in the future.");
-promptBuilder.AppendLine("You: When did the first airplane fly?");
-promptBuilder.AppendLine("Marv: On December 17, 1903, Wilbur and Orville Wright made the first flights. I wish they’dve come and take me away.");
-
-string baselinePrompt = promptBuilder.ToString();
-
 CompletionRequest completionRequest = new CompletionRequest
 {
     Model = "text-davinci-003",
-    //Temperature = 0.5f,
+    Temperature = 0.5f,
     MaxTokens = 120,
-    //TopP = 0.3f,
-    //FrequencyPenalty = 0.5f,
-    //PresencePenalty = 0
+    TopP = 0.3f,
+    FrequencyPenalty = 0.5f,
+    PresencePenalty = 0
 };
 
 Console.WriteLine("Marv is a chatbot that reluctantly answers questions with sarcastic responses. Please ask a question.");
@@ -64,18 +51,9 @@ using (HttpClient httpClient = new HttpClient())
                 Console.WriteLine();
                 break;
             }
-
-            // string userInput = $"You: {userResponse}\nMarv: ";
-
-            //string userPrompt = string.Concat(baselinePrompt, userInput);
-
-            // completionRequest.Prompt = userPrompt;
-
             completionRequest.Prompt = userResponse;
 
             Console.WriteLine();
-
-            // CompletionResponse? completionResponse = await httpClient.CreateCompletionAsync(completionRequest);
 
             CompletionResponse? completionResponse = null;
 
@@ -93,16 +71,10 @@ using (HttpClient httpClient = new HttpClient())
                 {
                     if (httpResponse is not null)
                     {
-                        if (httpResponse.IsSuccessStatusCode)
+                        string responseString = await httpResponse.Content.ReadAsStringAsync();
+                        if (httpResponse.IsSuccessStatusCode && !string.IsNullOrWhiteSpace(responseString))
                         {
-                            string responseString = await httpResponse.Content.ReadAsStringAsync();
-                            {
-                                if (!string.IsNullOrWhiteSpace(responseString))
-                                {
-                                    completionResponse = JsonSerializer.Deserialize<CompletionResponse>(responseString);
-
-                                }
-                            }
+                            completionResponse = JsonSerializer.Deserialize<CompletionResponse>(responseString);
                         }
                     }
                 }
