@@ -16,11 +16,11 @@ namespace Whetstone.ChatGPT;
 /// </summary>
 public class ChatGPTClient : IDisposable
 {
-    private string _apiKey;
+    private readonly string _apiKey;
 
-    private HttpClient _client;
+    private readonly HttpClient _client;
 
-    private bool _isHttpClientProvided = true;
+    private readonly bool _isHttpClientProvided = true;
 
     private bool _isDisposed;
 
@@ -71,6 +71,15 @@ public class ChatGPTClient : IDisposable
     {
     }
 
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
+    /// </summary>
+    /// <param name="credentials">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>
+    /// <exception cref="ArgumentException"></exception>
+    public ChatGPTClient(ChatGPTCredentials credentials) : this(credentials, null)
+    {
+    }
 
 
     /// <summary>
@@ -134,7 +143,7 @@ public class ChatGPTClient : IDisposable
     /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
     /// <exception cref="ArgumentException">Model is required.</exception>
     /// <returns><see cref="ChatGPTModelsResponse"/>Exception generated while processing request.</returns>
-    public async Task<ChatGPTCompletionResponse> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
+    public async Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
     {
         if (completionRequest is null)
         {
@@ -159,7 +168,7 @@ public class ChatGPTClient : IDisposable
     /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
     /// <returns><see cref="Models.ChatGPTModelsResponse"/>A list of available models.</returns>
     /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-    public async Task<ChatGPTModelsResponse> GetModelsAsync(CancellationToken? cancellationToken = null)
+    public async Task<ChatGPTModelsResponse?> GetModelsAsync(CancellationToken? cancellationToken = null)
     {       
         return await SendRequestAsync<ChatGPTModelsResponse>(HttpMethod.Get, "models", cancellationToken);
     }
@@ -221,12 +230,12 @@ public class ChatGPTClient : IDisposable
     }
 
 
-    #region Generic Request and Response Processors
-    private async Task<TR> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken) 
+#region Generic Request and Response Processors
+    private async Task<TR?> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken) 
         where T : class 
         where TR : class
     {
-        using (var httpReq = new HttpRequestMessage(HttpMethod.Post, url))
+        using (var httpReq = new HttpRequestMessage(method, url))
         {
 
             httpReq.Headers.Add("Authorization", $"Bearer {_apiKey}");
@@ -242,28 +251,28 @@ public class ChatGPTClient : IDisposable
                 return await ProcessResponseAsync<TR>(httpResponse, cancellationToken);
             }
         }
-        throw new ChatGPTException("Unxpected code path");
+        
     }
 
     
-    private async Task<T> SendRequestAsync<T>(HttpMethod method, string url, CancellationToken? cancellationToken)  where T : class
+    private async Task<T?> SendRequestAsync<T>(HttpMethod method, string url, CancellationToken? cancellationToken)  where T : class
     {
-        var request = new HttpRequestMessage(method, url);
-
-        request.Headers.Add("Authorization", $"Bearer {_apiKey}");
-
-        using (HttpResponseMessage? httpResponse = cancellationToken is null ?
-             await _client.SendAsync(request) :
-             await _client.SendAsync(request, cancellationToken.Value))
+        using (var request = new HttpRequestMessage(method, url))
         {
-            return await ProcessResponseAsync<T>(httpResponse, cancellationToken);
+            request.Headers.Add("Authorization", $"Bearer {_apiKey}");
 
+            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
+                 await _client.SendAsync(request) :
+                 await _client.SendAsync(request, cancellationToken.Value))
+            {
+                return await ProcessResponseAsync<T>(httpResponse, cancellationToken);
+
+            }
         }
-        
-        throw new ChatGPTException("Unxpected code path");
+
     }
 
-    private async static Task<T> ProcessResponseAsync<T>(HttpResponseMessage responseMessage, CancellationToken? cancellationToken) where T : class
+    private async static Task<T?> ProcessResponseAsync<T>(HttpResponseMessage responseMessage, CancellationToken? cancellationToken) where T : class
     {
 #if NETSTANDARD2_1
         string responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -294,7 +303,7 @@ public class ChatGPTClient : IDisposable
             throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
         }
 
-        throw new ChatGPTException("Unxpected code path");
+        return default(T);
     }
 #endregion
 

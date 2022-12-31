@@ -23,7 +23,7 @@ public class Program
             .ConfigureAppConfiguration((hostingContext, configuration) =>
             {
                 // Do NOT clear prior configurations.
-                // configuration.Sources.Clear();              
+                // configuration.Sources.Clear();
                 configuration.AddUserSecrets("117cec77-f121-4f75-9054-584941f6df04");
                 
             })
@@ -40,25 +40,9 @@ public class Program
                     });              
             });        
 
-        WebhookServerInitialization(hostBuilder);
-
         var host = hostBuilder.Build();
 
         host.Run();
     }
 
-    private static void WebhookServerInitialization(IHostBuilder hostBuilder)
-    {
-        
-
-        var credentials = new TwitterCredentials("CONSUMER_TOKEN", "CONSUMER_SECRET", "ACCESS_TOKEN", "ACCESS_TOKEN_SECRET")
-        {
-            BearerToken = "BEARER_TOKEN"
-        };
-
-        WebhookClient = new TwitterClient(credentials);
-        AccountActivityRequestHandler = WebhookClient.AccountActivity.CreateRequestHandler();
-        var config = new WebhookMiddlewareConfiguration(AccountActivityRequestHandler);
-        //hostBuilder.UseTweetinviWebhooks(config);
-    }
 }

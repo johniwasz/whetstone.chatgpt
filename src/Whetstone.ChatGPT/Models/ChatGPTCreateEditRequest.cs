@@ -96,7 +96,7 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyOrder(5)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("top_p")]
-        public int TopP
+        public float TopP
         {
             get;
             set;

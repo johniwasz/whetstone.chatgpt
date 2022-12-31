@@ -33,13 +33,16 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
             
             if (!_isBodyRead)
             {
-                string requestBody = await new StreamReader(_request.Body).ReadToEndAsync().ConfigureAwait(false);
-                if(requestBody is null)
-                    throw new NullReferenceException("Request body is null.");
+                using (StreamReader reader = new(_request.Body))
+                {
+                    string requestBody = await reader.ReadToEndAsync().ConfigureAwait(false);
+                    if (requestBody is null)
+                        throw new NullReferenceException("Request body is null.");
 
-                _isBodyRead = true;
+                    _isBodyRead = true;
 
-                _requestBody = requestBody;
+                    _requestBody = requestBody;
+                }
             }
 
             return _requestBody;

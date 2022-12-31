@@ -99,7 +99,7 @@ public class ChatGPTCompletionRequest
     [JsonPropertyOrder(5)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     [JsonPropertyName("top_p")]
-    public int TopP
+    public float TopP
     {
         get;
         set;
@@ -183,7 +183,7 @@ public class ChatGPTCompletionRequest
     [JsonPropertyOrder(11)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     [JsonPropertyName("presence_penalty")]
-    public int PresencePenalty
+    public float PresencePenalty
     {
         get;
         set;
@@ -193,12 +193,12 @@ public class ChatGPTCompletionRequest
     /// Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
     /// </summary>
     /// <remarks>
-    // <seealso href="https://beta.openai.com/docs/api-reference/parameter-details">See more information about frequency and presence penalites.</seealso>
+    /// <seealso href="https://beta.openai.com/docs/api-reference/parameter-details">See more information about frequency and presence penalites.</seealso>
     /// </remarks>
     [JsonPropertyOrder(12)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     [JsonPropertyName("frequency_penalty")]
-    public int FrequencyPenalty
+    public float FrequencyPenalty
     {
         get;
         set;

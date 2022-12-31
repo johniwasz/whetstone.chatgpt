@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{069E8DDF-0859-468C-A075-CB163C60FE0F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.ChatGPT", "Whetstone.ChatGPT\Whetstone.ChatGPT.csproj", "{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.ChatGPT.Test", "Whetstone.ChatGPT.Test\Whetstone.ChatGPT.Test.csproj", "{DECB992C-5BC7-4E4E-8422-7DAADE97847E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F931A1C0-3807-4C06-8957-DB604C6544CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.ChatGPT.CommandLineBot", "examples\Whetstone.ChatGPT.CommandLineBot\Whetstone.ChatGPT.CommandLineBot.csproj", "{E5B9F4DF-4720-4CCA-A3A6-ECC5F2B3EE1F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "twitterbot", "twitterbot", "{4C926884-5370-4997-BA8D-9A52C7FEE1C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.TweetGPT.DirectMessageFunction", "examples\Whetstone.TweetGPT.DirectMessageFunction\Whetstone.TweetGPT.DirectMessageFunction.csproj", "{74F7DC42-60FB-45EB-BEAF-31323F7B1C43}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.WebhookCommander", "examples\Whetstone.WebhookCommander\Whetstone.WebhookCommander.csproj", "{D2436372-5EC8-4A19-BEF6-BD41748BA743}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.TweetGPT.WebHookManager", "examples\Whetstone.TweetGPT.WebHookManager\Whetstone.TweetGPT.WebHookManager.csproj", "{13779181-CBA2-4388-84C2-837B5CBFBD17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.TweetGPT.WebhookManager.Test", "examples\Whetstone.TweetGPT.WebhookManager.Test\Whetstone.TweetGPT.WebhookManager.Test.csproj", "{EB2CD614-1A1E-415F-88C7-EA46858F834C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E163BFA7-E5FE-4155-8EC9-F63F1BD4792F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DECB992C-5BC7-4E4E-8422-7DAADE97847E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DECB992C-5BC7-4E4E-8422-7DAADE97847E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DECB992C-5BC7-4E4E-8422-7DAADE97847E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DECB992C-5BC7-4E4E-8422-7DAADE97847E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5B9F4DF-4720-4CCA-A3A6-ECC5F2B3EE1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5B9F4DF-4720-4CCA-A3A6-ECC5F2B3EE1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5B9F4DF-4720-4CCA-A3A6-ECC5F2B3EE1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5B9F4DF-4720-4CCA-A3A6-ECC5F2B3EE1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74F7DC42-60FB-45EB-BEAF-31323F7B1C43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F7DC42-60FB-45EB-BEAF-31323F7B1C43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74F7DC42-60FB-45EB-BEAF-31323F7B1C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74F7DC42-60FB-45EB-BEAF-31323F7B1C43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2436372-5EC8-4A19-BEF6-BD41748BA743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2436372-5EC8-4A19-BEF6-BD41748BA743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2436372-5EC8-4A19-BEF6-BD41748BA743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2436372-5EC8-4A19-BEF6-BD41748BA743}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13779181-CBA2-4388-84C2-837B5CBFBD17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13779181-CBA2-4388-84C2-837B5CBFBD17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13779181-CBA2-4388-84C2-837B5CBFBD17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13779181-CBA2-4388-84C2-837B5CBFBD17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB2CD614-1A1E-415F-88C7-EA46858F834C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB2CD614-1A1E-415F-88C7-EA46858F834C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB2CD614-1A1E-415F-88C7-EA46858F834C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB2CD614-1A1E-415F-88C7-EA46858F834C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E5B9F4DF-4720-4CCA-A3A6-ECC5F2B3EE1F} = {F931A1C0-3807-4C06-8957-DB604C6544CD}
+		{4C926884-5370-4997-BA8D-9A52C7FEE1C7} = {F931A1C0-3807-4C06-8957-DB604C6544CD}
+		{74F7DC42-60FB-45EB-BEAF-31323F7B1C43} = {4C926884-5370-4997-BA8D-9A52C7FEE1C7}
+		{D2436372-5EC8-4A19-BEF6-BD41748BA743} = {4C926884-5370-4997-BA8D-9A52C7FEE1C7}
+		{13779181-CBA2-4388-84C2-837B5CBFBD17} = {4C926884-5370-4997-BA8D-9A52C7FEE1C7}
+		{EB2CD614-1A1E-415F-88C7-EA46858F834C} = {4C926884-5370-4997-BA8D-9A52C7FEE1C7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0770FC85-633A-4988-B2E1-EC344D55FD44}
+	EndGlobalSection
+EndGlobal

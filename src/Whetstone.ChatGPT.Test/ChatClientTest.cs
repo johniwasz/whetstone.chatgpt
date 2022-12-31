@@ -8,7 +8,7 @@ using Whetstone.ChatGPT;
 using Whetstone.ChatGPT.Models;
 using Xunit.Sdk;
 
-namespace Whetstone.TweetGPT.WebhookManager.Test
+namespace Whetstone.ChatGPT.Test
 {
     public class ChatClientTest
     {
@@ -17,7 +17,7 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
         [Fact]
         public async Task TestGPTClientCompletion()
         {
-            string apiKey = GetChatGPTKey();
+            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
 
             ChatGPTClient client = new ChatGPTClient(apiKey);
 
@@ -42,7 +42,7 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
         [Fact]
         public async Task TestGPTClientEdit()
         {
-            string apiKey = GetChatGPTKey();
+            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
 
             ChatGPTClient client = new ChatGPTClient(apiKey);
 
@@ -61,17 +61,19 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
 
             string? editTextResponse = response.GetEditedText();
 
-            Assert.Contains("What day of the week is it?", editTextResponse);
+            Assert.Contains("What day of the week is it?", editTextResponse, StringComparison.InvariantCultureIgnoreCase);
 
         }
 
         [Fact]
         public async Task GPTModelsList()
         {
-            string apiKey = GetChatGPTKey();
+            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
             ChatGPTClient client = new ChatGPTClient(apiKey);
 
-            ChatGPTModelsResponse modelResponse = await client.GetModelsAsync();
+            ChatGPTModelsResponse? modelResponse = await client.GetModelsAsync();
+
+            Assert.NotNull(modelResponse);
 
             Assert.Equal("list", modelResponse.Object);
 
@@ -88,13 +90,15 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
         [Fact]
         public async Task GPTModelsListWithHttpClient()
         {
-            string apiKey = GetChatGPTKey();
+            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
 
-            using (HttpClient httpClient = new HttpClient())
+            using (HttpClient httpClient = new())
             {
                 ChatGPTClient client = new ChatGPTClient(apiKey, httpClient);
+                
+                ChatGPTModelsResponse? modelResponse = await client.GetModelsAsync();
 
-                ChatGPTModelsResponse modelResponse = await client.GetModelsAsync();
+                Assert.NotNull(modelResponse);
 
                 Assert.NotNull(modelResponse.Data);
 
@@ -107,7 +111,7 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
         [Fact]
         public async Task GPTModel()
         {
-            string apiKey = GetChatGPTKey();
+            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
             ChatGPTClient client = new ChatGPTClient(apiKey);
 
             var model = await client.RetrieveModelAsync("text-ada-001");
@@ -124,13 +128,13 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
         [Fact]
         public void NullSessionConstruction()
         {
-            Assert.Throws<ArgumentException>(() => new ChatGPTClient(null));
+            Assert.Throws<ArgumentException>(() => new ChatGPTClient((string?) null));
         }
 
         [Fact]
         public void NullHttpClientConstruction()
         {
-            string apiKey = GetChatGPTKey();
+            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
 
             HttpClient? client = null;
 
@@ -138,20 +142,6 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
         }
 #pragma warning restore CS8604 // Possible null reference argument.
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-
-        private string GetChatGPTKey()
-        {
-
-            string? chatGPTKey = System.Environment.GetEnvironmentVariable(EnvironmentSettings.ENV_CHATGPT_KEY);
-
-            if (string.IsNullOrWhiteSpace(chatGPTKey))
-            {
-                throw new Exception("ChatGPT Key not found in environment variables");
-            }
-
-            return chatGPTKey;
-        }
-
        
     }
 }

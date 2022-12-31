@@ -115,7 +115,7 @@ namespace Whetstone.TweetGPT.WebHookManager
 
         public async Task<IEnumerable<IWebhookEnvironment>> GetEnvironmentsAsync()
         {
-            List<IWebhookEnvironment>? environments = new();
+            List<IWebhookEnvironment>? environments;
 
             try
             {
@@ -159,9 +159,7 @@ namespace Whetstone.TweetGPT.WebHookManager
             try
             {
                 await EnsureBearerTokenAsync();
-
-                IGetAccountActivitySubscriptionsParameters subParams = new GetAccountActivitySubscriptionsParameters(environment);
-
+                
                 var response = await _client.AccountActivity.GetAccountActivitySubscriptionsAsync(environment).ConfigureAwait(false);
 
                 subDTO = response.WebhookEnvironmentSubscriptionsDTO;

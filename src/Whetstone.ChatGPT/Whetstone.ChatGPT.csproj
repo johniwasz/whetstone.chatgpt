@@ -10,7 +10,7 @@
     <PackageTags>chatgpt; api</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2022</Copyright>
-    <Version>0.3.1</Version>
+    <Version>0.3.2</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress.</Description>
     <PackageIcon>packlogo.png</PackageIcon>

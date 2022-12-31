@@ -31,7 +31,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Whetstone.ChatGPT\Whetstone.ChatGPT.csproj" />
-    <ProjectReference Include="..\Whetstone.TweetGPT.WebHookManager\Whetstone.TweetGPT.WebHookManager.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="JsonListHelper\" />
   </ItemGroup>
 
 </Project>

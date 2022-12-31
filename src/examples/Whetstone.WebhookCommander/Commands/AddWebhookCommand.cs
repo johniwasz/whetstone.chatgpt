@@ -54,6 +54,13 @@ namespace Whetstone.WebhookCommander.Commands
                 {
                     var webHookResponse = await WebhookManager.RegisterWebhookAsync(environmentValue, webhookUri);
 
+                    if (webHookResponse is not null)
+                    {
+                        Logger.LogInformation($"Webhook Id: {webHookResponse.Id}");
+                        Logger.LogInformation($"Webhook Url: {webHookResponse.Url}");
+                        Logger.LogInformation($"Webhook Valid: {webHookResponse.Valid}");
+                    }
+
                 }
                 catch(WebhookManagerException manEx)
                 {
