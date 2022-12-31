@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Whetstone.ChatGPT.Test
+namespace Whetstone.ChatGPT.CommandLineBot
 {
     internal class EnvironmentSettings
     {

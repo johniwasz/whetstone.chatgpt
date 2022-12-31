@@ -1,8 +1,11 @@
 ﻿
 
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Text;
-using Whetstone.ChatGPT.CommandLineBot;
+using System.Text.Json;
+using System.Threading;
+
 
 var builder = new ConfigurationBuilder()
     .AddEnvironmentVariables()
@@ -11,10 +14,10 @@ var builder = new ConfigurationBuilder()
 IConfigurationRoot configuration = builder.Build();
 
 
-ChatGPTCredentials? credentials = CliUtilities.GetChatGPTCredentials(configuration);
+string? apiKey = CliUtilities.GetChatGPTAPIKey(configuration);
 
 
-if (credentials is null)
+if (string.IsNullOrEmpty(apiKey))
 {
     Console.WriteLine(CliUtilities.GetUsage());
     Environment.Exit(0);
@@ -32,21 +35,21 @@ promptBuilder.AppendLine("Marv: On December 17, 1903, Wilbur and Orville Wright 
 
 string baselinePrompt = promptBuilder.ToString();
 
-ChatGPTCompletionRequest completionRequest = new ChatGPTCompletionRequest
+CompletionRequest completionRequest = new CompletionRequest
 {
-    Model = ChatGPTCompletionModels.Davinci,
-    Temperature = 1.0f,
-    MaxTokens = 500,
-    TopP = 0.3f,
-    FrequencyPenalty = 0.5f,
-    PresencePenalty = 0
+    Model = "text-davinci-003",
+    //Temperature = 0.5f,
+    MaxTokens = 120,
+    //TopP = 0.3f,
+    //FrequencyPenalty = 0.5f,
+    //PresencePenalty = 0
 };
 
 Console.WriteLine("Marv is a chatbot that reluctantly answers questions with sarcastic responses. Please ask a question.");
 Console.WriteLine("Type Exit or ^C to terminate");
 Console.WriteLine();
 
-using (ChatGPTClient chatGPTClient = new ChatGPTClient(credentials))
+using (HttpClient httpClient = new HttpClient())
 {
     Console.Write("> ");
     string? userResponse = Console.ReadLine();
@@ -62,19 +65,55 @@ using (ChatGPTClient chatGPTClient = new ChatGPTClient(credentials))
                 break;
             }
 
-            string userInput = $"You: {userResponse}\nMarv: ";
+            // string userInput = $"You: {userResponse}\nMarv: ";
 
-            string userPrompt = string.Concat(baselinePrompt, userInput);
+            //string userPrompt = string.Concat(baselinePrompt, userInput);
 
-            completionRequest.Prompt = userPrompt;
+            // completionRequest.Prompt = userPrompt;
+
+            completionRequest.Prompt = userResponse;
 
             Console.WriteLine();
 
-            ChatGPTCompletionResponse? completionResponse = await chatGPTClient.CreateCompletionAsync(completionRequest);
+            // CompletionResponse? completionResponse = await httpClient.CreateCompletionAsync(completionRequest);
+
+            CompletionResponse? completionResponse = null;
+
+
+            using (var httpReq = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/completions"))
+            {
+
+                httpReq.Headers.Add("Authorization", $"Bearer {apiKey}");
+
+                string requestString = JsonSerializer.Serialize(completionRequest);
+
+                httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
+
+                using (HttpResponseMessage? httpResponse = await httpClient.SendAsync(httpReq))
+                {
+                    if (httpResponse is not null)
+                    {
+                        if (httpResponse.IsSuccessStatusCode)
+                        {
+                            string responseString = await httpResponse.Content.ReadAsStringAsync();
+                            {
+                                if (!string.IsNullOrWhiteSpace(responseString))
+                                {
+                                    completionResponse = JsonSerializer.Deserialize<CompletionResponse>(responseString);
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
 
             if (completionResponse is not null)
             {
-                Console.WriteLine(completionResponse.GetCompletionText());
+                string? completionText = completionResponse.Choices?[0]?.Text;
+
+                Console.WriteLine(completionText);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write("Tokens Used: ");
                 Console.ForegroundColor = ConsoleColor.White;
@@ -89,13 +128,10 @@ using (ChatGPTClient chatGPTClient = new ChatGPTClient(credentials))
             }
         }
     }
-    catch(ChatGPTException chatEx)
+    catch(Exception ex)
     {
-        Console.WriteLine(chatEx.Message);
-
-        if(chatEx.StatusCode.HasValue)
-            Console.WriteLine($"Http status code: {chatEx.StatusCode.Value}");
-        
+        Console.WriteLine(ex.Message);
+ 
         Console.WriteLine();
     }
 }

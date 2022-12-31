@@ -7,7 +7,7 @@
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>chatgpt; api</PackageTags>
+    <PackageTags>chatgpt; api; openapi</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2022</Copyright>
     <Version>0.3.2</Version>

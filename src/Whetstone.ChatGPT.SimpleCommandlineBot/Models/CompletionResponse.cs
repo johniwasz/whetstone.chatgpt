@@ -1,10 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.SimpleCommandLineBot.Models
 {
-    public class ChatGPTCompletionResponse
+    public class CompletionResponse
     {
 
         [JsonPropertyName("id")]
@@ -22,8 +27,7 @@ namespace Whetstone.ChatGPT.Models
         /// <summary>
         /// Model used to generate the original request. 
         /// </summary>
-        /// <remarks>
-        /// See <see cref="ChatGPTCompletionModels">ChatGPTCompletionModels</see> for recommended completion models.
+        /// <remarks>        
         /// </remarks>
         [JsonPropertyName("model")]
         public string? Model { get; set; }
@@ -52,7 +56,7 @@ namespace Whetstone.ChatGPT.Models
 
         [JsonPropertyName("completion_tokens")]
         public int CompletionTokens { get; set; }
-        
+
         [JsonPropertyName("total_tokens")]
         public int TotalTokens { get; set; }
     }
@@ -70,9 +74,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("index")]
         public int Index { get; set; }
 
-        /// <summary>
-        /// This is populated if the <see cref="ChatGPTCompletionRequest.LogProbabilities">ChatGPTCompletionRequest.LogProbabilities</see> is set to a vaule of 1-5.
-        /// </summary>
         [JsonPropertyName("logprobs")]
         public object? LogProbabilities { get; set; }
 

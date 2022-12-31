@@ -6,7 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Whetstone.ChatGPT.CommandLineBot
+namespace Whetstone.ChatGPT.SimpleCommandLineBot
 {
     internal static class CliUtilities
     {
@@ -31,16 +31,6 @@ namespace Whetstone.ChatGPT.CommandLineBot
             return helpTextBuilder.ToString();
         }
 
-        internal static ChatGPTCredentials? GetChatGPTCredentials(IConfigurationRoot config)
-        {            
-            string? apiKey = GetChatGPTAPIKey(config);
-            string? organization = GetOrganization(config);
-
-            return apiKey == null ? 
-                (ChatGPTCredentials?) null : 
-                new ChatGPTCredentials(apiKey, organization);
-        }
-
         internal static string? GetChatGPTAPIKey(IConfigurationRoot config)
         {
             string? apiKey = config["apikey"];
@@ -52,18 +42,6 @@ namespace Whetstone.ChatGPT.CommandLineBot
             
             return apiKey;
         }
-
-        internal static string? GetOrganization(IConfigurationRoot configuration)
-        {
-            string? organization = configuration["organization"];
-            if (organization is null)
-            {
-                organization = configuration[EnvironmentSettings.ENV_CHATGPT_ORGANIZATION];
-            }
-            
-            return organization;
-        }
-
 
         internal static bool IsExitInput(string? input)
         {
