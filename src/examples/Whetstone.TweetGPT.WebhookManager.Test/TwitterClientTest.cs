@@ -21,15 +21,26 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
         {
 
             IConfigurationRoot config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())               
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddUserSecrets("2d062944-d0f9-4fab-bed7-d43b4637c783")
                 .AddEnvironmentVariables()
                 .Build();
 
-            string? consumerKey = config["WebhookCredentials:ConsumerKey"];
-            string? consumerSecret = config["WebhookCredentials:ConsumerSecret"];
-            string? accessToken = config["WebhookCredentials:AccessToken"];
-            string? accessTokenSecret = config["WebhookCredentials:AccessTokenSecret"];
+            string? consumerKey = config["WebhookCredentials:ConsumerKey"] is not null 
+                ? config["WebhookCredentials:ConsumerKey"]
+                : config[EnvironmentSettings.ENV_TWITTER_CONSUMER_KEY];
+
+            string? consumerSecret = config["WebhookCredentials:ConsumerSecret"] is not null
+                ? config["WebhookCredentials:ConsumerSecret"]
+                : config[EnvironmentSettings.ENV_TWITTER_CONSUMER_SECRET];
+
+            string? accessToken = config["WebhookCredentials:AccessToken"] is not null
+                ? config["WebhookCredentials:AccessToken"]
+                : config[EnvironmentSettings.ENV_TWITTER_ACCESS_TOKEN];
+
+            string? accessTokenSecret = config["WebhookCredentials:AccessTokenSecret"] is not null
+                ? config["WebhookCredentials:AccessTokenSecret"]
+                : config[EnvironmentSettings.ENV_TWITTER_ACCESS_TOKEN_SECRET];
 
 
             var consumerOnlyCredentials = new ConsumerOnlyCredentials(consumerKey, consumerSecret);
