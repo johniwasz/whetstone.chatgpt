@@ -17,74 +17,75 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task TestGPTClientCompletion()
         {
-            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
-
-            ChatGPTClient client = new ChatGPTClient(apiKey);
-
-            // Using Ada in this test to keep costs down.
-
-            var gptRequest = new ChatGPTCompletionRequest
+            
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-                Model = ChatGPTCompletionModels.Ada,
-                Prompt = "How is the weather?",
-                Temperature = 0.9f,
-                MaxTokens = 140
-            };
-            
-            var response = await client.CreateCompletionAsync(gptRequest);
 
-            Assert.NotNull(response);
-            
-            Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
-            
+                // Using Ada in this test to keep costs down.
+
+                var gptRequest = new ChatGPTCompletionRequest
+                {
+                    Model = ChatGPTCompletionModels.Ada,
+                    Prompt = "How is the weather?",
+                    Temperature = 0.9f,
+                    MaxTokens = 140
+                };
+
+                var response = await client.CreateCompletionAsync(gptRequest);
+
+                Assert.NotNull(response);
+
+                Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+            }
         }
 
         [Fact]
         public async Task TestGPTClientEdit()
         {
-            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
 
-            ChatGPTClient client = new ChatGPTClient(apiKey);
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
 
-            var gptEditRequest = new ChatGPTCreateEditRequest
-            {             
-                Input = "What day of the wek is it?",
-                Instruction = "Fix spelling mistakes",
-                Temperature = 0
-            };
+                var gptEditRequest = new ChatGPTCreateEditRequest
+                {
+                    Input = "What day of the wek is it?",
+                    Instruction = "Fix spelling mistakes",
+                    Temperature = 0
+                };
 
-            var response = await client.CreateEditAsync(gptEditRequest);
+                var response = await client.CreateEditAsync(gptEditRequest);
 
-            Assert.NotNull(response);
+                Assert.NotNull(response);
 
-            Assert.Equal("edit", response.Object);
+                Assert.Equal("edit", response.Object);
 
-            string? editTextResponse = response.GetEditedText();
+                string? editTextResponse = response.GetEditedText();
 
-            Assert.Contains("What day of the week is it?", editTextResponse, StringComparison.InvariantCultureIgnoreCase);
-
+                Assert.Contains("What day of the week is it?", editTextResponse, StringComparison.InvariantCultureIgnoreCase);
+            }
         }
 
         [Fact]
         public async Task GPTModelsList()
         {
-            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
-            ChatGPTClient client = new ChatGPTClient(apiKey);
+            
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
 
-            ChatGPTModelsResponse? modelResponse = await client.GetModelsAsync();
+                ChatGPTListResponse<ChatGPTModel>? modelResponse = await client.ListModelsAsync();
 
-            Assert.NotNull(modelResponse);
+                Assert.NotNull(modelResponse);
 
-            Assert.Equal("list", modelResponse.Object);
+                Assert.Equal("list", modelResponse.Object);
 
-            Assert.NotNull(modelResponse.Data);
-                
-            Assert.NotEmpty(modelResponse.Data);
+                Assert.NotNull(modelResponse.Data);
 
-            var textModels = modelResponse.Data.Where(x => x.Id is not null && x.Id.Contains("edit"));
+                Assert.NotEmpty(modelResponse.Data);
 
-            Assert.NotEmpty(textModels);
+                var textModels = modelResponse.Data.Where(x => x.Id is not null && x.Id.Contains("edit"));
 
+                Assert.NotEmpty(textModels);
+            }
         }
 
         [Fact]
@@ -94,9 +95,9 @@ namespace Whetstone.ChatGPT.Test
 
             using (HttpClient httpClient = new())
             {
-                ChatGPTClient client = new ChatGPTClient(apiKey, httpClient);
-                
-                ChatGPTModelsResponse? modelResponse = await client.GetModelsAsync();
+                IChatGPTClient client = new ChatGPTClient(apiKey, httpClient);
+
+                ChatGPTListResponse<ChatGPTModel>? modelResponse = await client.ListModelsAsync();
 
                 Assert.NotNull(modelResponse);
 
@@ -111,8 +112,8 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task GPTModel()
         {
-            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
-            ChatGPTClient client = new ChatGPTClient(apiKey);
+
+            IChatGPTClient client = ChatGPTTestUtilties.GetClient();
 
             var model = await client.RetrieveModelAsync("text-ada-001");
 

@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json.Serialization;
-using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace Whetstone.ChatGPT.Models
 {
-    /// <summary>
-    /// A list of available completion models.
-    /// </summary>
-    public class ChatGPTModelsResponse
+    public class ChatGPTListResponse<T>
     {
 
-        
         /// <summary>
         /// Returned value should be "list"
         /// </summary>
@@ -27,6 +23,6 @@ namespace Whetstone.ChatGPT.Models
         /// List of available models.
         /// </summary>
         [JsonPropertyName("data")]
-        public List<ChatGPTModel>? Data { get; set; }
+        public List<T>? Data { get; set; }
     }
 }

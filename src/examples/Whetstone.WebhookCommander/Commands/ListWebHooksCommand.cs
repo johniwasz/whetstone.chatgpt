@@ -28,19 +28,22 @@ internal class ListWebHooksCommand : Command, ICommand
 #pragma warning disable CS8604 // Possible null reference argument.
                 var webHookResponses = await WebhookManager.GetWebHooksAsync(environmentValue);
 #pragma warning restore CS8604 // Possible null reference argument.
-                
-                if (webHookResponses.Any())
+
+                if (webHookResponses is not null)
                 {
-                    foreach (var webHook in webHookResponses)
+
+                    if (webHookResponses.Any())
                     {
-                        Logger.LogInformation($"{webHook.Id}: {webHook.Url} --- {webHook.Valid}");
+                        foreach (var webHook in webHookResponses)
+                        {
+                            Logger.LogInformation($"{webHook.Id}: {webHook.Url} --- {webHook.Valid}");
+                        }
+                    }
+                    else
+                    {
+                        Logger.LogInformation("No webhooks found");
                     }
                 }
-                else
-                {
-                    Logger.LogInformation("No webhooks found");
-                }
-
          
             }
             catch (Exception ex)

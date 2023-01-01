@@ -21,5 +21,14 @@ namespace Whetstone.ChatGPT.Test
             return chatGPTKey;
         }
 
+
+        internal static IChatGPTClient GetClient()
+        {
+
+            string chatGPTKey = GetChatGPTKey();
+
+            return new ChatGPTClient(chatGPTKey);
+        }
+
     }
 }

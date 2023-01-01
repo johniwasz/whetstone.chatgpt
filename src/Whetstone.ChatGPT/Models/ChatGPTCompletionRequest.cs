@@ -1,6 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.ComponentModel;
+#if NET6_0_OR_GREATER
+using System.ComponentModel.DataAnnotations;
+#endif
 
 namespace Whetstone.ChatGPT.Models;
 
@@ -28,6 +31,9 @@ public class ChatGPTCompletionRequest
     /// <remarks>
     /// See <see cref="ChatGPTCompletionModels">ChatGPTCompletionModels</see> for recommended completion modesl.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [Required]
+#endif
     [JsonPropertyOrder(0)]
     [JsonInclude]
     [JsonPropertyName("model")]
@@ -73,11 +79,7 @@ public class ChatGPTCompletionRequest
     [DefaultValue(16)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     [JsonPropertyName("max_tokens")]
-    public int MaxTokens
-    {
-        get;
-        set;
-    }
+    public int MaxTokens { get; set; } = 16;
 
     /// <summary>
     /// What <see href="https://towardsdatascience.com/how-to-sample-from-language-models-682bceb97277">sampling temperature</see> to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.

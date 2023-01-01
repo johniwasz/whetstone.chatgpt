@@ -1,70 +1,180 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Net;
 using Whetstone.ChatGPT.Models;
 using Xunit.Abstractions;
 using Xunit.Sdk;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Whetstone.ChatGPT.Test
 {
-    public class ChatGPTFileTest
+    public class ChatGPTFileTest : IClassFixture<FileTestFixture>
     {
 
         private readonly ITestOutputHelper _testOutputHelper;
+        private readonly FileTestFixture _fileTestFixture;
 
-        public ChatGPTFileTest(ITestOutputHelper testOutputHelper)
+        public ChatGPTFileTest(ITestOutputHelper testOutputHelper, FileTestFixture fileTestFixture)
         {
-            _testOutputHelper = testOutputHelper;
+            _testOutputHelper = testOutputHelper ?? throw new ArgumentNullException(nameof(testOutputHelper));
+            _fileTestFixture = fileTestFixture ?? throw new ArgumentNullException(nameof(fileTestFixture));
+
+            _fileTestFixture.TestOutputHelper = _testOutputHelper;
+        }
+
+
+
+        [Fact]
+        public async Task ListFilesAsync()
+        {
+
+            await InitializeExistingFileIdAsync();
+
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
+                var fileList = await client.ListFilesAsync();
+
+                Assert.NotNull(fileList);
+
+                Assert.NotNull(fileList.Object);
+
+                Assert.Equal("list", fileList.Object);
+
+                Assert.NotNull(fileList.Data);
+
+                Assert.NotEmpty(fileList.Data);
+
+                Assert.Contains(fileList.Data, x => x.Id == _fileTestFixture.ExistingFileId);
+
+            }
+
+        }
+
+
+        [Fact]
+        public async Task RetrieveFileAsync()
+        {
+            await InitializeExistingFileIdAsync();
+
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
+
+                ChatGPTFileInfo? retrieveResponse = await client.RetrieveFileAsync(_fileTestFixture.ExistingFileId);
+
+                Assert.NotNull(retrieveResponse);
+
+                Assert.NotNull(retrieveResponse.Object);
+
+                Assert.Equal("file", retrieveResponse.Object);
+
+                Assert.Equal(_fileTestFixture.ExistingFileId, retrieveResponse.Id);
+            }
         }
 
         [Fact]
-        public void TestGPTFileUpload()
+        public async Task RetrieveExistingFileContents()
         {
-            // Build a fine tine file to upload.
-            List<ChatGPTFineTuneLine> tuningInput = new()
+
+            await InitializeExistingFileIdAsync();
+
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-                new ChatGPTFineTuneLine("I don't even know where to start!", "Can't go wrong with rabbits, doc."),
+                ChatGPTFileContent? retrieveResponse = await client.RetrieveFileContentAsync(_fileTestFixture.ExistingFileId);
 
-                new ChatGPTFineTuneLine("Requesting clearance for landing.", "Roger, rabbit!"),
+                Assert.NotNull(retrieveResponse);
+                Assert.NotNull(retrieveResponse.Content);
 
-                new ChatGPTFineTuneLine("You've got the wrong bunny.", "He just doesn't know star potential when he sees it."),
+                string originalContents = System.Text.Encoding.UTF8.GetString(retrieveResponse.Content, 0, retrieveResponse.Content.Length);
 
-                new ChatGPTFineTuneLine("I'm not a rabbit!", "You're a rabbit, Doc!"),
+                Assert.NotNull(originalContents);
 
-                new ChatGPTFineTuneLine("Now I got you. You, you, wabbit.", "Say doc, are you trying to get yourself in trouble with the law? This ain't wabbit huntin' season."),
+                _testOutputHelper.WriteLine("File Contents:");
+                _testOutputHelper.WriteLine(originalContents);
 
-                new ChatGPTFineTuneLine("Duck season.", "Wabbit season."),
-
-                new ChatGPTFineTuneLine("Wabbit season.", "Duck season."),
-
-                new ChatGPTFineTuneLine("Awwight. Come on out or I'll bwast you out!", "For shame, doc! Hunting rabbits with an elephant gun."),
-
-                new ChatGPTFineTuneLine("Hey! What's the big idea? Why don't you wook where you're going.", "Oh, how simply dreadful. You poor little man."),
-
-                new ChatGPTFineTuneLine("if my luck doesn't change, I'm coming back to get ya.", "nter, O seeker of knowledge."),
-
-                new ChatGPTFineTuneLine("What kind of flower is that?", "t's a carnation doc! Why?")
-            };
-
-            StringBuilder builder = new StringBuilder();
-            foreach (var line in tuningInput)
-            {
-                builder.AppendLine(System.Text.Json.JsonSerializer.Serialize(line));
             }
+        }
 
-            string curDir = System.IO.Directory.GetCurrentDirectory();
 
-            _testOutputHelper.WriteLine(curDir);
+        // Cannot delete a file right away. 
+        // This returns an error indicating the file is still processing        
+#pragma warning disable xUnit1013 // Public method should be marked as test
+        public async Task DeleteFileAsync()
+#pragma warning restore xUnit1013 // Public method should be marked as test
+        {
 
-            File.WriteAllText("bugstuning.jsonl", builder.ToString());
+            await InitializeTestFileAsync();
+
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
+
+                var deleteResponse = await client.DeleteFileAsync(_fileTestFixture.ExistingFileId);
+
+                Assert.NotNull(deleteResponse);
+
+                Assert.NotNull(deleteResponse.Object);
+
+                Assert.Equal("file", deleteResponse.Object);
+
+                Assert.True(deleteResponse.Deleted);
+
+                Assert.Equal(_fileTestFixture.NewTestFile?.Id, deleteResponse.Id);
+            }
 
         }
 
-        
+
+        [Fact]
+        public async Task FileUploadBadFile()
+        {
+            // Build a fine tine file to upload.
+
+
+            string fileName = "badfile.jsonl";
+
+            ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
+            {
+                File = new ChatGPTFileContent
+                {
+
+                    FileName = fileName,
+                    Content = Encoding.UTF8.GetBytes("dfjhskgljhsgjhslfkj")
+                }
+            };
+
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
+                ChatGPTException badFileException = await Assert.ThrowsAsync<ChatGPTException>(async () => await client.UploadFileAsync(uploadRequest));
+
+                Assert.NotNull(badFileException.ChatGPTError);
+
+                Assert.NotNull(badFileException.StatusCode);
+
+                Assert.Equal(HttpStatusCode.BadRequest, badFileException.StatusCode);
+
+            }
+
+        }
+
+        private async Task InitializeTestFileAsync()
+        {
+
+            await _fileTestFixture.CreateTestFileAsync();
+
+            Assert.NotNull(_fileTestFixture.NewTestFile);
+            Assert.NotNull(_fileTestFixture.NewTestFile.Id);
+        }
+
+        private async Task InitializeExistingFileIdAsync()
+        {
+            await _fileTestFixture.InitializeFirstFromListAsync();
+            Assert.NotNull(_fileTestFixture.ExistingFileId);
+        }
+
     }
 }

@@ -1,12 +1,18 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+#if NET6_0_OR_GREATER
+using System.Net.Http.Json;
+#endif
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using Whetstone.ChatGPT.Models;
+using static System.Net.WebRequestMethods;
 
 namespace Whetstone.ChatGPT;
 
@@ -14,7 +20,7 @@ namespace Whetstone.ChatGPT;
 /// <summary>
 /// A client for the OpenAI GPT-3 API.
 /// </summary>
-public class ChatGPTClient : IDisposable
+public class ChatGPTClient : IChatGPTClient
 {
     private readonly string _apiKey;
 
@@ -123,13 +129,15 @@ public class ChatGPTClient : IDisposable
 
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", creds.ApiKey);
 
-        if(!string.IsNullOrWhiteSpace(creds.Organization))
+        if (!string.IsNullOrWhiteSpace(creds.Organization))
         {
             client.DefaultRequestHeaders.Add("OpenAI-Organization", creds.Organization);
         }
     }
 
     #endregion
+
+    #region Completions
 
     /// <summary>
     /// Creates a completion for the provided prompt and parameters
@@ -150,7 +158,7 @@ public class ChatGPTClient : IDisposable
             throw new ArgumentNullException(nameof(completionRequest));
         }
 
-        if(string.IsNullOrWhiteSpace(completionRequest.Model))
+        if (string.IsNullOrWhiteSpace(completionRequest.Model))
         {
             throw new ArgumentException("Model is required", nameof(completionRequest));
         }
@@ -166,11 +174,11 @@ public class ChatGPTClient : IDisposable
     /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/models/list">List Models</seealso>.</para>
     /// </remarks>
     /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns><see cref="Models.ChatGPTModelsResponse"/>A list of available models.</returns>
+    /// <returns><see cref="ChatGPTModel">A list of available models.</see></returns>
     /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-    public async Task<ChatGPTModelsResponse?> GetModelsAsync(CancellationToken? cancellationToken = null)
-    {       
-        return await SendRequestAsync<ChatGPTModelsResponse>(HttpMethod.Get, "models", cancellationToken);
+    public async Task<ChatGPTListResponse<ChatGPTModel>?> ListModelsAsync(CancellationToken? cancellationToken = null)
+    {
+        return await SendRequestAsync<ChatGPTListResponse<ChatGPTModel>>(HttpMethod.Get, "models", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -191,9 +199,11 @@ public class ChatGPTClient : IDisposable
         {
             throw new ArgumentException("Cannot be null or whitespace.", nameof(modelId));
         }
-        
-        return await SendRequestAsync<ChatGPTModel>(HttpMethod.Get, $"models/{modelId}", cancellationToken);
+
+        return await SendRequestAsync<ChatGPTModel>(HttpMethod.Get, $"models/{modelId}", cancellationToken).ConfigureAwait(false);
     }
+
+    #endregion Completions
 
     /// <summary>
     /// Given a prompt and an instruction, the model will return an edited version of the prompt.
@@ -221,18 +231,185 @@ public class ChatGPTClient : IDisposable
             createEditRequest.Model = ChatGPTEditModels.Davinci;
         }
 
-        if(string.IsNullOrWhiteSpace(createEditRequest.Instruction))
+        if (string.IsNullOrWhiteSpace(createEditRequest.Instruction))
         {
             throw new ArgumentException("Instruction is required", nameof(createEditRequest));
         }
 
-        return await SendRequestAsync<ChatGPTCreateEditRequest, ChatGPTCreateEditResponse>(HttpMethod.Post, "edits", createEditRequest, cancellationToken);
+        return await SendRequestAsync<ChatGPTCreateEditRequest, ChatGPTCreateEditResponse>(HttpMethod.Post, "edits", createEditRequest, cancellationToken).ConfigureAwait(false);
+    }
+
+    #region File Operations
+
+    /// <summary>
+    /// Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+    /// </summary>
+    /// <param name="fileRequest">Defines the file name, contents, and purpose.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException">File contents and Purpose are required</exception>
+    /// <exception cref="ArgumentException">File contents and Purpose are required</exception>
+    public async Task<ChatGPTFileInfo?> UploadFileAsync(ChatGPTUploadFileRequest? fileRequest, CancellationToken? cancellationToken = null)
+    {
+        if (fileRequest is null)
+        {
+            throw new ArgumentNullException(nameof(fileRequest));
+        }
+
+        if (fileRequest.File is null)
+        {
+            throw new ArgumentNullException(nameof(fileRequest), "File is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(fileRequest.File.FileName))
+        {
+            throw new ArgumentException("File.FileName is required", nameof(fileRequest));
+        }
+
+        if (fileRequest.File.Content is null)
+        {
+            throw new ArgumentException("File.Content is required", nameof(fileRequest));
+        }
+
+        if (string.IsNullOrWhiteSpace(fileRequest.Purpose))
+        {
+            throw new ArgumentException("Purpose is required", nameof(fileRequest));
+        }
+
+        MultipartFormDataContent formContent = new()
+        {
+            { new StringContent(fileRequest.Purpose), "purpose" },
+
+            { new ByteArrayContent(fileRequest.File.Content), "file", fileRequest.File.FileName }
+        };
+
+        using (var httpReq = new HttpRequestMessage(HttpMethod.Post, "files"))
+        {
+            httpReq.Content = formContent;
+
+            httpReq.Headers.Add("Authorization", $"Bearer {_apiKey}");
+
+            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
+                await _client.SendAsync(httpReq).ConfigureAwait(false) :
+                 await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false))
+            {
+                return await ProcessResponseAsync<ChatGPTFileInfo>(httpResponse, cancellationToken);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns a list of files that belong to the user's organization.
+    /// </summary>
+    /// <remarks>
+    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/files/list">List Files</seealso>.</para>
+    /// </remarks>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns><see cref="ChatGPTFileInfo">A list of available models.</see></returns>
+    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    public async Task<ChatGPTListResponse<ChatGPTFileInfo>?> ListFilesAsync(CancellationToken? cancellationToken = null)
+    {
+        return await SendRequestAsync<ChatGPTListResponse<ChatGPTFileInfo>>(HttpMethod.Get, "files", cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Delete a file.
+    /// </summary>
+    /// <param name="fileId">Id of the file to delete</param>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns>Confirmation the file was deleted.</returns>
+    /// <exception cref="ArgumentException">fileId cannot be null or whitespace</exception>
+    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    public async Task<ChatGPTDeleteResponse?> DeleteFileAsync(string? fileId, CancellationToken? cancellationToken = null)
+    {
+        if (string.IsNullOrWhiteSpace(fileId))
+        {
+            throw new ArgumentException("Cannot be null or whitespace.", nameof(fileId));
+        }
+
+        return await SendRequestAsync<ChatGPTDeleteResponse>(HttpMethod.Delete, $"files/{fileId}", cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Returns information about a specific file.
+    /// </summary>
+    /// <param name="fileId">Id of the file to retrieve for its info.</param>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns>Confirmation the file was deleted.</returns>
+    /// <exception cref="ArgumentException">fileId cannot be null or whitespace</exception>
+    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    public async Task<ChatGPTFileInfo?> RetrieveFileAsync(string? fileId, CancellationToken? cancellationToken = null)
+    {
+        if (string.IsNullOrWhiteSpace(fileId))
+        {
+            throw new ArgumentException("Cannot be null or whitespace.", nameof(fileId));
+        }
+
+        return await SendRequestAsync<ChatGPTFileInfo>(HttpMethod.Get, $"files/{fileId}", cancellationToken).ConfigureAwait(false);
     }
 
 
-#region Generic Request and Response Processors
-    private async Task<TR?> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken) 
-        where T : class 
+    /// <summary>
+    /// Returns the contents of the specified file
+    /// </summary>
+    /// <param name="fileId">The ID of the file to use for this request</param>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public async Task<ChatGPTFileContent?> RetrieveFileContentAsync(string? fileId, CancellationToken? cancellationToken = null)
+    {
+        ChatGPTFileContent fileContent;
+
+        if (string.IsNullOrWhiteSpace(fileId))
+        {
+            throw new ArgumentException("Cannot be null or whitespace.", nameof(fileId));
+        }
+
+        using (var httpReq = new HttpRequestMessage(HttpMethod.Get, $"files/{fileId}/content"))
+        {
+
+            httpReq.Headers.Add("Authorization", $"Bearer {_apiKey}");
+
+            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
+                await _client.SendAsync(httpReq) :
+                await _client.SendAsync(httpReq, cancellationToken.Value))
+            {
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+
+                    fileContent = new();
+
+#if NETSTANDARD2_1
+                    fileContent.Content = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+#else
+                    fileContent.Content = cancellationToken is null ?
+                                await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false) :
+                                await httpResponse.Content.ReadAsByteArrayAsync(cancellationToken.Value).ConfigureAwait(false);
+#endif
+
+                    fileContent.FileName = httpResponse.Content?.Headers?.ContentDisposition?.FileName?.Replace(@"""", "");
+
+                    return fileContent;
+                }
+                else
+                {
+
+                    string responseString = await GetResponseStringAsync(httpResponse, cancellationToken).ConfigureAwait(false);
+
+                    ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
+                    throw new ChatGPTException(errResponse?.Error, httpResponse.StatusCode);
+                }
+            }
+        }
+
+    }
+
+    #endregion
+
+    #region Generic Request and Response Processors
+    private async Task<TR?> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken)
+        where T : class
         where TR : class
     {
         using (var httpReq = new HttpRequestMessage(method, url))
@@ -245,27 +422,27 @@ public class ChatGPTClient : IDisposable
             httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
 
             using (HttpResponseMessage? httpResponse = cancellationToken is null ?
-                await  _client.SendAsync(httpReq) :
+                await _client.SendAsync(httpReq) :
                  await _client.SendAsync(httpReq, cancellationToken.Value))
             {
-                return await ProcessResponseAsync<TR>(httpResponse, cancellationToken);
+                return await ProcessResponseAsync<TR>(httpResponse, cancellationToken).ConfigureAwait(false);
             }
         }
-        
+
     }
 
-    
-    private async Task<T?> SendRequestAsync<T>(HttpMethod method, string url, CancellationToken? cancellationToken)  where T : class
+
+    private async Task<T?> SendRequestAsync<T>(HttpMethod method, string url, CancellationToken? cancellationToken) where T : class
     {
         using (var request = new HttpRequestMessage(method, url))
         {
             request.Headers.Add("Authorization", $"Bearer {_apiKey}");
 
             using (HttpResponseMessage? httpResponse = cancellationToken is null ?
-                 await _client.SendAsync(request) :
-                 await _client.SendAsync(request, cancellationToken.Value))
+                 await _client.SendAsync(request).ConfigureAwait(false) :
+                 await _client.SendAsync(request, cancellationToken.Value).ConfigureAwait(false))
             {
-                return await ProcessResponseAsync<T>(httpResponse, cancellationToken);
+                return await ProcessResponseAsync<T>(httpResponse, cancellationToken).ConfigureAwait(false);
 
             }
         }
@@ -274,13 +451,8 @@ public class ChatGPTClient : IDisposable
 
     private async static Task<T?> ProcessResponseAsync<T>(HttpResponseMessage responseMessage, CancellationToken? cancellationToken) where T : class
     {
-#if NETSTANDARD2_1
-        string responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-#else
-        string responseString = cancellationToken is null ?
-                await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false) :
-                await responseMessage.Content.ReadAsStringAsync(cancellationToken.Value).ConfigureAwait(false);
-#endif
+        string responseString = await GetResponseStringAsync(responseMessage, cancellationToken).ConfigureAwait(false);
+
         if (responseMessage.IsSuccessStatusCode)
         {
             if (!string.IsNullOrWhiteSpace(responseString))
@@ -305,11 +477,25 @@ public class ChatGPTClient : IDisposable
 
         return default(T);
     }
-#endregion
 
-#region Clean Up    
+    private static async Task<string> GetResponseStringAsync(HttpResponseMessage responseMessage, CancellationToken? cancellationToken)
+    {
+#if NETSTANDARD2_1
+        string responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+#else
+        string responseString = cancellationToken is null ?
+                await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false) :
+                await responseMessage.Content.ReadAsStringAsync(cancellationToken.Value).ConfigureAwait(false);
+#endif
+
+        return responseString;
+    }
+
+    #endregion
+
+    #region Clean Up    
     ~ChatGPTClient()
-    {     
+    {
         Dispose(true);
     }
 
@@ -318,7 +504,7 @@ public class ChatGPTClient : IDisposable
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-    
+
     protected void Dispose(bool disposing)
     {
         if (!_isDisposed)
@@ -330,5 +516,5 @@ public class ChatGPTClient : IDisposable
             _isDisposed = true;
         }
     }
-#endregion
+    #endregion
 }

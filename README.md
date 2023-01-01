@@ -1,8 +1,21 @@
-[![NuGet version](https://badge.fury.io/nu/Whetstone.ChatGPT.svg)](https://badge.fury.io/nu/Whetstone.ChatGPT) [![CodeQL](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml/badge.svg)](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml/badge.svg)](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml)
 
 # Whetstone.ChatGPT
 
 A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress.
+
+Supported features include:
+
+- Completions
+- Edits
+- Files
+
+Pending features:
+
+- Images
+- Fine Tunes
+- Embeddings
+- Moderations
 
 ## Completion
 
@@ -18,7 +31,7 @@ using Whetstone.ChatGPT.Models;
 
 . . .
 
-ChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
+IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 var gptRequest = new ChatGPTCompletionRequest
 {
@@ -57,7 +70,7 @@ using Whetstone.ChatGPT.Models;
 
 . . .
 
-ChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
+IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 var gptEditRequest = new ChatGPTCreateEditRequest
 {             
@@ -74,3 +87,36 @@ One of the test runs returned:
 
 > What day of the week is it?
 
+## File Quickstart
+
+How to create a upload a new fine tuning file.
+
+``` C#
+
+List<ChatGPTFineTuneLine> tuningInput = new()
+{
+    new ChatGPTFineTuneLine("<PROMPT>", "<COMPLETION>"),
+    new ChatGPTFineTuneLine("<PROMPT>", "<COMPLETION>"),
+    . . .
+};
+
+byte[] tuningText = tuningInput.ToJsonLBinary();
+
+string fileName = "finetuningsample.jsonl";
+
+ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
+{
+    File = new ChatGPTFileContent
+    {
+
+        FileName = fileName,
+        Content = tuningText
+    }
+};
+
+ChatGPTFileInfo? uploadedFileInfo;
+using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
+{
+    uploadedFileInfo = await client.UploadFileAsync(uploadRequest);
+}
+```                
