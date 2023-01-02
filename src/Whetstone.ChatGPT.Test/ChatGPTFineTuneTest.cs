@@ -35,8 +35,10 @@ namespace Whetstone.ChatGPT.Test
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
-                ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest();
-                tuningRequest.TrainingFileId = _fileTestFixture.ExistingFileId;
+                ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
+                {
+                    TrainingFileId = _fileTestFixture.ExistingFileId
+                };
 
                 ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
 

@@ -2,20 +2,28 @@
 
 # Whetstone.ChatGPT
 
-A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress.
+A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress. 
+
+This library includes quality of life improvements:
+
+- including support for __CancellationTokens__
+- documentation comments
+- conversions of Unix Epoch time to DateTime, etc.
+- __IChatGPTClient__ interface for use with dependency injection
 
 Supported features include:
 
 - Completions
 - Edits
 - Files
+- Fine Tunes
 
 Pending features:
 
 - Images
-- Fine Tunes
 - Embeddings
 - Moderations
+- Handling streamed responses
 
 ## Completion
 
@@ -119,3 +127,50 @@ using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
     uploadedFileInfo = await client.UploadFileAsync(uploadRequest);
 }
 ```
+
+## Fine Tuning Quickstart
+
+Once the file has been created, get the fileId, and reference it when creating a new fine tuning.
+
+```C#
+using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
+{
+  var fileList = await client.ListFilesAsync();
+  var foundFile =  fileList.Data.First(x => x.Filename.Equals("finetuningsample.jsonl"));
+
+  ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
+  {
+     TrainingFileId = foundFile.Id
+  };
+
+  ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
+
+  string fineTuneId = tuneResponse.Id;
+
+}
+
+```
+
+Porcessing the fine tuning request will take some time. Once it finishes, the __Status__ will report "succeeded" and it's ready to be used in a completion request.
+
+```C#
+using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
+{
+  ChatGPTFineTuneJob? tuneResponse = await client.RetrieveFineTuneAsync("FINETUNEID");
+
+  if(tuneResponse.Status.Equals("succeeded"))
+  {
+    var gptRequest = new ChatGPTCompletionRequest
+    {
+      Model = ChatGPTCompletionModels.Davinci,
+      Prompt = "How is the weather?"
+    };
+
+    var response = await client.CreateCompletionAsync(gptRequest);
+
+    Console.WriteLine(response.GetCompletionText());
+  }
+}
+
+```
+
