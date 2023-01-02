@@ -81,7 +81,7 @@ namespace Whetstone.ChatGPT
         /// </summary>
         /// <param name="fileId">Id of the file to retrieve for its info.</param>
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-        /// <returns>Confirmation the file was deleted.</returns>
+        /// <returns>File into for the given fileId.</returns>
         /// <exception cref="ArgumentException">fileId cannot be null or whitespace</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
         Task<ChatGPTFileInfo?> RetrieveFileAsync(string? fileId, CancellationToken? cancellationToken = null);
@@ -112,6 +112,17 @@ namespace Whetstone.ChatGPT
 
 
         /// <summary>
+        /// Delete a fine-tuned model. You must have the Owner role in your organization.
+        /// </summary>
+        /// <param name="modelId">Id of the model to delete</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>Confirmation the file was deleted.</returns>
+        /// <exception cref="ArgumentException">modelId cannot be null or whitespace</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTDeleteResponse?> DeleteModelAsync(string? modelId, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
         /// Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
         /// </summary>
         /// <param name="fileRequest">Defines the file name, contents, and purpose.</param>
@@ -136,6 +147,55 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">createFineTuneRequest cannot be null</exception>
         /// <exception cref="ArgumentException">TrainingFileId cannot be null or empty</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-        Task<ChatGPTCreateFineTuneResponse?> CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null);
+        Task<ChatGPTFineTuneJob?> CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// List your organization's fine-tuning jobs.
+        /// </summary>
+        /// <remarks>
+        /// <para>See <seealso cref="https://api.openai.com/v1/fine-tunes">List fine-tunes</seealso>.</para>
+        /// </remarks>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns><see cref="ChatGPTFileInfo">A list of fine-tunes.</see></returns>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTunesAsync(CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Gets info about the fine-tune job.
+        /// </summary>
+        /// <remarks>
+        /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/fine-tunes/retrieve">Retrieve fine-tunes</seealso>.</para>
+        /// </remarks>
+        /// <param name="fineTuneId">The ID of the fine-tune job.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>The fine tune requested.</returns>
+        /// <exception cref="ArgumentException">fineTuneId cannot be null or whitespace</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTFineTuneJob?> RetrieveFineTuneAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Immediately cancel a fine-tune job.
+        /// </summary>
+        /// <remarks>
+        /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/fine-tunes/cancel">Cancel fine-tunes</seealso>.</para>
+        /// </remarks>
+        /// <param name="fineTuneId">The ID of the fine-tune job to cancel.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>The fine tune after it is cancelled.</returns>
+        /// <exception cref="ArgumentException">fineTuneId cannot be null or whitespace</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTFineTuneJob?> CancelFineTuneAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// Get fine-grained status updates for a fine-tune job.
+        /// </summary>
+        /// <param name="fineTuneId">The ID of the fine-tune job to get events for.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>A list of events associated with the fineTuneId</returns>
+        /// <exception cref="ArgumentException"></exception>
+        Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
+
     }
 }

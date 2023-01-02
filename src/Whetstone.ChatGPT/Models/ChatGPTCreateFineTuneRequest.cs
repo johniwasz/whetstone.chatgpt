@@ -13,7 +13,8 @@ namespace Whetstone.ChatGPT.Models
     /// Defines a fine-tuning request. <see href="https://beta.openai.com/docs/api-reference/fine-tunes/create">Fine-tunes</see>.
     /// </summary>
     /// <remarks>
-    /// A <see cref="TrainingFileId"">TrainingFileID</see> is required.
+    /// <para>A <see cref="TrainingFileId"">TrainingFileID</see> is required.</para>
+    /// <para>The <see cref="Model">Model</see> defaults to <see cref="ChatGPTFineTuneModels.Ada">Ada</see>.</para>
     /// </remarks>
     public class ChatGPTCreateFineTuneRequest
     {

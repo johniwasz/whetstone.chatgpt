@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace Whetstone.ChatGPT.Models
 {
+
+    [DebuggerDisplay("Message = {Message}, Object = {@Object}, Level = {Level}, CreatedAt = {CreatedAt}")]
     public class ChatGPTEvent
     {
         [JsonPropertyName("object")]

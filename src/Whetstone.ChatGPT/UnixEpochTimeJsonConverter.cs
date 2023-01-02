@@ -15,18 +15,14 @@ namespace Whetstone.ChatGPT
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options)
-            => DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64()).UtcDateTime;
+        => DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64()).UtcDateTime;
             
         
 
         public override void Write(
             Utf8JsonWriter writer,
-            DateTime dateTimeValue,
+            DateTime value,
             JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(dateTimeValue.ToString(
-                "MM/dd/yyyy", CultureInfo.InvariantCulture));
-
-        }
+        => writer.WriteNumberValue(((DateTimeOffset)value).ToUnixTimeSeconds());
     }
 }

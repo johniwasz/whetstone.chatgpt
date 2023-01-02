@@ -100,12 +100,10 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-
-        // Cannot delete a file right away. 
-        // This returns an error indicating the file is still processing        
-#pragma warning disable xUnit1013 // Public method should be marked as test
+        
+        [Fact(Skip = "Cannot delete a file right after creation.")]
         public async Task DeleteFileAsync()
-#pragma warning restore xUnit1013 // Public method should be marked as test
+
         {
 
             await InitializeTestFileAsync();
@@ -143,7 +141,7 @@ namespace Whetstone.ChatGPT.Test
                 {
 
                     FileName = fileName,
-                    Content = Encoding.UTF8.GetBytes("dfjhskgljhsgjhslfkj")
+                    Content = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())
                 }
             };
 

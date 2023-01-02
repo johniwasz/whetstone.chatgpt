@@ -118,4 +118,4 @@ using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
 {
     uploadedFileInfo = await client.UploadFileAsync(uploadRequest);
 }
-```                
+```

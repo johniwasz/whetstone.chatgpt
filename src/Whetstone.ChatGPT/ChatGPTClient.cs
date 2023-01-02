@@ -203,6 +203,24 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTModel>(HttpMethod.Get, $"models/{modelId}", cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Delete a fine-tuned model. You must have the Owner role in your organization.
+    /// </summary>
+    /// <param name="modelId">Id of the model to delete</param>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns>Confirmation the file was deleted.</returns>
+    /// <exception cref="ArgumentException">modelId cannot be null or whitespace</exception>
+    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    public async Task<ChatGPTDeleteResponse?> DeleteModelAsync(string? modelId, CancellationToken? cancellationToken = null)
+    {
+        if (string.IsNullOrWhiteSpace(modelId))
+        {
+            throw new ArgumentException("Cannot be null or whitespace.", nameof(modelId));
+        }
+
+        return await SendRequestAsync<ChatGPTDeleteResponse>(HttpMethod.Delete, $"models/{modelId}", cancellationToken).ConfigureAwait(false);
+    }
+
     #endregion Completions
 
     /// <summary>
@@ -335,7 +353,7 @@ public class ChatGPTClient : IChatGPTClient
     /// </summary>
     /// <param name="fileId">Id of the file to retrieve for its info.</param>
     /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>Confirmation the file was deleted.</returns>
+    /// <returns>File into for the given fileId.</returns>
     /// <exception cref="ArgumentException">fileId cannot be null or whitespace</exception>
     /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
     public async Task<ChatGPTFileInfo?> RetrieveFileAsync(string? fileId, CancellationToken? cancellationToken = null)
@@ -424,7 +442,7 @@ public class ChatGPTClient : IChatGPTClient
     /// <exception cref="ArgumentNullException">createFineTuneRequest cannot be null</exception>
     /// <exception cref="ArgumentException">TrainingFileId cannot be null or empty</exception>
     /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-    public async Task<ChatGPTCreateFineTuneResponse?>  CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null)
+    public async Task<ChatGPTFineTuneJob?>  CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null)
     {
         if (createFineTuneRequest is null)
         {
@@ -441,12 +459,90 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException("TrainingFileId cannot be null or whitespace.", nameof(createFineTuneRequest));
         }
 
-        return await SendRequestAsync<ChatGPTCreateFineTuneRequest, ChatGPTCreateFineTuneResponse>(HttpMethod.Post, "fine-tunes", createFineTuneRequest, cancellationToken).ConfigureAwait(false);
+        return await SendRequestAsync<ChatGPTCreateFineTuneRequest, ChatGPTFineTuneJob>(HttpMethod.Post, "fine-tunes", createFineTuneRequest, cancellationToken).ConfigureAwait(false);
     }
+
+
+    /// <summary>
+    /// List your organization's fine-tuning jobs.
+    /// </summary>
+    /// <remarks>
+    /// <para>See <seealso cref="https://api.openai.com/v1/fine-tunes">List fine-tunes</seealso>.</para>
+    /// </remarks>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns><see cref="ChatGPTFileInfo">A list of fine-tunes.</see></returns>
+    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    public async Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTunesAsync(CancellationToken? cancellationToken = null)
+    {
+
+        return await SendRequestAsync<ChatGPTListResponse<ChatGPTFineTuneJob>>(HttpMethod.Get, "fine-tunes", cancellationToken).ConfigureAwait(false);
+    }
+
+
+    /// <summary>
+    /// Gets info about the fine-tune job.
+    /// </summary>
+    /// <remarks>
+    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/fine-tunes/retrieve">Retrieve fine-tunes</seealso>.</para>
+    /// </remarks>
+    /// <param name="fineTuneId">The ID of the fine-tune job.</param>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns>The fine tune requested.</returns>
+    /// <exception cref="ArgumentException">fineTuneId cannot be null or whitespace</exception>
+    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    public async Task<ChatGPTFineTuneJob?> RetrieveFineTuneAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
+    {
+        if (string.IsNullOrWhiteSpace(fineTuneId))
+        {
+            throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
+        }
+
+        return await SendRequestAsync<ChatGPTFineTuneJob>(HttpMethod.Get, $"fine-tunes/{fineTuneId}", cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Immediately cancel a fine-tune job.
+    /// </summary>
+    /// <remarks>
+    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/fine-tunes/cancel">Cancel fine-tunes</seealso>.</para>
+    /// </remarks>
+    /// <param name="fineTuneId">The ID of the fine-tune job to cancel.</param>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns>The fine tune after it is cancelled.</returns>
+    /// <exception cref="ArgumentException">fineTuneId cannot be null or whitespace</exception>
+    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    public async Task<ChatGPTFineTuneJob?> CancelFineTuneAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
+    {
+        if (string.IsNullOrWhiteSpace(fineTuneId))
+        {
+            throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
+        }
+
+        return await SendRequestAsync<ChatGPTFineTuneJob>(HttpMethod.Post, $"fine-tunes/{fineTuneId}/cancel", cancellationToken).ConfigureAwait(false);
+    }
+
+
+    /// <summary>
+    /// Get fine-grained status updates for a fine-tune job.
+    /// </summary>
+    /// <param name="fineTuneId">The ID of the fine-tune job to get events for.</param>
+    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+    /// <returns>A list of events associated with the fineTuneId</returns>
+    /// <exception cref="ArgumentException"></exception>
+    public async Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
+    {
+        if (string.IsNullOrWhiteSpace(fineTuneId))
+        {
+            throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
+        }
+        
+        return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events", cancellationToken).ConfigureAwait(false);
+    }
+
 
     #endregion
 
-    #region Generic Request and Response Processors
+        #region Generic Request and Response Processors
     private async Task<TR?> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken)
         where T : class
         where TR : class

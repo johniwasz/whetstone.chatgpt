@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using Whetstone.ChatGPT.Models;
@@ -9,6 +10,7 @@ namespace Whetstone.ChatGPT;
 /// <summary>
 /// Represents an error that occurs while using the GPT-3 API Chat GPT
 /// </summary>
+[DebuggerDisplay("Message = {Message}, StatusCode = {StatusCode}")]
 public sealed class ChatGPTException : Exception
 {
 

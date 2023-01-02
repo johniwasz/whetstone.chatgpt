@@ -34,9 +34,9 @@ namespace Whetstone.ChatGPT.Models
         [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "This is the name of the property returned by the API.")]
         public string? @Object { get; set; }
 
-
+        [JsonConverter(typeof(UnixEpochTimeJsonConverter))]
         [JsonPropertyName("created")]
-        public int Created { get; set; }
+        public DateTime Created { get; set; }
 
         [JsonPropertyName("owned_by")]
         public string? OwnedBy { get; set; }
