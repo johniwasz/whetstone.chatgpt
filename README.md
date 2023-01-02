@@ -108,7 +108,6 @@ ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
 {
     File = new ChatGPTFileContent
     {
-
         FileName = fileName,
         Content = tuningText
     }

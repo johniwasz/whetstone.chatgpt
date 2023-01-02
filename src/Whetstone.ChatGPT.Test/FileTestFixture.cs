@@ -69,7 +69,7 @@ namespace Whetstone.ChatGPT.Test
 
                     Assert.NotEmpty(fileList.Data);
 
-                    ExistingFileId = fileList.Data.First().Id;
+                    ExistingFileId = fileList.Data.First(x => x.Purpose is not null && x.Purpose.Equals("fine-tune")).Id;
                 }
             }
         }

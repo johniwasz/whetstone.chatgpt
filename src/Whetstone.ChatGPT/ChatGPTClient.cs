@@ -407,6 +407,45 @@ public class ChatGPTClient : IChatGPTClient
 
     #endregion
 
+    #region Fine Tunes
+
+
+    /// <summary>
+    /// Creates a job that fine-tunes a specified model from a given dataset.
+    /// </summary>
+    /// <remarks>
+    /// <para>Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.</para>
+    /// <para><see href="https://beta.openai.com/docs/guides/fine-tuning"/>Learn more about Fine-tuning.</para>
+    /// <para>See <seealso href="https://beta.openai.com/docs/api-reference/fine-tunes/create">Create fine-tune</seealso></para>
+    /// </remarks>
+    /// <param name="createFineTuneRequest">A fine tuning request that requires a TrainingFileId. Model defalts to <see cref="ChatGPTFineTuneModels.Ada">Ada</see>.</param>
+    /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
+    /// <returns>A fine tune reponse indicating that processing has started.</returns>
+    /// <exception cref="ArgumentNullException">createFineTuneRequest cannot be null</exception>
+    /// <exception cref="ArgumentException">TrainingFileId cannot be null or empty</exception>
+    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    public async Task<ChatGPTCreateFineTuneResponse?>  CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null)
+    {
+        if (createFineTuneRequest is null)
+        {
+            throw new ArgumentNullException(nameof(createFineTuneRequest));
+        }
+
+        if (string.IsNullOrWhiteSpace(createFineTuneRequest.Model))
+        {
+            createFineTuneRequest.Model = ChatGPTFineTuneModels.Ada;
+        }
+
+        if (string.IsNullOrWhiteSpace(createFineTuneRequest.TrainingFileId))
+        {
+            throw new ArgumentException("TrainingFileId cannot be null or whitespace.", nameof(createFineTuneRequest));
+        }
+
+        return await SendRequestAsync<ChatGPTCreateFineTuneRequest, ChatGPTCreateFineTuneResponse>(HttpMethod.Post, "fine-tunes", createFineTuneRequest, cancellationToken).ConfigureAwait(false);
+    }
+
+    #endregion
+
     #region Generic Request and Response Processors
     private async Task<TR?> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken)
         where T : class

@@ -20,9 +20,9 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("bytes")]
         public int Bytes { get; set; }
 
-
+        [JsonConverter(typeof(UnixEpochTimeJsonConverter))]
         [JsonPropertyName("created_at")]
-        public int CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
 
         [JsonPropertyName("filename")]
