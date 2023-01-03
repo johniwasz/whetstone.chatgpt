@@ -19,6 +19,7 @@ namespace Whetstone.ChatGPT
         /// <returns>A completion populated by the GPT-3 API.</returns>
         /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
         /// <exception cref="ArgumentException">Model is required.</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
         /// <returns><see cref="ChatGPTModelsResponse"/>Exception generated while processing request.</returns>
         Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
 
@@ -94,6 +95,7 @@ namespace Whetstone.ChatGPT
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
         Task<ChatGPTFileContent?> RetrieveFileContentAsync(string? fileId, CancellationToken? cancellationToken = null);
 
 
@@ -195,7 +197,69 @@ namespace Whetstone.ChatGPT
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
         /// <returns>A list of events associated with the fineTuneId</returns>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
         Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
 
+
+        /// <summary>
+        /// <para>Given a input text(s), outputs if the model classifies it as violating OpenAI's content policy.</para>
+        /// <para>Related guide: <see href="https://beta.openai.com/docs/guides/moderation">Moderations</see></para>
+        /// </summary>
+        /// <param name="createModerationRequest">Classifies if text violates OpenAI's Content Policy</param>
+        /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>A moderation response.</returns>
+        /// <exception cref="ArgumentNullException"><c>CreateModerationAsync</c> requires an non-null <c>createModerationRequest</c></exception>
+        /// <exception cref="ArgumentException"><c>CreateModerationAsync</c> requires an <c>Inputs</c></exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTCreateModerationResponse?> CreateModerationAsync(ChatGPTCreateModerationRequest? createModerationRequest, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// <para>Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.</para>
+        /// <para>Related guide: <see href="https://beta.openai.com/docs/guides/embeddings">Embeddings</see></para>
+        /// </summary>
+        /// <param name="createEmbeddingsRequest">Input text to get embeddings for, encoded as a string or array of tokens. To get embeddings for multiple inputs in a single request, pass an array of strings or array of token arrays. Each input must not exceed 8192 tokens in length.</param>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        /// <returns>An embedding vector.</returns>
+        /// <exception cref="ArgumentNullException">createEmbeddingsRequest cannot be null.</exception>
+        /// <exception cref="ArgumentException">Model and Inputs are required.</exception>
+        Task<ChatGPTCreateEmbeddingsResponse?> CreateEmbeddingsAsync(ChatGPTCreateEmbeddingsRequest? createEmbeddingsRequest, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// <para>Given a prompt and/or an input image, the model will generate a new image.</para>
+        /// <para>Related guide: <see href="https://beta.openai.com/docs/guides/images">Image generation</see></para>
+        /// </summary>
+        /// <param name="createImageRequest">Creates one or more images given a text prompt.</param>
+        /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>Returns generated images as either urls or base64 encoded data depending on the ResponseFormat.</returns>
+        /// <exception cref="ArgumentNullException"><c>CreateImageAsync</c> requires an non-null <c>createImageRequest</c></exception>
+        /// <exception cref="ArgumentException"><c>CreateImageAsync</c> requires a <c>Prompt</c> and the number of images requested defaults to 1 (1-10).</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTImageResponse?> CreateImageAsync(ChatGPTCreateImageRequest? createImageRequest, CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Creates a variation of a given image.
+        /// </summary>
+        /// <param name="imageVariationRequest">Provide an image to be used for the variation.</param>
+        /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>One or more image variations.</returns>
+        /// <exception cref="ArgumentNullException">imageVariationRequest cannot be null.</exception>
+        /// <exception cref="ArgumentException">imageVariationRequest must include a file.</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTImageResponse?> CreateImageVariationAsync(ChatGPTCreateImageVariationRequest? imageVariationRequest, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// <para>Creates an edited or extended image given an original image and a prompt.</para>
+        /// <para>See <see href="https://beta.openai.com/docs/api-reference/images/create-edit">Create Edit</see></para>
+        /// </summary>
+        /// <param name="imageEditRequest">Includes an image and a prompt. A mask is optional</param>
+        /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>Edited image(s) generated from edit request.</returns>
+        /// <exception cref="ArgumentNullException">imageEdit request is required</exception>
+        /// <exception cref="ArgumentException">Prompt and Image is required. NumberofImagestoGenerate is 1-10. If Mask is not null, then the FileName and Contents are required.</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTImageResponse?> CreateImageEditAsync(ChatGPTCreateImageEditRequest? imageEditRequest, CancellationToken? cancellationToken = null);
     }
 }

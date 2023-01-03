@@ -17,12 +17,12 @@ Supported features include:
 - Edits
 - Files
 - Fine Tunes
-
-Pending features:
-
 - Images
 - Embeddings
 - Moderations
+
+Pending features:
+
 - Handling streamed responses
 
 ## Completion
@@ -151,7 +151,7 @@ using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
 
 ```
 
-Porcessing the fine tuning request will take some time. Once it finishes, the __Status__ will report "succeeded" and it's ready to be used in a completion request.
+Processing the fine tuning request will take some time. Once it finishes, the __Status__ will report "succeeded" and it's ready to be used in a completion request.
 
 ```C#
 using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
@@ -174,3 +174,38 @@ using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
 
 ```
 
+## Image Quickstart
+
+Here's an example that generates a 1024x1024 image.
+
+```C#
+ChatGPTCreateImageRequest imageRequest = new()
+{
+    Prompt = "A sail boat",
+    Size = CreatedImageSize.Size1024,
+    ResponseFormat = CreatedImageFormat.Base64
+};
+
+
+using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
+{
+    ChatGPTImageResponse? imageResponse = await client.CreateImageAsync(imageRequest);
+
+    Assert.NotNull(imageResponse);
+
+    Assert.NotNull(imageResponse.Data);
+
+    Assert.Single(imageResponse.Data);
+
+    Assert.NotNull(imageResponse.Data[0].Base64);
+
+    string? imageData = imageResponse.Data[0].Base64;
+
+    if (imageData != null)
+    {
+        byte[] imageBytes = Convert.FromBase64String(imageData);
+        Assert.True(imageBytes.Length > 0);
+        File.WriteAllBytes("sailboat.png", imageBytes);
+    }
+}
+```

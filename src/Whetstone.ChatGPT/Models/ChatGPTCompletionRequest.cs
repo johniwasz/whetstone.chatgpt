@@ -1,9 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.ComponentModel;
-#if NET6_0_OR_GREATER
-using System.ComponentModel.DataAnnotations;
-#endif
 
 namespace Whetstone.ChatGPT.Models;
 
@@ -29,11 +26,8 @@ public class ChatGPTCompletionRequest
     /// ID of the model to use. You can use the <see href="https://beta.openai.com/docs/api-reference/models/list">List models</see> API to see all of your available models, or see our <see href="https://beta.openai.com/docs/models/overview">Model overview</see> for descriptions of them.
     /// </summary>
     /// <remarks>
-    /// See <see cref="ChatGPTCompletionModels">ChatGPTCompletionModels</see> for recommended completion modesl.
+    /// See <see cref="ChatGPTCompletionModels">ChatGPTCompletionModels</see> for recommended completion models.
     /// </remarks>
-#if NET6_0_OR_GREATER
-    [Required]
-#endif
     [JsonPropertyOrder(0)]
     [JsonInclude]
     [JsonPropertyName("model")]

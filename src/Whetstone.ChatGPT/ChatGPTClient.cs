@@ -139,18 +139,8 @@ public class ChatGPTClient : IChatGPTClient
 
     #region Completions
 
-    /// <summary>
-    /// Creates a completion for the provided prompt and parameters
-    /// </summary>
-    /// <remarks>
-    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/completions/create">Create completion</seealso>.</para>
-    /// </remarks>
-    /// <param name="completionRequest">A well-defined prompt for requesting a completion.</param>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>A completion populated by the GPT-3 API.</returns>
-    /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
-    /// <exception cref="ArgumentException">Model is required.</exception>
-    /// <returns><see cref="ChatGPTModelsResponse"/>Exception generated while processing request.</returns>
+
+    /// <inheritdoc cref="IChatGPTClient.CreateCompletionAsync"/>
     public async Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
     {
         if (completionRequest is null)
@@ -166,32 +156,13 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTCompletionRequest, ChatGPTCompletionResponse>(HttpMethod.Post, "completions", completionRequest, cancellationToken);
     }
 
-    /// <summary>
-    /// Lists the currently available models, and provides basic information about each one such as the owner and availability.
-    /// </summary>
-    /// <remarks>
-    /// <para>For a recommended list of models see <see cref="ChatGPTCompletionModels">ChatGPTCompletionModels</see></para>
-    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/models/list">List Models</seealso>.</para>
-    /// </remarks>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns><see cref="ChatGPTModel">A list of available models.</see></returns>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.ListModelsAsync"/>
     public async Task<ChatGPTListResponse<ChatGPTModel>?> ListModelsAsync(CancellationToken? cancellationToken = null)
     {
         return await SendRequestAsync<ChatGPTListResponse<ChatGPTModel>>(HttpMethod.Get, "models", cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Retrieves a model instance, providing basic information about the model such as the owner and permissioning.
-    /// </summary>
-    /// <remarks>
-    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/models/retrieve">Retrieve Models</seealso>.</para>
-    /// </remarks>
-    /// <param name="modelId">The ID of the model to use for this request. See <see cref="ChatGPTCompletionModels">ChatGPTCompletionModels</see></param>
-    /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>A generated completion.</returns>
-    /// <exception cref="ArgumentException">modelId is required.</exception>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.RetrieveModelAsync"/>
     public async Task<ChatGPTModel?> RetrieveModelAsync(string modelId, CancellationToken? cancellationToken = null)
     {
 
@@ -203,14 +174,7 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTModel>(HttpMethod.Get, $"models/{modelId}", cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Delete a fine-tuned model. You must have the Owner role in your organization.
-    /// </summary>
-    /// <param name="modelId">Id of the model to delete</param>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>Confirmation the file was deleted.</returns>
-    /// <exception cref="ArgumentException">modelId cannot be null or whitespace</exception>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.DeleteModelAsync"/>
     public async Task<ChatGPTDeleteResponse?> DeleteModelAsync(string? modelId, CancellationToken? cancellationToken = null)
     {
         if (string.IsNullOrWhiteSpace(modelId))
@@ -223,19 +187,8 @@ public class ChatGPTClient : IChatGPTClient
 
     #endregion Completions
 
-    /// <summary>
-    /// Given a prompt and an instruction, the model will return an edited version of the prompt.
-    /// </summary>
-    /// <remarks>
-    /// <para>If <c>Model</c> is not provided, the default of "text-davinci-edit-001" is used. <see cref="ChatGPTEditModels.Davinci">Davinci</see></para>
-    /// <para>An example of using this would be to fix any spelling mistakes in the prompt by setting <c>Instruction</c> to "Fix the spelling mistakes".</para>
-    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/edits/create">Create Edits</seealso></para>
-    /// </remarks>
-    /// <param name="createEditRequest">Submit an instruction to edit a propmpt.</param>
-    /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>Response to the <c>CreateEditRequest</c> request.</returns>
-    /// <exception cref="ArgumentException"><c>CreateEditRequest</c> requires an <c>Instruction</c></exception>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    #region Edits
+    /// <inheritdoc cref="IChatGPTClient.CreateEditAsync"/>
     public async Task<ChatGPTCreateEditResponse?> CreateEditAsync(ChatGPTCreateEditRequest createEditRequest, CancellationToken? cancellationToken = null)
     {
 
@@ -256,17 +209,11 @@ public class ChatGPTClient : IChatGPTClient
 
         return await SendRequestAsync<ChatGPTCreateEditRequest, ChatGPTCreateEditResponse>(HttpMethod.Post, "edits", createEditRequest, cancellationToken).ConfigureAwait(false);
     }
+    #endregion
 
     #region File Operations
 
-    /// <summary>
-    /// Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
-    /// </summary>
-    /// <param name="fileRequest">Defines the file name, contents, and purpose.</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException">File contents and Purpose are required</exception>
-    /// <exception cref="ArgumentException">File contents and Purpose are required</exception>
+    /// <inheritdoc cref="IChatGPTClient.UploadFileAsync"/>
     public async Task<ChatGPTFileInfo?> UploadFileAsync(ChatGPTUploadFileRequest? fileRequest, CancellationToken? cancellationToken = null)
     {
         if (fileRequest is null)
@@ -316,28 +263,13 @@ public class ChatGPTClient : IChatGPTClient
         }
     }
 
-    /// <summary>
-    /// Returns a list of files that belong to the user's organization.
-    /// </summary>
-    /// <remarks>
-    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/files/list">List Files</seealso>.</para>
-    /// </remarks>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns><see cref="ChatGPTFileInfo">A list of available models.</see></returns>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.ListFilesAsync"/>
     public async Task<ChatGPTListResponse<ChatGPTFileInfo>?> ListFilesAsync(CancellationToken? cancellationToken = null)
     {
         return await SendRequestAsync<ChatGPTListResponse<ChatGPTFileInfo>>(HttpMethod.Get, "files", cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Delete a file.
-    /// </summary>
-    /// <param name="fileId">Id of the file to delete</param>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>Confirmation the file was deleted.</returns>
-    /// <exception cref="ArgumentException">fileId cannot be null or whitespace</exception>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.DeleteFileAsync"/>
     public async Task<ChatGPTDeleteResponse?> DeleteFileAsync(string? fileId, CancellationToken? cancellationToken = null)
     {
         if (string.IsNullOrWhiteSpace(fileId))
@@ -348,14 +280,7 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTDeleteResponse>(HttpMethod.Delete, $"files/{fileId}", cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Returns information about a specific file.
-    /// </summary>
-    /// <param name="fileId">Id of the file to retrieve for its info.</param>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>File into for the given fileId.</returns>
-    /// <exception cref="ArgumentException">fileId cannot be null or whitespace</exception>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.RetrieveFileAsync"/>
     public async Task<ChatGPTFileInfo?> RetrieveFileAsync(string? fileId, CancellationToken? cancellationToken = null)
     {
         if (string.IsNullOrWhiteSpace(fileId))
@@ -366,14 +291,7 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTFileInfo>(HttpMethod.Get, $"files/{fileId}", cancellationToken).ConfigureAwait(false);
     }
 
-
-    /// <summary>
-    /// Returns the contents of the specified file
-    /// </summary>
-    /// <param name="fileId">The ID of the file to use for this request</param>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
+    /// <inheritdoc cref="IChatGPTClient.RetrieveFileContentAsync"/>
     public async Task<ChatGPTFileContent?> RetrieveFileContentAsync(string? fileId, CancellationToken? cancellationToken = null)
     {
         ChatGPTFileContent fileContent;
@@ -427,21 +345,7 @@ public class ChatGPTClient : IChatGPTClient
 
     #region Fine Tunes
 
-
-    /// <summary>
-    /// Creates a job that fine-tunes a specified model from a given dataset.
-    /// </summary>
-    /// <remarks>
-    /// <para>Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.</para>
-    /// <para><see href="https://beta.openai.com/docs/guides/fine-tuning"/>Learn more about Fine-tuning.</para>
-    /// <para>See <seealso href="https://beta.openai.com/docs/api-reference/fine-tunes/create">Create fine-tune</seealso></para>
-    /// </remarks>
-    /// <param name="createFineTuneRequest">A fine tuning request that requires a TrainingFileId. Model defalts to <see cref="ChatGPTFineTuneModels.Ada">Ada</see>.</param>
-    /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>A fine tune reponse indicating that processing has started.</returns>
-    /// <exception cref="ArgumentNullException">createFineTuneRequest cannot be null</exception>
-    /// <exception cref="ArgumentException">TrainingFileId cannot be null or empty</exception>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
     public async Task<ChatGPTFineTuneJob?>  CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null)
     {
         if (createFineTuneRequest is null)
@@ -462,34 +366,14 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTCreateFineTuneRequest, ChatGPTFineTuneJob>(HttpMethod.Post, "fine-tunes", createFineTuneRequest, cancellationToken).ConfigureAwait(false);
     }
 
-
-    /// <summary>
-    /// List your organization's fine-tuning jobs.
-    /// </summary>
-    /// <remarks>
-    /// <para>See <seealso cref="https://api.openai.com/v1/fine-tunes">List fine-tunes</seealso>.</para>
-    /// </remarks>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns><see cref="ChatGPTFileInfo">A list of fine-tunes.</see></returns>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.ListFineTunesAsync"/>
     public async Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTunesAsync(CancellationToken? cancellationToken = null)
     {
 
         return await SendRequestAsync<ChatGPTListResponse<ChatGPTFineTuneJob>>(HttpMethod.Get, "fine-tunes", cancellationToken).ConfigureAwait(false);
     }
 
-
-    /// <summary>
-    /// Gets info about the fine-tune job.
-    /// </summary>
-    /// <remarks>
-    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/fine-tunes/retrieve">Retrieve fine-tunes</seealso>.</para>
-    /// </remarks>
-    /// <param name="fineTuneId">The ID of the fine-tune job.</param>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>The fine tune requested.</returns>
-    /// <exception cref="ArgumentException">fineTuneId cannot be null or whitespace</exception>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.RetrieveFineTuneAsync"/>
     public async Task<ChatGPTFineTuneJob?> RetrieveFineTuneAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
     {
         if (string.IsNullOrWhiteSpace(fineTuneId))
@@ -500,17 +384,7 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTFineTuneJob>(HttpMethod.Get, $"fine-tunes/{fineTuneId}", cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Immediately cancel a fine-tune job.
-    /// </summary>
-    /// <remarks>
-    /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/fine-tunes/cancel">Cancel fine-tunes</seealso>.</para>
-    /// </remarks>
-    /// <param name="fineTuneId">The ID of the fine-tune job to cancel.</param>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>The fine tune after it is cancelled.</returns>
-    /// <exception cref="ArgumentException">fineTuneId cannot be null or whitespace</exception>
-    /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+    /// <inheritdoc cref="IChatGPTClient.CancelFineTuneAsync"/>
     public async Task<ChatGPTFineTuneJob?> CancelFineTuneAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
     {
         if (string.IsNullOrWhiteSpace(fineTuneId))
@@ -522,13 +396,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
 
-    /// <summary>
-    /// Get fine-grained status updates for a fine-tune job.
-    /// </summary>
-    /// <param name="fineTuneId">The ID of the fine-tune job to get events for.</param>
-    /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-    /// <returns>A list of events associated with the fineTuneId</returns>
-    /// <exception cref="ArgumentException"></exception>
+    /// <inheritdoc cref="IChatGPTClient.ListFineTuneEventsAsync"/>
     public async Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
     {
         if (string.IsNullOrWhiteSpace(fineTuneId))
@@ -538,14 +406,277 @@ public class ChatGPTClient : IChatGPTClient
         
         return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events", cancellationToken).ConfigureAwait(false);
     }
-
-
     #endregion
 
-        #region Generic Request and Response Processors
+    /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
+    public async Task<ChatGPTCreateModerationResponse?> CreateModerationAsync(ChatGPTCreateModerationRequest? createModerationRequest, CancellationToken? cancellationToken = null)
+    {
+        if (createModerationRequest is null)
+        {
+            throw new ArgumentNullException(nameof(createModerationRequest));
+        }
+
+        if (createModerationRequest.Inputs is null)
+        {
+            throw new ArgumentException($"Inputs cannot be null", nameof(createModerationRequest));
+        }
+
+
+        if (!createModerationRequest.Inputs.Any())
+        {
+            throw new ArgumentException("Inputs must have one or more items", nameof(createModerationRequest));
+        }
+
+        return await SendRequestAsync<ChatGPTCreateModerationRequest, ChatGPTCreateModerationResponse>(HttpMethod.Post, "moderations", createModerationRequest, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
+    public async Task<ChatGPTCreateEmbeddingsResponse?> CreateEmbeddingsAsync(ChatGPTCreateEmbeddingsRequest? createEmbeddingsRequest, CancellationToken? cancellationToken = null)
+    {
+        if (createEmbeddingsRequest is null)
+        {
+            throw new ArgumentNullException(nameof(createEmbeddingsRequest));
+        }
+
+        if (createEmbeddingsRequest.Inputs is null)
+        {
+            throw new ArgumentException($"Inputs cannot be null", nameof(createEmbeddingsRequest));
+        }
+
+        if(string.IsNullOrWhiteSpace(createEmbeddingsRequest.Model))
+        {
+            throw new ArgumentException($"Model cannot be null or empty", nameof(createEmbeddingsRequest));
+        }
+
+        return await SendRequestAsync<ChatGPTCreateEmbeddingsRequest, ChatGPTCreateEmbeddingsResponse>(HttpMethod.Post, "embeddings", createEmbeddingsRequest, cancellationToken).ConfigureAwait(false);
+    }
+
+    
+    /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
+    public async Task<ChatGPTImageResponse?> CreateImageAsync(ChatGPTCreateImageRequest? createImageRequest, CancellationToken? cancellationToken = null)
+    {
+        if (createImageRequest is null)
+        {
+            throw new ArgumentNullException(nameof(createImageRequest));
+        }
+
+        if(string.IsNullOrWhiteSpace(createImageRequest.Prompt))
+        {
+            throw new ArgumentException($"Prompt cannot be null or empty", nameof(createImageRequest));
+        }
+
+        if (createImageRequest.Prompt.Length > 1000)
+        {
+            throw new ArgumentException($"Prompt cannot be longer than 1000 characters", nameof(createImageRequest));
+        }
+
+        if (createImageRequest.NumberOfImagesToGenerate<0)
+        {
+            throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(createImageRequest));
+        }
+
+        if (createImageRequest.NumberOfImagesToGenerate > 10)
+        {
+            throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(createImageRequest));
+        }
+
+        return await SendRequestAsync<ChatGPTCreateImageRequest, ChatGPTImageResponse>(HttpMethod.Post, "images/generations", createImageRequest, cancellationToken).ConfigureAwait(false);
+    }
+
+
+    /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
+    public async Task<ChatGPTImageResponse?> CreateImageVariationAsync(ChatGPTCreateImageVariationRequest? imageVariationRequest, CancellationToken? cancellationToken = null)
+    {
+        if (imageVariationRequest is null)
+        {
+            throw new ArgumentNullException(nameof(imageVariationRequest));
+        }
+
+        if (imageVariationRequest.NumberOfImagesToGenerate < 0)
+        {
+            throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(imageVariationRequest));
+        }
+
+        if (imageVariationRequest.NumberOfImagesToGenerate > 10)
+        {
+            throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(imageVariationRequest));
+        }
+
+        if (imageVariationRequest.Image is null)
+        {
+            throw new ArgumentException($"Image cannot be null", nameof(imageVariationRequest));
+        }
+
+        if(string.IsNullOrWhiteSpace(imageVariationRequest.Image.FileName))
+        {
+            throw new ArgumentException($"Image.FileName cannot be null or empty", nameof(imageVariationRequest));
+        }
+
+        if(imageVariationRequest.Image.Content is null)
+        {
+            throw new ArgumentException($"Image.Content cannot be null", nameof(imageVariationRequest));
+        }
+
+        if (imageVariationRequest.Image.Content.Length == 0)
+        {
+            throw new ArgumentException($"Image.Content.Length cannot be 0", nameof(imageVariationRequest));
+        }
+        
+        MultipartFormDataContent formContent = new()
+        {
+            { new ByteArrayContent(imageVariationRequest.Image.Content), "image", imageVariationRequest.Image.FileName },
+            { new StringContent(imageVariationRequest.Size.GetDescriptionFromEnumValue<CreatedImageSize>()), "size" },
+            { new StringContent(imageVariationRequest.ResponseFormat.GetDescriptionFromEnumValue<CreatedImageFormat>()), "response_format" }
+        };
+
+
+        if(imageVariationRequest.NumberOfImagesToGenerate!=1)
+            formContent.Add(new StringContent(imageVariationRequest.NumberOfImagesToGenerate.ToString()), "n");
+
+
+        if (!string.IsNullOrWhiteSpace(imageVariationRequest.User))
+            formContent.Add(new StringContent(imageVariationRequest.User), "user");
+
+
+        using (var httpReq = new HttpRequestMessage(HttpMethod.Post, "images/variations"))
+        {
+            httpReq.Content = formContent;
+
+            httpReq.Headers.Add("Authorization", $"Bearer {_apiKey}");
+
+            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
+                await _client.SendAsync(httpReq).ConfigureAwait(false) :
+                await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false))
+            {
+                return await ProcessResponseAsync<ChatGPTImageResponse>(httpResponse, cancellationToken);
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// <para>Creates an edited or extended image given an original image and a prompt.</para>
+    /// <para>See <see href="https://beta.openai.com/docs/api-reference/images/create-edit">Create Edit</see></para>
+    /// </summary>
+    /// <param name="imageEditRequest">Includes an image and a prompt. A mask is optional</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>Edited image(s) generated from edit request.</returns>
+    /// <exception cref="ArgumentNullException">imageEdit request is required</exception>
+    /// <exception cref="ArgumentException">Prompt and Image is required. NumberofImagestoGenerate is 1-10. If Mask is not null, then the FileName and Contents are required.</exception>
+    public async Task<ChatGPTImageResponse?> CreateImageEditAsync(ChatGPTCreateImageEditRequest? imageEditRequest, CancellationToken? cancellationToken = null)
+    {
+        if (imageEditRequest is null)
+        {
+            throw new ArgumentNullException(nameof(imageEditRequest));
+        }
+
+        if (string.IsNullOrWhiteSpace(imageEditRequest.Prompt))
+        {
+            throw new ArgumentException($"Prompt cannot be null or empty", nameof(imageEditRequest));
+        }
+
+        if (imageEditRequest.Prompt.Length > 1000)
+        {
+            throw new ArgumentException($"Prompt cannot be longer than 1000 characters", nameof(imageEditRequest));
+        }
+        
+        if (imageEditRequest.NumberOfImagesToGenerate < 0)
+        {
+            throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(imageEditRequest));
+        }
+
+        if (imageEditRequest.NumberOfImagesToGenerate > 10)
+        {
+            throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(imageEditRequest));
+        }
+
+        if (imageEditRequest.Image is null)
+        {
+            throw new ArgumentException($"Image cannot be null", nameof(imageEditRequest));
+        }
+
+        if (string.IsNullOrWhiteSpace(imageEditRequest.Image.FileName))
+        {
+            throw new ArgumentException($"Image.FileName cannot be null or empty", nameof(imageEditRequest));
+        }
+
+        if (imageEditRequest.Image.Content is null)
+        {
+            throw new ArgumentException($"Image.Content cannot be null", nameof(imageEditRequest));
+        }
+
+        if (imageEditRequest.Image.Content.Length == 0)
+        {
+            throw new ArgumentException($"Image.Content.Length cannot be 0", nameof(imageEditRequest));
+        }
+
+        ByteArrayContent maskContent = null;
+
+        if(imageEditRequest.Mask is not null)
+        {
+            if (imageEditRequest.Mask.Content is null)
+            {
+                throw new ArgumentException($"If Mask is provided, then Mask.Content cannot be null", nameof(imageEditRequest));
+            }
+
+            if (imageEditRequest.Mask.Content.Length == 0)
+            {
+                throw new ArgumentException($"If Mask is provided, then Mask.Content.Length cannot be 0", nameof(imageEditRequest));
+            }
+
+            if (string.IsNullOrWhiteSpace(imageEditRequest.Mask.FileName))
+            {
+                throw new ArgumentException($"If Mask is provided, then Mask.FileName cannot be null or empty", nameof(imageEditRequest));
+            }
+
+            maskContent = new ByteArrayContent(imageEditRequest.Mask.Content);
+        }
+
+
+        MultipartFormDataContent formContent = new()
+        {
+            { new ByteArrayContent(imageEditRequest.Image.Content), "image", imageEditRequest.Image.FileName },
+            { new StringContent(imageEditRequest.Prompt), "prompt" },
+            { new StringContent(imageEditRequest.Size.GetDescriptionFromEnumValue<CreatedImageSize>()), "size" },
+            { new StringContent(imageEditRequest.ResponseFormat.GetDescriptionFromEnumValue<CreatedImageFormat>()), "response_format" }
+        };
+
+
+        if (maskContent is not null)
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+            formContent.Add(maskContent, "mask", imageEditRequest.Mask.FileName);
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+
+        if (imageEditRequest.NumberOfImagesToGenerate != 1)
+            formContent.Add(new StringContent(imageEditRequest.NumberOfImagesToGenerate.ToString()), "n");
+
+
+        if (!string.IsNullOrWhiteSpace(imageEditRequest.User))
+            formContent.Add(new StringContent(imageEditRequest.User), "user");
+
+
+        using (var httpReq = new HttpRequestMessage(HttpMethod.Post, "images/edits"))
+        {
+            httpReq.Content = formContent;
+
+            httpReq.Headers.Add("Authorization", $"Bearer {_apiKey}");
+
+            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
+                await _client.SendAsync(httpReq).ConfigureAwait(false) :
+                await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false))
+            {
+                return await ProcessResponseAsync<ChatGPTImageResponse>(httpResponse, cancellationToken);
+            }
+        }
+    }
+
+    #region Generic Request and Response Processors
     private async Task<TR?> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken)
-        where T : class
-        where TR : class
+    where T : class
+    where TR : class
     {
         using (var httpReq = new HttpRequestMessage(method, url))
         {
@@ -565,8 +696,6 @@ public class ChatGPTClient : IChatGPTClient
         }
 
     }
-
-
     private async Task<T?> SendRequestAsync<T>(HttpMethod method, string url, CancellationToken? cancellationToken) where T : class
     {
         using (var request = new HttpRequestMessage(method, url))
@@ -628,7 +757,7 @@ public class ChatGPTClient : IChatGPTClient
 
     #endregion
 
-    #region Clean Up    
+    #region Clean Up
     ~ChatGPTClient()
     {
         Dispose(true);
