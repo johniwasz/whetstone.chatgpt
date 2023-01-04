@@ -130,6 +130,31 @@ namespace Whetstone.ChatGPT.Test
 
         }
 
+        [Fact]
+        public async Task TestGPTClientStreamCompletion()
+        {
+
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
+
+                // Using Ada in this test to keep costs down.
+
+                var gptRequest = new ChatGPTCompletionRequest
+                {
+                    Model = ChatGPTCompletionModels.Ada,
+                    Prompt = "How is the weather?",
+                    Temperature = 0.9f,
+                    MaxTokens = 10
+                };
+
+                await foreach(var completion in  client.StreamCompletionAsync(gptRequest))
+                {
+                    if(completion is not null)
+                        Assert.NotNull(completion.GetCompletionText());
+                }
+            }
+        }
+
 
         [Fact]
         public async Task GPTModel()

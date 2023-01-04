@@ -68,6 +68,57 @@ namespace Whetstone.ChatGPT.Test
 
             }
         }
+       
+        
+        [Fact(Skip = "Takes to long to validate during an automatited test run. Run manually.")]
+        public async Task SubmitFineTuneJobAndGetEventsAsync()
+        {
+
+            await InitializeTest();
+
+            using (ChatGPTClient client = (ChatGPTClient) ChatGPTTestUtilties.GetClient())
+            {
+
+                ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
+                {
+                    TrainingFileId = _fileTestFixture.ExistingFileId
+                };
+
+                ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
+
+                Assert.NotNull(tuneResponse);
+                Assert.NotNull(tuneResponse.Status);
+                Assert.NotNull(tuneResponse.Id);
+
+                _testOutputHelper.WriteLine($"Status: {tuneResponse.Status}");
+
+
+
+                string jobId = tuneResponse.Id;
+                await foreach(ChatGPTEvent? fineTuneEvent in client.StreamFineTuneEventsAsync(tuneResponse.Id))
+                {
+                    if(fineTuneEvent is not null)
+                        _testOutputHelper.WriteLine($"Event: {fineTuneEvent.Level} - {fineTuneEvent.Message} - {fineTuneEvent.CreatedAt}");
+
+
+                    tuneResponse = await client.RetrieveFineTuneAsync(jobId);
+
+                    if (tuneResponse is not null)
+                        _testOutputHelper.WriteLine($"Status: {tuneResponse.Status}");
+                    
+                    _testOutputHelper.WriteLine(string.Empty);
+
+                }
+
+                ChatGPTDeleteResponse? deleteResponse = await client.DeleteModelAsync(tuneResponse.FineTunedModel);
+
+                Assert.NotNull(deleteResponse);
+                Assert.NotNull(deleteResponse.Object);
+
+                _testOutputHelper.WriteLine($"Deleted: {deleteResponse.Deleted}");
+            }
+        }
+
 
         [Fact]
         public async Task SubmitBadFineTuningRequestAsync()
@@ -193,13 +244,11 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task GPTFineTuneCompletion()
         {
-            await InitializeTest();
-            
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
                 var gptRequest = new ChatGPTCompletionRequest
                 {
-                    Model = _fineTuneFixture.ExistingFineTunedModel,
+                    Model = "ada:ft-personal-2023-01-02-03-04-14",
                     Prompt = "How is the weather?",
                     Temperature = 0.9f,
                     MaxTokens = 10

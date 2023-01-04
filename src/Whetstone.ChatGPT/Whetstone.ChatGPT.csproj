@@ -7,12 +7,12 @@
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>chatgpt; api; openapi; gpt</PackageTags>
+    <PackageTags>chatgpt; api; openapi; gpt; gpt-3</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2023</Copyright>
-    <Version>0.6.0</Version>
+    <Version>1.0.0</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
-    <Description>A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress.</Description>
+    <Description>A simple light-weight library that wraps the ChatGPT API.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

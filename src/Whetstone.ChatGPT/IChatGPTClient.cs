@@ -20,7 +20,6 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-        /// <returns><see cref="ChatGPTModelsResponse"/>Exception generated while processing request.</returns>
         Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
 
 
@@ -261,5 +260,21 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentException">Prompt and Image is required. NumberofImagestoGenerate is 1-10. If Mask is not null, then the FileName and Contents are required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
         Task<ChatGPTImageResponse?> CreateImageEditAsync(ChatGPTCreateImageEditRequest? imageEditRequest, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// Creates a streamed completion for the provided prompt and parameters.
+        /// </summary>
+        /// <remarks>
+        /// <para>Use the IAsyncEnumerable to process the response.</para>
+        /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/completions/create">Create completion</seealso>.</para>
+        /// </remarks>
+        /// <param name="completionRequest">A well-defined prompt for requesting a completion.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>An IAsyncEnumerable that streams the completion responses.</returns>
+        /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
+        /// <exception cref="ArgumentException">Model is required.</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
+        IAsyncEnumerable<ChatGPTCompletionResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
     }
 }

@@ -48,24 +48,9 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task GenerateImageVariation()
         {
-            string fileName = "sailboat.png";
-
-            string filePath = $"ImageFiles/{fileName}";
-
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"Test file {filePath} not found");
-            }
-
-            byte[] fileBytes = await File.ReadAllBytesAsync($"ImageFiles/{fileName}");
-
-            ChatGPTFileContent fileContents = new ChatGPTFileContent();
-            fileContents.FileName = fileName;
-            fileContents.Content = fileBytes;
-
             ChatGPTCreateImageVariationRequest imageRequest = new()
             {
-                Image = fileContents,
+                Image = await LoadFileAsync("ImageFiles/sailboat.png"),
                 Size = CreatedImageSize.Size1024,
                 ResponseFormat = CreatedImageFormat.Base64
             };

@@ -46,7 +46,7 @@ Console.WriteLine("Marv is a chatbot that reluctantly answers questions with sar
 Console.WriteLine("Type Exit or ^C to terminate");
 Console.WriteLine();
 
-using (ChatGPTClient chatGPTClient = new ChatGPTClient(credentials))
+using (ChatGPTClient chatGPTClient = new(credentials))
 {
     Console.Write("> ");
     string? userResponse = Console.ReadLine();
@@ -70,23 +70,36 @@ using (ChatGPTClient chatGPTClient = new ChatGPTClient(credentials))
 
             Console.WriteLine();
 
-            ChatGPTCompletionResponse? completionResponse = await chatGPTClient.CreateCompletionAsync(completionRequest);
+            int totalTokens = 0;
 
-            if (completionResponse is not null)
+            await foreach (ChatGPTCompletionResponse? completionResponse in chatGPTClient.StreamCompletionAsync(completionRequest))
             {
-                Console.WriteLine(completionResponse.GetCompletionText());
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("Tokens Used: ");
-                Console.ForegroundColor = ConsoleColor.White;
-                
-                Console.WriteLine(completionResponse.Usage?.TotalTokens);
-                
-                Console.WriteLine();
+                if (completionResponse is not null)
+                {
+                    Console.Write(completionResponse.GetCompletionText());
 
-                Console.Write("> ");
-
-                userResponse = Console.ReadLine();
+                    if (completionResponse.Usage is not null)
+                    {
+                        totalTokens += completionResponse.Usage.TotalTokens;
+                    }
+                }
             }
+            
+            Console.WriteLine();
+
+            // Tokens used is reported as 0 when streaming.
+            // Console.ForegroundColor = ConsoleColor.Yellow;
+            // Console.Write("Tokens Used: ");
+            /// Console.ForegroundColor = ConsoleColor.White;
+
+            Console.WriteLine(totalTokens);
+
+            Console.WriteLine();
+
+            Console.Write("> ");
+
+            userResponse = Console.ReadLine();
+
         }
     }
     catch(ChatGPTException chatEx)

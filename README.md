@@ -2,7 +2,7 @@
 
 # Whetstone.ChatGPT
 
-A simple light-weight library that wraps ChatGPT API completions. Additions to support images and other beta features are in progress. 
+A simple light-weight library that wraps ChatGPT API completions. 
 
 This library includes quality of life improvements:
 
@@ -10,6 +10,7 @@ This library includes quality of life improvements:
 - documentation comments
 - conversions of Unix Epoch time to DateTime, etc.
 - __IChatGPTClient__ interface for use with dependency injection
+- Streaming completion responses and fine tune events
 
 Supported features include:
 
@@ -21,17 +22,13 @@ Supported features include:
 - Embeddings
 - Moderations
 
-Pending features:
-
-- Handling streamed responses
-
 ## Completion
 
-ChatGPT Completions use [models](https://beta.openai.com/docs/models) answer a wide variety of tasks, including but not limited to classification, sentiment analysis, answering questions, etc. 
+ChatGPT Completions use [models](https://beta.openai.com/docs/models) to answer a wide variety of tasks, including but not limited to classification, sentiment analysis, answering questions, etc. 
 
 ### Completion Quickstart
 
-This shows a direct useage of the text-davinci-003 model without any prompts.
+This shows a direct useage of the __text-davinci-003__ model without any prompts.
 
 ``` C#
 using Whetstone.ChatGPT;
@@ -185,7 +182,6 @@ ChatGPTCreateImageRequest imageRequest = new()
     Size = CreatedImageSize.Size1024,
     ResponseFormat = CreatedImageFormat.Base64
 };
-
 
 using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
 {
