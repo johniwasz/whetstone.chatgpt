@@ -113,10 +113,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
     allowedCopyScope: 'AAD'
     supportsHttpsTrafficOnly: true
     minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    networkAcls: {
-      defaultAction: 'Deny'
-    }
+    allowBlobPublicAccess: true
   }
 }
 
@@ -176,7 +173,7 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
           value: 'dotnet'
         }
         {
-          name: 'TWITTER_KEYS'
+          name: 'TWITTER_CREDS'
           value: '@MicrosoftValueSecret(${twitterchatgpt_dev_twittercreds.id})'
         }
       ]
