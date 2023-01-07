@@ -835,6 +835,7 @@ public class ChatGPTClient : IChatGPTClient
                 throw new ArgumentException($"Url is not a valid Uri", nameof(generatedImage));
             }
 
+
             using HttpRequestMessage requestMessage = new()
             {
                 Method = HttpMethod.Get,

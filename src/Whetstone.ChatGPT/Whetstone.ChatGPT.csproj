@@ -14,6 +14,7 @@
       - DownloadImageAsync
       - Small updates from code analysis suggestions
     </PackageReleaseNotes>
+
     <RepositoryType>git</RepositoryType>
     <PackageTags>chatgpt; api; openapi; gpt; gpt-3</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
