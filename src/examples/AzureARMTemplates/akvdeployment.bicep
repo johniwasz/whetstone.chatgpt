@@ -85,6 +85,15 @@ resource twitterchatgpt_dev 'Microsoft.KeyVault/vaults@2019-09-01' = {
   }
 }
 
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
+  scope: twitterchatgpt_dev
+  name: guid(twitterchatgpt_dev.id, twitter_chatgpt_funcid.id, 'Key Vault Secrets User')
+  properties: {
+    roleDefinitionId: '4633458b-17de-408a-b874-0445c86b69e6'
+    principalId: twitter_chatgpt_funcid.properties.principalId
+  }
+}
+
 resource twitterchatgpt_dev_twittercreds 'Microsoft.KeyVault/vaults/secrets@2016-10-01' = {
   parent: twitterchatgpt_dev
   name: 'twittercreds'
@@ -105,6 +114,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
     supportsHttpsTrafficOnly: true
     minimumTlsVersion: 'TLS1_2'
     allowBlobPublicAccess: false
+    networkAcls: {
+      defaultAction: 'Deny'
+    }
   }
 }
 
@@ -121,13 +133,19 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
   name: appName
   location: twitgptgrouppname
   kind: 'functionapp'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${twitter_chatgpt_funcid.id}' : {}
+    }
+  }
   properties: {
     serverFarmId: hostingPlan.id
     siteConfig: {
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       http20Enabled: true
-      acrUserManagedIdentityID: twitter_chatgpt_funcid.id
+      keyVaultReferenceIdentity: twitter_chatgpt_funcid.id
       appSettings: [
         {
           name: 'AzureWebJobsDashboard'
