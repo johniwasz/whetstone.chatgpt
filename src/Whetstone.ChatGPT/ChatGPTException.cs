@@ -20,6 +20,11 @@ public sealed class ChatGPTException : Exception
         this.StatusCode = statusCode;
     }
 
+    internal ChatGPTException(string message, HttpStatusCode statusCode) : base(message)
+    {
+        this.StatusCode = statusCode;
+    }
+
     internal ChatGPTException(string? message) : base(message)
     {
         

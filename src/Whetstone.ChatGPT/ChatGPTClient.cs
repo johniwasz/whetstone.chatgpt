@@ -492,7 +492,8 @@ public class ChatGPTClient : IChatGPTClient
         
         return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events", cancellationToken).ConfigureAwait(false);
     }
-
+    
+    /// <inheritdoc cref="IChatGPTClient.ListFineTuneEventsAsync"/>
     public async IAsyncEnumerable<ChatGPTEvent?> StreamFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
     {
        
@@ -553,7 +554,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
 
-    #endregion
+#endregion
 
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
     public async Task<ChatGPTCreateModerationResponse?> CreateModerationAsync(ChatGPTCreateModerationRequest? createModerationRequest, CancellationToken? cancellationToken = null)
@@ -598,7 +599,8 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTCreateEmbeddingsRequest, ChatGPTCreateEmbeddingsResponse>(HttpMethod.Post, "embeddings", createEmbeddingsRequest, cancellationToken).ConfigureAwait(false);
     }
 
-    
+
+    #region Image Operations
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
     public async Task<ChatGPTImageResponse?> CreateImageAsync(ChatGPTCreateImageRequest? createImageRequest, CancellationToken? cancellationToken = null)
     {
@@ -699,15 +701,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
 
-    /// <summary>
-    /// <para>Creates an edited or extended image given an original image and a prompt.</para>
-    /// <para>See <see href="https://beta.openai.com/docs/api-reference/images/create-edit">Create Edit</see></para>
-    /// </summary>
-    /// <param name="imageEditRequest">Includes an image and a prompt. A mask is optional</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns>Edited image(s) generated from edit request.</returns>
-    /// <exception cref="ArgumentNullException">imageEdit request is required</exception>
-    /// <exception cref="ArgumentException">Prompt and Image is required. NumberofImagestoGenerate is 1-10. If Mask is not null, then the FileName and Contents are required.</exception>
+    /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
     public async Task<ChatGPTImageResponse?> CreateImageEditAsync(ChatGPTCreateImageEditRequest? imageEditRequest, CancellationToken? cancellationToken = null)
     {
         if (imageEditRequest is null)
@@ -803,20 +797,77 @@ public class ChatGPTClient : IChatGPTClient
             formContent.Add(new StringContent(imageEditRequest.User), "user");
 
 
-        using (var httpReq = new HttpRequestMessage(HttpMethod.Post, "images/edits"))
-        {
-            httpReq.Content = formContent;
+        using var httpReq = new HttpRequestMessage(HttpMethod.Post, "images/edits");
+        httpReq.Content = formContent;
 
-            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
-                await _client.SendAsync(httpReq).ConfigureAwait(false) :
-                await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false))
+        using HttpResponseMessage? httpResponse = await _client.SendAsync(
+            httpReq, 
+            cancellationToken is null ? CancellationToken.None : cancellationToken.Value).ConfigureAwait(false);
+        
+        return await ProcessResponseAsync<ChatGPTImageResponse>(httpResponse, cancellationToken);
+    }
+    
+    /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
+    public async Task<byte[]?> DownloadImageAsync(GeneratedImage generatedImage, CancellationToken? cancellationToken = null)
+    {
+        byte[]? retVal = null;
+
+        CancellationToken cancelToken = cancellationToken is null ? CancellationToken.None : cancellationToken.Value;
+
+        if (generatedImage is null)
+        {
+            throw new ArgumentNullException(nameof(generatedImage));
+        }
+
+        if (string.IsNullOrWhiteSpace(generatedImage.Url) && string.IsNullOrWhiteSpace(generatedImage.Base64))
+        {
+            throw new ArgumentException($"Either Url or Base64 properties must be provided", nameof(generatedImage));
+        }
+
+        if (!string.IsNullOrWhiteSpace(generatedImage.Base64))
+        {
+            retVal = Convert.FromBase64String(generatedImage.Base64);
+        }
+        else
+        {
+            if (!Uri.TryCreate(generatedImage.Url, UriKind.Absolute, out Uri? uri))
             {
-                return await ProcessResponseAsync<ChatGPTImageResponse>(httpResponse, cancellationToken);
+                throw new ArgumentException($"Url is not a valid Uri", nameof(generatedImage));
+            }
+
+            HttpRequestMessage requestMessage = new()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = uri
+            };
+
+            using HttpClient imageClient = new();
+            
+            using HttpResponseMessage? httpResponse = await imageClient.SendAsync(requestMessage, cancelToken).ConfigureAwait(false);
+
+            if (httpResponse is not null)
+            {
+                if (httpResponse.IsSuccessStatusCode)
+                {
+#if NETSTANDARD2_1
+                    retVal = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+#else
+                    retVal = await httpResponse.Content.ReadAsByteArrayAsync(cancelToken).ConfigureAwait(false);
+#endif
+                }
+                else
+                {
+                    throw new ChatGPTException($"Error downloading image {generatedImage.Url}: {httpResponse.ReasonPhrase}", httpResponse.StatusCode);
+                }
             }
         }
+
+        return retVal;
     }
 
-#region Generic Request and Response Processors
+    #endregion 
+
+    #region Generic Request and Response Processors
     private async Task<TR?> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken)
     where T : class
     where TR : class

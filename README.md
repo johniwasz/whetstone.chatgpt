@@ -187,21 +187,11 @@ using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
 {
     ChatGPTImageResponse? imageResponse = await client.CreateImageAsync(imageRequest);
 
-    Assert.NotNull(imageResponse);
-
-    Assert.NotNull(imageResponse.Data);
-
-    Assert.Single(imageResponse.Data);
-
-    Assert.NotNull(imageResponse.Data[0].Base64);
-
-    string? imageData = imageResponse.Data[0].Base64;
+    var imageData = imageResponse?.Data[0];
 
     if (imageData != null)
     {
-        byte[] imageBytes = Convert.FromBase64String(imageData);
-        Assert.True(imageBytes.Length > 0);
-        File.WriteAllBytes("sailboat.png", imageBytes);
+        byte[] imageBytes = await client.DownloadImageAsync(imageData);
     }
 }
 ```

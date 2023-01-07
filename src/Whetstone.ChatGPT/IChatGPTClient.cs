@@ -276,5 +276,27 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
         IAsyncEnumerable<ChatGPTCompletionResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// Streams the fine tune events for a given fine tune job.
+        /// </summary>
+        /// <param name="fineTuneId">Id of a submitted fine tune job.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>An async enumerable that returns fine tune events as they are reported.</returns>
+        /// <exception cref="ArgumentException">Requires finetuneid</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
+        IAsyncEnumerable<ChatGPTEvent?> StreamFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Retrieves a byt[] of a generated image.
+        /// </summary>
+        /// <param name="generatedImage">Generated image returned from image create, edit, and variation calls.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>A byte array of the downloaded image. Can be saved as a PNG.</returns>
+        /// <exception cref="ArgumentNullException">generatedImage must have either a Url or Base64. Url must be a valid Uri.</exception>
+        /// <exception cref="ArgumentException">Requires generatedImage</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
+        Task<byte[]?> DownloadImageAsync(GeneratedImage generatedImage, CancellationToken? cancellationToken = null);
     }
 }

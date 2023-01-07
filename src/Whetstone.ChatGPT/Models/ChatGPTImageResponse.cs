@@ -15,10 +15,10 @@ namespace Whetstone.ChatGPT.Models
 
 
         [JsonPropertyName("data")]
-        public List<GenerateImages>? Data { get; set; }
+        public List<GeneratedImage>? Data { get; set; }
     }
 
-    public class GenerateImages
+    public class GeneratedImage
     {
         [JsonPropertyName("url")]
         public string? Url { get; set; }

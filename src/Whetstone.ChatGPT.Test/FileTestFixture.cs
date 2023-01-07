@@ -124,13 +124,6 @@ namespace Whetstone.ChatGPT.Test
 
                 string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
 
-                ChatGPTFileInfo? uploadedFileInfo;
-                using (IChatGPTClient client = new ChatGPTClient(apiKey))
-                {
-                    uploadedFileInfo = await client.UploadFileAsync(uploadRequest);
-                }
-
-
                 using (IChatGPTClient client = new ChatGPTClient(apiKey))
                 {
                     NewTestFile = await client.UploadFileAsync(uploadRequest);
