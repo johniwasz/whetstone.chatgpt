@@ -15,6 +15,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Whetstone.TweetGPT.DirectMessageFunction
 {
+
+
+    /// <summary>
+    /// This class is a wrapper around the Azure Function HttpRequestData class which is used by Tweetinvi internals
+    /// to process the WebHook request.
+    /// </summary>
     public class WebhooksRequestHandlerForAzureFunction : IWebhooksRequest
     {
         private readonly HttpRequestData _request;
@@ -87,9 +93,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
             _response.StatusCode = (HttpStatusCode)statusCode;
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task WriteInResponseAsync(string content, string contentType)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             await _response.WriteStringAsync(content);
             _response.Headers.Add("Content-Type", "application/json");
