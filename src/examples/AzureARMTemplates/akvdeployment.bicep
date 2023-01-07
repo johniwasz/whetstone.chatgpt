@@ -77,6 +77,7 @@ resource twitterchatgpt_dev 'Microsoft.KeyVault/vaults@2019-09-01' = {
         }
       }
     ]
+    enableSoftDelete: true
     sku: {
       name: 'standard'
       family: 'A'
@@ -96,9 +97,13 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: storageAccountName
   location: location
   sku: {
-    name: storageAccountType
+    name: storageAccountType    
   }
   kind: 'Storage'
+  properties: {
+
+
+  }
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
@@ -108,9 +113,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
     name: 'Y1'
     tier: 'Dynamic'
   }
-  properties: {}
 }
-
 
 resource function 'Microsoft.Web/sites@2020-12-01' = {
   name: appName
@@ -121,6 +124,7 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
     siteConfig: {
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
+      http20Enabled: true
       acrUserManagedIdentityID: twitter_chatgpt_funcid.id
       appSettings: [
         {
@@ -141,7 +145,7 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
         }
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~2'
+          value: '~4'
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -150,6 +154,10 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: 'dotnet'
+        }
+        {
+          name: 'TWITTER_KEYS'
+          value: '@MicrosoftValueSecret(${twitterchatgpt_dev_twittercreds.id})'
         }
       ]
     }
