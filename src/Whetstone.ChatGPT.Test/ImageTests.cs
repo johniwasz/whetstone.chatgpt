@@ -17,11 +17,11 @@ namespace Whetstone.ChatGPT.Test
             {
                 Prompt = "A sail boat",
                 Size = CreatedImageSize.Size1024,
-                ResponseFormat = CreatedImageFormat.Base64
+                ResponseFormat = CreatedImageFormat.Url
             };
 
 
-            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            using (ChatGPTClient client = (ChatGPTClient)ChatGPTTestUtilties.GetClient())
             {
                 ChatGPTImageResponse? imageResponse = await client.CreateImageAsync(imageRequest);
 
@@ -31,16 +31,21 @@ namespace Whetstone.ChatGPT.Test
 
                 Assert.Single(imageResponse.Data);
 
-                Assert.NotNull(imageResponse.Data[0].Base64);
+                Assert.NotNull(imageResponse.Data[0].Url);
 
-                string? imageData = imageResponse.Data[0].Base64;
+                string? imageData = imageResponse.Data[0].Url;
 
-                if (imageData != null)
-                {
-                    byte[] imageBytes = Convert.FromBase64String(imageData);
-                    Assert.True(imageBytes.Length > 0);
-                    File.WriteAllBytes("sailboat.png", imageBytes);
-                }
+                Assert.NotNull(imageData);
+
+                byte[]? imageBytes = await client.DownloadImageAsync(imageResponse.Data[0]);
+
+                Assert.NotNull(imageBytes);
+
+                Assert.True(imageBytes.Length > 0);
+                File.WriteAllBytes("sailboat.png", imageBytes);
+
+
+
             }
         }
 
@@ -119,6 +124,7 @@ namespace Whetstone.ChatGPT.Test
 
         private async Task<ChatGPTFileContent> LoadFileAsync(string filePath)
         {
+
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"Test file {filePath} not found");

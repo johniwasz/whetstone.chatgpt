@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Whetstone.ChatGPT
 {
@@ -59,12 +60,11 @@ namespace Whetstone.ChatGPT
 
                 if (enumMember is not null)
                     enumMemberNameMappings.Add(enumMember, enumVal);
-
             }
 
-            if (enumMemberNameMappings.ContainsKey(enumMemberText))
+            if (enumMemberNameMappings.TryGetValue(enumMemberText, out TEnum foundVal))
             {
-                retVal = enumMemberNameMappings[enumMemberText];
+                retVal = foundVal;
             }
             else
                 throw new JsonException($"Could not resolve value {enumMemberText} in enum {typeof(TEnum).FullName}");
@@ -75,14 +75,17 @@ namespace Whetstone.ChatGPT
     }
 
 
+    
     internal static class EnumExtensions
     {
         internal const BindingFlags EnumBindings = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
 
+        
         internal static string GetDescriptionFromEnumValue<TEnum>(this TEnum value)
             where TEnum : struct, Enum
         {
             string enumStringValue = value.ToString();
+            
             Type enumType = value.GetType();
             FieldInfo field = enumType.GetField(enumStringValue, EnumBindings)!;
 

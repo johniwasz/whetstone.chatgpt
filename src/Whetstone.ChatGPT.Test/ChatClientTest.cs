@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NuGet.Frameworks;
@@ -147,7 +148,7 @@ namespace Whetstone.ChatGPT.Test
                     MaxTokens = 10
                 };
 
-                await foreach(var completion in  client.StreamCompletionAsync(gptRequest))
+                await foreach(var completion in  client.StreamCompletionAsync(gptRequest).ConfigureAwait(false))
                 {
                     if(completion is not null)
                         Assert.NotNull(completion.GetCompletionText());

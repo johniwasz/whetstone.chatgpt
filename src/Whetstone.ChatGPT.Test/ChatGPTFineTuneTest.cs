@@ -76,7 +76,7 @@ namespace Whetstone.ChatGPT.Test
 
             await InitializeTest();
 
-            using (ChatGPTClient client = (ChatGPTClient) ChatGPTTestUtilties.GetClient())
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
                 ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
@@ -166,7 +166,7 @@ namespace Whetstone.ChatGPT.Test
 
                     foreach (var resultFile in tuneResponse.ResultFiles)
                     {
-                        _testOutputHelper.WriteLine($"Result File: {resultFile}");
+                        _testOutputHelper.WriteLine($"Result File: {resultFile.Filename}");
                     }
 
                     ChatGPTFileInfo fileInfo = tuneResponse.ResultFiles.First();
