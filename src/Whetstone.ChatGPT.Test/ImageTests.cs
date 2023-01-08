@@ -16,12 +16,12 @@ namespace Whetstone.ChatGPT.Test
             ChatGPTCreateImageRequest imageRequest = new()
             {
                 Prompt = "A sail boat",
-                Size = CreatedImageSize.Size1024,
+                Size = CreatedImageSize.Size256,
                 ResponseFormat = CreatedImageFormat.Url
             };
 
 
-            using (ChatGPTClient client = (ChatGPTClient)ChatGPTTestUtilties.GetClient())
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
                 ChatGPTImageResponse? imageResponse = await client.CreateImageAsync(imageRequest);
 
@@ -43,9 +43,6 @@ namespace Whetstone.ChatGPT.Test
 
                 Assert.True(imageBytes.Length > 0);
                 File.WriteAllBytes("sailboat.png", imageBytes);
-
-
-
             }
         }
 

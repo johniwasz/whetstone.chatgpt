@@ -26,16 +26,18 @@ namespace Whetstone.ChatGPT;
 /// </summary>
 public class ChatGPTClient : IChatGPTClient
 {
-    private const string ResponseLinePrefix = "data: ";    
+    private const string ResponseLinePrefix = "data: ";
 
     private readonly HttpClient _client;
 
     private readonly bool _isHttpClientProvided = true;
 
+    private readonly ChatGPTCredentials _chatCredentials;
+
     private bool _isDisposed;
 
     #region Constructors
-    
+
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
@@ -45,7 +47,7 @@ public class ChatGPTClient : IChatGPTClient
     {
     }
 
-    
+
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
@@ -69,15 +71,19 @@ public class ChatGPTClient : IChatGPTClient
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
-    /// <param name="credentialsOptions">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>
-    /// <param name="httpClient">This HttpClient will be used to make requests to the GPT-3 API. The caller is responsible for disposing the HttpClient instance.</param>
+    /// <param name="credentialsOptions">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>    
     /// <exception cref="ArgumentException">API Key is required.</exception>
     public ChatGPTClient(IOptions<ChatGPTCredentials> credentialsOptions) : this(credentials: credentialsOptions.Value, httpClient: new HttpClient())
     {
     }
 
-
-    public ChatGPTClient(IOptions<ChatGPTCredentials> credentialsOptions, HttpClient client) : this(credentials: credentialsOptions.Value, httpClient: client)
+    /// <summary>
+    /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
+    /// </summary>
+    /// <param name="credentialsOptions">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>
+    /// <param name="httpClient">This HttpClient will be used to make requests to the GPT-3 API. The caller is responsible for disposing the HttpClient instance.</param>
+    /// <exception cref="ArgumentException">API Key is required.</exception>
+    public ChatGPTClient(IOptions<ChatGPTCredentials> credentialsOptions, HttpClient httpClient) : this(credentials: credentialsOptions.Value, httpClient: httpClient)
     {
     }
 
@@ -89,7 +95,7 @@ public class ChatGPTClient : IChatGPTClient
     /// <exception cref="ArgumentException">API Key is required.</exception>
     private ChatGPTClient(ChatGPTCredentials credentials, HttpClient httpClient)
     {
-        if(credentials is null)
+        if (credentials is null)
         {
             throw new ArgumentNullException(nameof(credentials));
         }
@@ -98,6 +104,8 @@ public class ChatGPTClient : IChatGPTClient
         {
             throw new ArgumentException("ApiKey preoperty cannot be null or whitespace.", nameof(credentials));
         }
+
+        _chatCredentials = credentials;
 
         if (httpClient is null)
         {
@@ -110,11 +118,11 @@ public class ChatGPTClient : IChatGPTClient
             _isHttpClientProvided = true;
         }
 
-        InitializeClient(_client, credentials);
+        InitializeClient(_client);
     }
 
 
-    private void InitializeClient(HttpClient client, ChatGPTCredentials creds)
+    private void InitializeClient(HttpClient client)
     {
 
         client.BaseAddress = new Uri("https://api.openai.com/v1/");
@@ -122,13 +130,6 @@ public class ChatGPTClient : IChatGPTClient
         if (!string.IsNullOrWhiteSpace(_client.DefaultRequestHeaders.Authorization?.Parameter))
         {
             throw new ArgumentException("HttpClient already has authorization token.", nameof(client));
-        }
-
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", creds.ApiKey);
-
-        if (!string.IsNullOrWhiteSpace(creds.Organization))
-        {
-            client.DefaultRequestHeaders.Add("OpenAI-Organization", creds.Organization);
         }
     }
 
@@ -208,64 +209,58 @@ public class ChatGPTClient : IChatGPTClient
 
         completionRequest.Stream = true;
 
-        
-        using (HttpRequestMessage httpReq = new HttpRequestMessage(HttpMethod.Post, "completions"))
+        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "completions");
+
+        CancellationToken cancelToken = cancellationToken ?? CancellationToken.None;
+
+        string requestString = JsonSerializer.Serialize(completionRequest);
+
+        httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
+
+        HttpResponseMessage responseMessage = await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).ConfigureAwait(false);
+
+
+        if (responseMessage.IsSuccessStatusCode)
         {
 
-            string requestString = JsonSerializer.Serialize(completionRequest);
+#if NETSTANDARD2_1
+            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+#else
+            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync(cancelToken).ConfigureAwait(false);
+#endif
+            using StreamReader reader = new(responseStream);
+            string? line = null;
 
-            httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
 
-            var responseMessage = cancellationToken is null ?
-                await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false) :
-                await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancellationToken.Value).ConfigureAwait(false);
-
-            
-            if (responseMessage.IsSuccessStatusCode)
+            while ((line = await reader.ReadLineAsync()) is not null)
             {
 
-#if NETSTANDARD2_1
-                var responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-#else
-                var responseStream = cancellationToken is null ?
-                    await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false) :
-                    await responseMessage.Content.ReadAsStreamAsync(cancellationToken.Value).ConfigureAwait(false);
-#endif
-                using var reader = new StreamReader(responseStream);
-                string? line = null;
+                if (line.StartsWith(ResponseLinePrefix, System.StringComparison.OrdinalIgnoreCase))
+                    line = line.Substring(ResponseLinePrefix.Length);
 
-
-                while ((line = await reader.ReadLineAsync()) is not null)
-                {   
-                    
-                    if (line.StartsWith(ResponseLinePrefix, System.StringComparison.OrdinalIgnoreCase))
-                        line = line.Substring(ResponseLinePrefix.Length);
-
-                    if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
-                    {
-                        ChatGPTCompletionResponse? streamedResponse  = JsonSerializer.Deserialize<ChatGPTCompletionResponse>(line.Trim());
-                        yield return streamedResponse;
-                    }
+                if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
+                {
+                    ChatGPTCompletionResponse? streamedResponse = JsonSerializer.Deserialize<ChatGPTCompletionResponse>(line.Trim());
+                    yield return streamedResponse;
                 }
             }
-            else
-            {
+        }
+        else
+        {
 #if NETSTANDARD2_1
-                string? responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            string? responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 #else
-                string? responseString = cancellationToken is null ?
-                    await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false) :
-                    await responseMessage.Content.ReadAsStringAsync(cancellationToken.Value).ConfigureAwait(false); 
+            string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
 #endif
-                ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
-                throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
-            }
+            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
+            throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
+
         }
     }
 
-#endregion Completions
+    #endregion Completions
 
-#region Edits
+    #region Edits
     /// <inheritdoc cref="IChatGPTClient.CreateEditAsync"/>
     public async Task<ChatGPTCreateEditResponse?> CreateEditAsync(ChatGPTCreateEditRequest createEditRequest, CancellationToken? cancellationToken = null)
     {
@@ -287,9 +282,9 @@ public class ChatGPTClient : IChatGPTClient
 
         return await SendRequestAsync<ChatGPTCreateEditRequest, ChatGPTCreateEditResponse>(HttpMethod.Post, "edits", createEditRequest, cancellationToken).ConfigureAwait(false);
     }
-#endregion
+    #endregion
 
-#region File Operations
+    #region File Operations
 
     /// <inheritdoc cref="IChatGPTClient.UploadFileAsync"/>
     public async Task<ChatGPTFileInfo?> UploadFileAsync(ChatGPTUploadFileRequest? fileRequest, CancellationToken? cancellationToken = null)
@@ -326,7 +321,7 @@ public class ChatGPTClient : IChatGPTClient
             { new ByteArrayContent(fileRequest.File.Content), "file", fileRequest.File.FileName }
         };
 
-        using (var httpReq = new HttpRequestMessage(HttpMethod.Post, "files"))
+        using (HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "files"))
         {
             httpReq.Content = formContent;
 
@@ -377,49 +372,41 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException("Cannot be null or whitespace.", nameof(fileId));
         }
 
-        using (var httpReq = new HttpRequestMessage(HttpMethod.Get, $"files/{fileId}/content"))
+        CancellationToken cancelToken = cancellationToken ?? CancellationToken.None;
+
+        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Get, $"files/{fileId}/content");
+
+        using HttpResponseMessage? httpResponse = await _client.SendAsync(httpReq, cancelToken).ConfigureAwait(false);
+
+        if (httpResponse.IsSuccessStatusCode)
         {
-            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
-                await _client.SendAsync(httpReq) :
-                await _client.SendAsync(httpReq, cancellationToken.Value))
-            {
 
-                if (httpResponse.IsSuccessStatusCode)
-                {
-
-                    fileContent = new();
-
+            fileContent = new();
 #if NETSTANDARD2_1
-                    fileContent.Content = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            fileContent.Content = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 #else
-                    fileContent.Content = cancellationToken is null ?
-                                await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false) :
-                                await httpResponse.Content.ReadAsByteArrayAsync(cancellationToken.Value).ConfigureAwait(false);
+            fileContent.Content = await httpResponse.Content.ReadAsByteArrayAsync(cancelToken).ConfigureAwait(false);
 #endif
 
-                    fileContent.FileName = httpResponse.Content?.Headers?.ContentDisposition?.FileName?.Replace(@"""", "");
+            fileContent.FileName = httpResponse.Content?.Headers?.ContentDisposition?.FileName?.Replace(@"""", "");
 
-                    return fileContent;
-                }
-                else
-                {
-
-                    string responseString = await GetResponseStringAsync(httpResponse, cancellationToken).ConfigureAwait(false);
-
-                    ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
-                    throw new ChatGPTException(errResponse?.Error, httpResponse.StatusCode);
-                }
-            }
+            return fileContent;
         }
+        else
+        {
+            string responseString = await GetResponseStringAsync(httpResponse, cancelToken).ConfigureAwait(false);
 
+            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
+            throw new ChatGPTException(errResponse?.Error, httpResponse.StatusCode);
+        }
     }
 
-#endregion
+    #endregion
 
-#region Fine Tunes
+    #region Fine Tunes
 
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
-    public async Task<ChatGPTFineTuneJob?>  CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null)
+    public async Task<ChatGPTFineTuneJob?> CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null)
     {
         if (createFineTuneRequest is null)
         {
@@ -476,72 +463,65 @@ public class ChatGPTClient : IChatGPTClient
         {
             throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
         }
-        
+
         return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events", cancellationToken).ConfigureAwait(false);
     }
-    
+
     /// <inheritdoc cref="IChatGPTClient.ListFineTuneEventsAsync"/>
     public async IAsyncEnumerable<ChatGPTEvent?> StreamFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
     {
-       
+
 
         if (string.IsNullOrWhiteSpace(fineTuneId))
         {
             throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
         }
 
-        using (HttpRequestMessage httpReq = new HttpRequestMessage(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events?stream=true"))
+        CancellationToken cancelToken = cancellationToken ?? CancellationToken.None;
+
+        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events?stream=true");
+
+        HttpResponseMessage responseMessage = await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).ConfigureAwait(false);
+
+        if (responseMessage.IsSuccessStatusCode)
         {
 
-            var responseMessage = cancellationToken is null ?
-                await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false) :
-                await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancellationToken.Value).ConfigureAwait(false);
+#if NETSTANDARD2_1
+            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+#else
+            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync(cancelToken).ConfigureAwait(false);
+#endif
+            using StreamReader reader = new(responseStream);
+            string? line = null;
 
-
-            if (responseMessage.IsSuccessStatusCode)
+            while ((line = await reader.ReadLineAsync()) is not null)
             {
 
-#if NETSTANDARD2_1
-                var responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-#else
-                var responseStream = cancellationToken is null ?
-                    await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false) :
-                    await responseMessage.Content.ReadAsStreamAsync(cancellationToken.Value).ConfigureAwait(false);
-#endif
-                using var reader = new StreamReader(responseStream);
-                string? line = null;
+                if (line.StartsWith(ResponseLinePrefix, System.StringComparison.OrdinalIgnoreCase))
+                    line = line.Substring(ResponseLinePrefix.Length);
 
-
-                while ((line = await reader.ReadLineAsync()) is not null)
+                if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
                 {
-
-                    if (line.StartsWith(ResponseLinePrefix, System.StringComparison.OrdinalIgnoreCase))
-                        line = line.Substring(ResponseLinePrefix.Length);
-
-                    if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
-                    {
-                        ChatGPTEvent? streamedResponse = JsonSerializer.Deserialize<ChatGPTEvent>(line.Trim());
-                        yield return streamedResponse;
-                    }
+                    ChatGPTEvent? streamedResponse = JsonSerializer.Deserialize<ChatGPTEvent>(line.Trim());
+                    yield return streamedResponse;
                 }
             }
-            else
-            {
+        }
+        else
+        {
 #if NETSTANDARD2_1
                 string? responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 #else
-                string? responseString = cancellationToken is null ?
-                    await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false) :
-                    await responseMessage.Content.ReadAsStringAsync(cancellationToken.Value).ConfigureAwait(false);
+            string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
 #endif
-                ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
-                throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
-            }
+            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
+            throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
         }
+
     }
 
 
-#endregion
+    #endregion
 
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
     public async Task<ChatGPTCreateModerationResponse?> CreateModerationAsync(ChatGPTCreateModerationRequest? createModerationRequest, CancellationToken? cancellationToken = null)
@@ -578,7 +558,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException($"Inputs cannot be null", nameof(createEmbeddingsRequest));
         }
 
-        if(string.IsNullOrWhiteSpace(createEmbeddingsRequest.Model))
+        if (string.IsNullOrWhiteSpace(createEmbeddingsRequest.Model))
         {
             throw new ArgumentException($"Model cannot be null or empty", nameof(createEmbeddingsRequest));
         }
@@ -596,7 +576,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentNullException(nameof(createImageRequest));
         }
 
-        if(string.IsNullOrWhiteSpace(createImageRequest.Prompt))
+        if (string.IsNullOrWhiteSpace(createImageRequest.Prompt))
         {
             throw new ArgumentException($"Prompt cannot be null or empty", nameof(createImageRequest));
         }
@@ -606,7 +586,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException($"Prompt cannot be longer than 1000 characters", nameof(createImageRequest));
         }
 
-        if (createImageRequest.NumberOfImagesToGenerate<0)
+        if (createImageRequest.NumberOfImagesToGenerate < 0)
         {
             throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(createImageRequest));
         }
@@ -643,12 +623,12 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException($"Image cannot be null", nameof(imageVariationRequest));
         }
 
-        if(string.IsNullOrWhiteSpace(imageVariationRequest.Image.FileName))
+        if (string.IsNullOrWhiteSpace(imageVariationRequest.Image.FileName))
         {
             throw new ArgumentException($"Image.FileName cannot be null or empty", nameof(imageVariationRequest));
         }
 
-        if(imageVariationRequest.Image.Content is null)
+        if (imageVariationRequest.Image.Content is null)
         {
             throw new ArgumentException($"Image.Content cannot be null", nameof(imageVariationRequest));
         }
@@ -657,7 +637,7 @@ public class ChatGPTClient : IChatGPTClient
         {
             throw new ArgumentException($"Image.Content.Length cannot be 0", nameof(imageVariationRequest));
         }
-        
+
         MultipartFormDataContent formContent = new()
         {
             { new ByteArrayContent(imageVariationRequest.Image.Content), "image", imageVariationRequest.Image.FileName },
@@ -666,7 +646,7 @@ public class ChatGPTClient : IChatGPTClient
         };
 
 
-        if(imageVariationRequest.NumberOfImagesToGenerate!=1)
+        if (imageVariationRequest.NumberOfImagesToGenerate != 1)
             formContent.Add(new StringContent(imageVariationRequest.NumberOfImagesToGenerate.ToString(CultureInfo.InvariantCulture)), "n");
 
 
@@ -674,17 +654,15 @@ public class ChatGPTClient : IChatGPTClient
             formContent.Add(new StringContent(imageVariationRequest.User), "user");
 
 
-        using (var httpReq = new HttpRequestMessage(HttpMethod.Post, "images/variations"))
-        {
-            httpReq.Content = formContent;
-            
-            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
-                await _client.SendAsync(httpReq).ConfigureAwait(false) :
-                await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false))
-            {
-                return await ProcessResponseAsync<ChatGPTImageResponse>(httpResponse, cancellationToken);
-            }
-        }
+        HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "images/variations");
+
+        httpReq.Content = formContent;
+
+        using HttpResponseMessage? httpResponse = cancellationToken is null ?
+            await _client.SendAsync(httpReq).ConfigureAwait(false) :
+            await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false);
+
+        return await ProcessResponseAsync<ChatGPTImageResponse>(httpResponse, cancellationToken);
     }
 
 
@@ -705,7 +683,7 @@ public class ChatGPTClient : IChatGPTClient
         {
             throw new ArgumentException($"Prompt cannot be longer than 1000 characters", nameof(imageEditRequest));
         }
-        
+
         if (imageEditRequest.NumberOfImagesToGenerate < 0)
         {
             throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(imageEditRequest));
@@ -738,7 +716,7 @@ public class ChatGPTClient : IChatGPTClient
 
         ByteArrayContent? maskContent = null;
 
-        if(imageEditRequest.Mask is not null)
+        if (imageEditRequest.Mask is not null)
         {
             if (imageEditRequest.Mask.Content is null)
             {
@@ -784,16 +762,16 @@ public class ChatGPTClient : IChatGPTClient
             formContent.Add(new StringContent(imageEditRequest.User), "user");
 
 
-        using var httpReq = new HttpRequestMessage(HttpMethod.Post, "images/edits");
+        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "images/edits");
         httpReq.Content = formContent;
 
         using HttpResponseMessage? httpResponse = await _client.SendAsync(
-            httpReq, 
+            httpReq,
             cancellationToken is null ? CancellationToken.None : cancellationToken.Value).ConfigureAwait(false);
-        
+
         return await ProcessResponseAsync<ChatGPTImageResponse>(httpResponse, cancellationToken);
     }
-    
+
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
     public async Task<byte[]?> DownloadImageAsync(GeneratedImage generatedImage, CancellationToken? cancellationToken = null)
     {
@@ -822,16 +800,16 @@ public class ChatGPTClient : IChatGPTClient
                 throw new ArgumentException($"Url is not a valid Uri", nameof(generatedImage));
             }
 
-
+            // Creating the message bypasses the authentication header for this request by design. 
+            // The image is public and does not require authentication. An error is generated if 
+            // the Authorization header is present.
             using HttpRequestMessage requestMessage = new()
             {
                 Method = HttpMethod.Get,
                 RequestUri = uri
             };
 
-            using HttpClient imageClient = new();
-            
-            using HttpResponseMessage? httpResponse = await imageClient.SendAsync(requestMessage, cancelToken).ConfigureAwait(false);
+            using HttpResponseMessage? httpResponse = await _client.SendAsync(requestMessage, cancelToken).ConfigureAwait(false);
 
             if (httpResponse is not null)
             {
@@ -860,34 +838,30 @@ public class ChatGPTClient : IChatGPTClient
     where T : class
     where TR : class
     {
-        using (var httpReq = new HttpRequestMessage(method, url))
-        {
-            string requestString = JsonSerializer.Serialize(requestMessage);
+        using HttpRequestMessage httpReq = CreateRequestMessage(method, url);
 
-            httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
+        string requestString = JsonSerializer.Serialize(requestMessage);
 
-            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
-                await _client.SendAsync(httpReq) :
-                 await _client.SendAsync(httpReq, cancellationToken.Value))
-            {
-                return await ProcessResponseAsync<TR>(httpResponse, cancellationToken).ConfigureAwait(false);
-            }
-        }
+        httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
 
+        using HttpResponseMessage? httpResponse = cancellationToken is null ?
+            await _client.SendAsync(httpReq).ConfigureAwait(false) :
+            await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false);
+
+        return await ProcessResponseAsync<TR>(httpResponse, cancellationToken).ConfigureAwait(false);
     }
+
+
     private async Task<T?> SendRequestAsync<T>(HttpMethod method, string url, CancellationToken? cancellationToken) where T : class
     {
-        using (var request = new HttpRequestMessage(method, url))
-        {
-            using (HttpResponseMessage? httpResponse = cancellationToken is null ?
-                 await _client.SendAsync(request).ConfigureAwait(false) :
-                 await _client.SendAsync(request, cancellationToken.Value).ConfigureAwait(false))
-            {
-                return await ProcessResponseAsync<T>(httpResponse, cancellationToken).ConfigureAwait(false);
+        using HttpRequestMessage request = CreateRequestMessage(method, url);
 
-            }
-        }
-    }    
+        using HttpResponseMessage? httpResponse = cancellationToken is null ?
+             await _client.SendAsync(request).ConfigureAwait(false) :
+             await _client.SendAsync(request, cancellationToken.Value).ConfigureAwait(false);
+
+        return await ProcessResponseAsync<T>(httpResponse, cancellationToken).ConfigureAwait(false);
+    }
 
     private async static Task<T?> ProcessResponseAsync<T>(HttpResponseMessage responseMessage, CancellationToken? cancellationToken) where T : class
     {
@@ -931,9 +905,23 @@ public class ChatGPTClient : IChatGPTClient
         return responseString;
     }
 
-#endregion
+    private HttpRequestMessage CreateRequestMessage(HttpMethod method, string url)
+    {
+        HttpRequestMessage request = new(method, url);
 
-#region Clean Up
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _chatCredentials.ApiKey);
+
+        if (!string.IsNullOrWhiteSpace(_chatCredentials.Organization))
+        {
+            request.Headers.Add("OpenAI-Organization", _chatCredentials.Organization);
+        }
+
+        return request;
+    }
+
+    #endregion
+
+    #region Clean Up
     ~ChatGPTClient()
     {
         Dispose(true);
@@ -956,5 +944,5 @@ public class ChatGPTClient : IChatGPTClient
             _isDisposed = true;
         }
     }
-#endregion
+    #endregion
 }

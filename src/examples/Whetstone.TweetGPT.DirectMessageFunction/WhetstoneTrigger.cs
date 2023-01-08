@@ -41,7 +41,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
         private readonly string _basePrompt;
 
         public ChatCPTDirectMessageFunction(IChatGPTClient chatGPT, IOptions<WebhookCredentials> creds, ILogger<ChatCPTDirectMessageFunction> logger)
-        {            
+        {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _creds = creds?.Value ?? throw new ArgumentNullException(nameof(creds));
@@ -71,7 +71,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
             FunctionContext executionContext)
         {
             WebhooksRequestHandlerForAzureFunction request = new WebhooksRequestHandlerForAzureFunction(req);
-            
+
             IAccountActivityRequestHandler activityHandler = _client.AccountActivity.CreateRequestHandler();
 
             long? userId = await GetUserIdAsync(request).ConfigureAwait(false);
@@ -79,7 +79,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
             if (userId.HasValue)
             {
                 _logger.LogInformation($"Processing message for user {userId.Value}");
-                
+
                 IAccountActivityStream activityStream = activityHandler.GetAccountActivityStream(userId.Value, "devchatgpt");
 
                 if (!_trackedStreams.Contains(activityStream.AccountUserId))
@@ -147,7 +147,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
                         }
                     }
                 }
-                catch(ChatGPTException chatEx)
+                catch (ChatGPTException chatEx)
                 {
                     _logger.LogError(chatEx, $"ChatGPT had an error processing prompt: {messageFromSender}");
 

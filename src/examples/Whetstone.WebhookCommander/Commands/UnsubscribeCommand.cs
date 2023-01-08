@@ -31,7 +31,7 @@ internal class UnsubscribeCommand : Command, ICommand
                 isValid = false;
             }
 
-        }               
+        }
         else 
         {
             Logger.LogError("User id is required");

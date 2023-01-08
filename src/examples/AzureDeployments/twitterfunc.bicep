@@ -1,50 +1,33 @@
 
-@secure()
-param tenantId string
-
 @description('The name of the function app that you wish to create.')
 param appName string = 'fn-twitgpt-${uniqueString(resourceGroup().id)}'
 
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using Get-AzADUser or Get-AzADServicePrincipal cmdlets.')
+@description('Twitter credentials in JSON.')
 @secure()
-param objectId string
+param twitterCredsJson string
 
-@description('Twitter Access Token for invoking user-specific operations.')
+@description('OpenAI credentials in JSON.')
 @secure()
-param twitterAccessToken string
-
-@description('Twitter Access Token Secret for invoking user-specific operations.')
-@secure()
-param twitterAccessTokenSecret string
-
-@description('Twitter Consumer Key for invoking public operations.')
-@secure()
-param twitterConsumerKey string
-
-@description('Twitter Consumer Secret for invoking public operations.')
-@secure()
-param twitterConsumerSecret string
+param openAIAPICredsJson string
 
 @description('region of the resouce group.')
 param twitgptgrouppname string = 'eastus'
 
 param storageAccountType string = 'Standard_LRS'
 
+
+var keyVaultName = 'kvgpt-dev-${uniqueString(resourceGroup().id)}'
+
+var tenantId = tenant().tenantId
 var hostingPlanName = appName
 var applicationInsightsName = appName
 var storageAccountName = '${uniqueString(resourceGroup().id)}azfunctions'
 
-
-resource twitter_chatgpt_funcid 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: 'twitter-chatgpt-funcid'
-  location: twitgptgrouppname
-}
-
-resource twitterchatgpt_dev_kv01 'Microsoft.KeyVault/vaults@2019-09-01' = {
-  name: 'twitterchatgpt-dev'
+resource twitterchatgpt_dev_kv 'Microsoft.KeyVault/vaults@2019-09-01' = {
+  name: keyVaultName
   location: twitgptgrouppname
   tags: {
     displayName: 'twitterchatgpt'
@@ -54,30 +37,8 @@ resource twitterchatgpt_dev_kv01 'Microsoft.KeyVault/vaults@2019-09-01' = {
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
     tenantId: tenantId
-    accessPolicies: [
-      {
-        tenantId: tenantId
-        objectId: objectId
-        permissions: {
-          keys: [
-            'all'
-          ]
-          secrets: [
-            'all'
-          ]
-        }
-      }
-      {
-        tenantId: tenantId
-        objectId: twitter_chatgpt_funcid.properties.principalId
-        permissions: {
-          secrets: [
-            'Get'
-          ]
-        }
-      }
-    ]
     enableSoftDelete: true
+    accessPolicies: []
     sku: {
       name: 'standard'
       family: 'A'
@@ -85,38 +46,51 @@ resource twitterchatgpt_dev_kv01 'Microsoft.KeyVault/vaults@2019-09-01' = {
   }
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
-  scope: twitterchatgpt_dev_kv01
-  name: guid(twitterchatgpt_dev_kv01.id, twitter_chatgpt_funcid.id, 'Key Vault Secrets User')
+resource twitterchatgpt_dev_kv_twittercreds 'Microsoft.KeyVault/vaults/secrets@2016-10-01' = {
+  parent: twitterchatgpt_dev_kv
+  name: 'twittercreds'
+  tags: {
+    displayName: 'twitterchatgpt'
+  }
   properties: {
-    roleDefinitionId: '4633458b-17de-408a-b874-0445c86b69e6'
-    principalId: twitter_chatgpt_funcid.properties.principalId
+    value: twitterCredsJson
   }
 }
 
-resource twitterchatgpt_dev_kv01_twittercreds 'Microsoft.KeyVault/vaults/secrets@2016-10-01' = {
-  parent: twitterchatgpt_dev_kv01
-  name: 'twittercreds'
+resource twitterchatgpt_dev_kv_openaiapicreds 'Microsoft.KeyVault/vaults/secrets@2016-10-01' = {
+  parent: twitterchatgpt_dev_kv
+  name: 'openaicreds'
+  tags: {
+    displayName: 'twitterchatgpt'
+  }
   properties: {
-    value: '{ "AccessToken": "${twitterAccessToken}", "AccessTokenSecret": "${twitterAccessTokenSecret}", "ConsumerKey": "${twitterConsumerKey}", "ConsumerSecret": "${twitterConsumerSecret}"}'
+    value: openAIAPICredsJson
   }
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: storageAccountName
   location: location
+  tags: {
+    displayName: 'twitterchatgpt'
+  }
   sku: {
     name: storageAccountType    
   }
   kind: 'Storage'
   properties: {
-
+    minimumTlsVersion: 'TLS1_2'
+    supportsHttpsTrafficOnly: true
+    allowBlobPublicAccess: false
   }
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: hostingPlanName
   location: location
+  tags: {
+    displayName: 'twitterchatgpt'
+  }
   sku: {
     name: 'Y1'
     tier: 'Dynamic'
@@ -127,19 +101,18 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
   name: appName
   location: twitgptgrouppname
   kind: 'functionapp'
+  tags: {
+    displayName: 'twitterchatgpt'
+  }
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${twitter_chatgpt_funcid.id}' : {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
     serverFarmId: hostingPlan.id
     siteConfig: {
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
-      http20Enabled: true
-      keyVaultReferenceIdentity: twitter_chatgpt_funcid.id
+      http20Enabled: true      
       appSettings: [
         {
           name: 'AzureWebJobsDashboard'
@@ -171,7 +144,11 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
         }
         {
           name: 'TWITTER_CREDS'
-          value: '@MicrosoftValueSecret(${twitterchatgpt_dev_kv01_twittercreds.id})'
+          value: '@Microsoft.KeyVault(VaultName=${twitterchatgpt_dev_kv.name};SecretName=${twitterchatgpt_dev_kv_twittercreds.name})'
+        }
+        {
+          name: 'OPENAI_API_CREDS'
+          value: '@Microsoft.KeyVault(VaultName=${twitterchatgpt_dev_kv.name};SecretName=${twitterchatgpt_dev_kv_openaiapicreds.name})'
         }
       ]
     }
@@ -183,8 +160,22 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
   location: location
   kind: 'web'
+  tags: {
+    displayName: 'twitterchatgpt'
+  }
   properties: {
     Application_Type: 'web'
     Request_Source: 'rest'
   }
 }
+
+module appService 'updateakv.bicep' = {
+  name: 'appService'
+  params: {
+    funcName: function.name
+    location: location
+    keyVaultName: keyVaultName
+  }
+}
+
+output createdFunction string = function.name

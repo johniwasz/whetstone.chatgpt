@@ -41,21 +41,21 @@ public class Program
                 services.Configure<ChatGPTCredentials>(options =>
                 {
                     IConfiguration config = context.Configuration;
-                    
+
                     string? gptCredentialsText = config["OPENAI_API_CREDS"];
 
                     if (string.IsNullOrWhiteSpace(gptCredentialsText))
                     {
                         throw new InvalidOperationException("OPENAI_API_CREDS is not set.");
                     }
-                    
+
                     ChatGPTCredentials? gptCredentials = JsonSerializer.Deserialize<ChatGPTCredentials>(gptCredentialsText);
 
                     if (gptCredentials == null)
                     {
                         throw new InvalidOperationException("OPENAI_API_CREDS is not set.");
                     }
-                    
+
                     options.ApiKey = gptCredentials.ApiKey;
                     options.Organization = gptCredentials.Organization;
 
@@ -63,40 +63,40 @@ public class Program
 
 
                 services.Configure<WebhookCredentials>(options =>
+                {
+                    IConfiguration config = context.Configuration;
+                    string? twitterCredString = config["TWITTER_CREDS"];
+
+                    WebhookCredentials? twitterCreds = string.IsNullOrWhiteSpace(twitterCredString) ?
+                        null : JsonSerializer.Deserialize<WebhookCredentials>(twitterCredString);
+
+                    if (twitterCreds is not null)
                     {
-                        IConfiguration config = context.Configuration;
-                        string? twitterCredString = config["TWITTER_CREDS"];
-
-                        WebhookCredentials? twitterCreds = string.IsNullOrWhiteSpace(twitterCredString) ? 
-                            null :  JsonSerializer.Deserialize<WebhookCredentials>(twitterCredString);
-
-                        if (twitterCreds is not null)
-                        {
-                            options.AccessToken = twitterCreds.AccessToken;
-                            options.AccessTokenSecret = twitterCreds.AccessTokenSecret;
-                            options.ConsumerSecret = twitterCreds.ConsumerSecret;
-                            options.ConsumerKey = twitterCreds.ConsumerKey;
-                        }
+                        options.AccessToken = twitterCreds.AccessToken;
+                        options.AccessTokenSecret = twitterCreds.AccessTokenSecret;
+                        options.ConsumerSecret = twitterCreds.ConsumerSecret;
+                        options.ConsumerKey = twitterCreds.ConsumerKey;
+                    }
 
 #if DEBUG
-                        if (twitterCreds is null)
-                        {
-                            options.AccessToken = config["WebhookCredentials:AccessToken"];
-                            options.AccessTokenSecret = config["WebhookCredentials:AccessTokenSecret"];
-                            options.ConsumerSecret = config["WebhookCredentials:ConsumerSecret"];
-                            options.ConsumerKey = config["WebhookCredentials:ConsumerKey"];
-                        }
+                    if (twitterCreds is null)
+                    {
+                        options.AccessToken = config["WebhookCredentials:AccessToken"];
+                        options.AccessTokenSecret = config["WebhookCredentials:AccessTokenSecret"];
+                        options.ConsumerSecret = config["WebhookCredentials:ConsumerSecret"];
+                        options.ConsumerKey = config["WebhookCredentials:ConsumerKey"];
+                    }
 #endif
-                    });
+                });
+                /// services.AddHttpClient();
 
-                
                 services.AddHttpClient<IChatGPTClient, ChatGPTClient>()
                     .SetHandlerLifetime(TimeSpan.FromSeconds(150))
                     .AddPolicyHandler(GetRetryPolicy());
 
                 services.AddLogging();
 
-                // services.AddScoped<IChatGPTClient, ChatGPTClient>();
+                services.AddScoped<IChatGPTClient, ChatGPTClient>();
             });
 
         var host = hostBuilder.Build();
