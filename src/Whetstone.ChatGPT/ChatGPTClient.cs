@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
@@ -25,9 +26,7 @@ namespace Whetstone.ChatGPT;
 /// </summary>
 public class ChatGPTClient : IChatGPTClient
 {
-    private const string ResponseLinePrefix = "data: ";
-
-    private readonly string _apiKey;
+    private const string ResponseLinePrefix = "data: ";    
 
     private readonly HttpClient _client;
 
@@ -36,76 +35,69 @@ public class ChatGPTClient : IChatGPTClient
     private bool _isDisposed;
 
     #region Constructors
+    
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
     /// <param name="apiKey">The OpenAI API uses API keys for authentication. Visit your <see href="https://beta.openai.com/account/api-keys">API Keys</see> page to retrieve the API key you'll use in your requests./param>
     /// <exception cref="ArgumentException"></exception>
-    public ChatGPTClient(string apiKey) : this(new ChatGPTCredentials(apiKey), null)
+    public ChatGPTClient(string apiKey) : this(credentials: new ChatGPTCredentials(apiKey), httpClient: new HttpClient())
     {
     }
 
-
+    
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
     /// <param name="apiKey">The OpenAI API uses API keys for authentication. Visit your <see href="https://beta.openai.com/account/api-keys">API Keys</see> page to retrieve the API key you'll use in your requests./param>
     /// <param name="organization">For users who belong to multiple organizations, you can pass a header to specify which organization is used for an API request. Usage from these API requests will count against the specified organization's subscription quota.</param>
     /// <exception cref="ArgumentException"></exception>
-    public ChatGPTClient(string apiKey, string organization) : this(new ChatGPTCredentials(apiKey, organization), null)
+    public ChatGPTClient(string apiKey, string organization) : this(new ChatGPTCredentials(apiKey, organization), httpClient: new HttpClient())
     {
     }
 
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
-    /// <param name="apiKey">The OpenAI API uses API keys for authentication. Visit your <see href="https://beta.openai.com/account/api-keys">API Keys</see> page to retrieve the API key you'll use in your requests./param>
-    /// <param name="httpClient">This HttpClient will be used to make requests to the GPT-3 API. The caller is responsible for disposing the HttpClient instance.</param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <param name="credentials">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>
     /// <exception cref="ArgumentException"></exception>
-    public ChatGPTClient(string apiKey, HttpClient httpClient) : this(new ChatGPTCredentials(apiKey), httpClient)
+    public ChatGPTClient(ChatGPTCredentials credentials) : this(credentials: credentials, httpClient: new HttpClient())
     {
-        if (httpClient is null)
+    }
+
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
+    /// </summary>
+    /// <param name="credentialsOptions">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>
+    /// <param name="httpClient">This HttpClient will be used to make requests to the GPT-3 API. The caller is responsible for disposing the HttpClient instance.</param>
+    /// <exception cref="ArgumentException">API Key is required.</exception>
+    public ChatGPTClient(IOptions<ChatGPTCredentials> credentialsOptions) : this(credentials: credentialsOptions.Value, httpClient: new HttpClient())
+    {
+    }
+
+
+    public ChatGPTClient(IOptions<ChatGPTCredentials> credentialsOptions, HttpClient client) : this(credentials: credentialsOptions.Value, httpClient: client)
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
+    /// </summary>
+    /// <param name="credentials">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>
+    /// <param name="httpClient">This HttpClient will be used to make requests to the GPT-3 API. The caller is responsible for disposing the HttpClient instance.</param>
+    /// <exception cref="ArgumentException">API Key is required.</exception>
+    private ChatGPTClient(ChatGPTCredentials credentials, HttpClient httpClient)
+    {
+        if(credentials is null)
         {
-            throw new ArgumentNullException(nameof(httpClient));
+            throw new ArgumentNullException(nameof(credentials));
         }
-    }
 
-    /// <summary>
-    /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
-    /// </summary>
-    /// <param name="apiKey">The OpenAI API uses API keys for authentication. Visit your <see href="https://beta.openai.com/account/api-keys">API Keys</see> page to retrieve the API key you'll use in your requests./param>
-    /// <param name="organization">For users who belong to multiple organizations, you can pass a header to specify which organization is used for an API request. Usage from these API requests will count against the specified organization's subscription quota.</param>
-    /// <param name="httpClient">This HttpClient will be used to make requests to the GPT-3 API. The caller is responsible for disposing the HttpClient instance.</param>
-    /// <exception cref="ArgumentException"></exception>
-    public ChatGPTClient(string apiKey, string organization, HttpClient httpClient) : this(new ChatGPTCredentials(apiKey, organization), httpClient)
-    {
-    }
-
-
-    /// <summary>
-    /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
-    /// </summary>
-    /// <param name="credentials">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>
-    /// <exception cref="ArgumentException"></exception>
-    public ChatGPTClient(ChatGPTCredentials credentials) : this(credentials, null)
-    {
-    }
-
-
-    /// <summary>
-    /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
-    /// </summary>
-    /// <param name="credentials">Supplies the GPT-3 API key and the organization. The organization is only needed if the caller belongs to more than one organziation. See <see cref="https://beta.openai.com/docs/api-reference/requesting-organization">Requesting Organization</see>.</param>
-    /// <param name="httpClient">This HttpClient will be used to make requests to the GPT-3 API. The caller is responsible for disposing the HttpClient instance.</param>
-    /// <exception cref="ArgumentException"></exception>
-    public ChatGPTClient(ChatGPTCredentials credentials, HttpClient? httpClient)
-    {
         if (string.IsNullOrWhiteSpace(credentials.ApiKey))
         {
             throw new ArgumentException("ApiKey preoperty cannot be null or whitespace.", nameof(credentials));
         }
-        _apiKey = credentials.ApiKey;
 
         if (httpClient is null)
         {
@@ -338,8 +330,6 @@ public class ChatGPTClient : IChatGPTClient
         {
             httpReq.Content = formContent;
 
-            httpReq.Headers.Add("Authorization", $"Bearer {_apiKey}");
-
             using (HttpResponseMessage? httpResponse = cancellationToken is null ?
                 await _client.SendAsync(httpReq).ConfigureAwait(false) :
                  await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false))
@@ -389,9 +379,6 @@ public class ChatGPTClient : IChatGPTClient
 
         using (var httpReq = new HttpRequestMessage(HttpMethod.Get, $"files/{fileId}/content"))
         {
-
-            httpReq.Headers.Add("Authorization", $"Bearer {_apiKey}");
-
             using (HttpResponseMessage? httpResponse = cancellationToken is null ?
                 await _client.SendAsync(httpReq) :
                 await _client.SendAsync(httpReq, cancellationToken.Value))
@@ -835,7 +822,8 @@ public class ChatGPTClient : IChatGPTClient
                 throw new ArgumentException($"Url is not a valid Uri", nameof(generatedImage));
             }
 
-            HttpRequestMessage requestMessage = new()
+
+            using HttpRequestMessage requestMessage = new()
             {
                 Method = HttpMethod.Get,
                 RequestUri = uri

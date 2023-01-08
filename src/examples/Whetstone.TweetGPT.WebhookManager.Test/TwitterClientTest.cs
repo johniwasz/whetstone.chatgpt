@@ -9,6 +9,7 @@ using Tweetinvi.Parameters;
 using Tweetinvi.Parameters.V2;
 using Whetstone.TweetGPT.WebHookManager;
 using Whetstone.TweetGPT.WebHookManager.Models;
+using System.Text.Json;
 
 namespace Whetstone.TweetGPT.WebhookManager.Test
 {
@@ -26,25 +27,20 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
                 .AddEnvironmentVariables()
                 .Build();
 
-            string? consumerKey = config["WebhookCredentials:ConsumerKey"] is not null 
-                ? config["WebhookCredentials:ConsumerKey"]
-                : config[EnvironmentSettings.ENV_TWITTER_CONSUMER_KEY];
+            string? twitterCredString = config["TWITTER_CREDS"];
 
-            string? consumerSecret = config["WebhookCredentials:ConsumerSecret"] is not null
-                ? config["WebhookCredentials:ConsumerSecret"]
-                : config[EnvironmentSettings.ENV_TWITTER_CONSUMER_SECRET];
-
-            string? accessToken = config["WebhookCredentials:AccessToken"] is not null
-                ? config["WebhookCredentials:AccessToken"]
-                : config[EnvironmentSettings.ENV_TWITTER_ACCESS_TOKEN];
-
-            string? accessTokenSecret = config["WebhookCredentials:AccessTokenSecret"] is not null
-                ? config["WebhookCredentials:AccessTokenSecret"]
-                : config[EnvironmentSettings.ENV_TWITTER_ACCESS_TOKEN_SECRET];
+            WebhookCredentials? webhookCreds = string.IsNullOrWhiteSpace(twitterCredString) ?
+                null : JsonSerializer.Deserialize<WebhookCredentials>(twitterCredString);
 
 
-            var consumerOnlyCredentials = new ConsumerOnlyCredentials(consumerKey, consumerSecret);
-            ReadOnlyTwitterCredentials twitCreds = new ReadOnlyTwitterCredentials(consumerOnlyCredentials, accessToken, accessTokenSecret);
+            ConsumerOnlyCredentials consumerCreds = webhookCreds is not null ?
+                new ConsumerOnlyCredentials(webhookCreds.ConsumerKey, webhookCreds.ConsumerSecret) :
+                new ConsumerOnlyCredentials(config["WebhookCredentials:ConsumerKey"], config["WebhookCredentials:ConsumerSecret"]);
+
+
+            ReadOnlyTwitterCredentials twitCreds = webhookCreds is not null ?
+                new ReadOnlyTwitterCredentials(consumerCreds, webhookCreds.AccessToken, webhookCreds.AccessTokenSecret) :
+                new ReadOnlyTwitterCredentials(consumerCreds, config["WebhookCredentials:AccessToken"], config["WebhookCredentials:AccessTokenSecret"]);
 
             var appClientWithoutBearer = new TwitterClient(twitCreds);
 

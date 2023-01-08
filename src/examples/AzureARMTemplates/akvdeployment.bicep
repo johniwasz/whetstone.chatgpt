@@ -43,7 +43,7 @@ resource twitter_chatgpt_funcid 'Microsoft.ManagedIdentity/userAssignedIdentitie
   location: twitgptgrouppname
 }
 
-resource twitterchatgpt_dev 'Microsoft.KeyVault/vaults@2019-09-01' = {
+resource twitterchatgpt_dev_kv01 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: 'twitterchatgpt-dev'
   location: twitgptgrouppname
   tags: {
@@ -77,6 +77,7 @@ resource twitterchatgpt_dev 'Microsoft.KeyVault/vaults@2019-09-01' = {
         }
       }
     ]
+    enableSoftDelete: true
     sku: {
       name: 'standard'
       family: 'A'
@@ -84,8 +85,17 @@ resource twitterchatgpt_dev 'Microsoft.KeyVault/vaults@2019-09-01' = {
   }
 }
 
-resource twitterchatgpt_dev_twittercreds 'Microsoft.KeyVault/vaults/secrets@2016-10-01' = {
-  parent: twitterchatgpt_dev
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
+  scope: twitterchatgpt_dev_kv01
+  name: guid(twitterchatgpt_dev_kv01.id, twitter_chatgpt_funcid.id, 'Key Vault Secrets User')
+  properties: {
+    roleDefinitionId: '4633458b-17de-408a-b874-0445c86b69e6'
+    principalId: twitter_chatgpt_funcid.properties.principalId
+  }
+}
+
+resource twitterchatgpt_dev_kv01_twittercreds 'Microsoft.KeyVault/vaults/secrets@2016-10-01' = {
+  parent: twitterchatgpt_dev_kv01
   name: 'twittercreds'
   properties: {
     value: '{ "AccessToken": "${twitterAccessToken}", "AccessTokenSecret": "${twitterAccessTokenSecret}", "ConsumerKey": "${twitterConsumerKey}", "ConsumerSecret": "${twitterConsumerSecret}"}'
@@ -96,9 +106,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: storageAccountName
   location: location
   sku: {
-    name: storageAccountType
+    name: storageAccountType    
   }
   kind: 'Storage'
+  properties: {
+
+  }
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
@@ -108,20 +121,25 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
     name: 'Y1'
     tier: 'Dynamic'
   }
-  properties: {}
 }
-
 
 resource function 'Microsoft.Web/sites@2020-12-01' = {
   name: appName
   location: twitgptgrouppname
   kind: 'functionapp'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${twitter_chatgpt_funcid.id}' : {}
+    }
+  }
   properties: {
     serverFarmId: hostingPlan.id
     siteConfig: {
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
-      acrUserManagedIdentityID: twitter_chatgpt_funcid.id
+      http20Enabled: true
+      keyVaultReferenceIdentity: twitter_chatgpt_funcid.id
       appSettings: [
         {
           name: 'AzureWebJobsDashboard'
@@ -141,7 +159,7 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
         }
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~2'
+          value: '~4'
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -150,6 +168,10 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: 'dotnet'
+        }
+        {
+          name: 'TWITTER_CREDS'
+          value: '@MicrosoftValueSecret(${twitterchatgpt_dev_kv01_twittercreds.id})'
         }
       ]
     }

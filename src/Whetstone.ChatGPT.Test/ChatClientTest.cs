@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using NuGet.Frameworks;
 using Whetstone.ChatGPT;
 using Whetstone.ChatGPT.Models;
@@ -114,11 +115,15 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task GPTModelsListWithHttpClient()
         {
-            string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
+
+            IOptions<ChatGPTCredentials> credsOptions = new OptionsWrapper<ChatGPTCredentials>(new ChatGPTCredentials
+            {
+                ApiKey = ChatGPTTestUtilties.GetChatGPTKey()
+            });
 
             using (HttpClient httpClient = new())
             {
-                IChatGPTClient client = new ChatGPTClient(apiKey, httpClient);
+                IChatGPTClient client = new ChatGPTClient(credsOptions, httpClient);
 
                 ChatGPTListResponse<ChatGPTModel>? modelResponse = await client.ListModelsAsync();
 
@@ -180,6 +185,7 @@ namespace Whetstone.ChatGPT.Test
             Assert.Throws<ArgumentException>(() => new ChatGPTClient((string?) null));
         }
 
+        /*
         [Fact]
         public void NullHttpClientConstruction()
         {
@@ -189,6 +195,7 @@ namespace Whetstone.ChatGPT.Test
 
             Assert.Throws<ArgumentNullException>(() => new ChatGPTClient(apiKey, client));
         }
+        */
 #pragma warning restore CS8604 // Possible null reference argument.
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
        

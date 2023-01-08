@@ -6,12 +6,20 @@
     <Nullable>enable</Nullable>
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>RELEASENOTES.md</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      # 1.1.0
+
+      - Added IChatGPTClient interface method for:
+      - StreamFineTuneEventsAsync
+      - DownloadImageAsync
+      - Small updates from code analysis suggestions
+    </PackageReleaseNotes>
+
     <RepositoryType>git</RepositoryType>
     <PackageTags>chatgpt; api; openapi; gpt; gpt-3</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2023</Copyright>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps the ChatGPT API.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
@@ -51,6 +59,10 @@
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
     <PackageReference Include="System.Text.Json" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
