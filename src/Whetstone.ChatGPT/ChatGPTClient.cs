@@ -37,7 +37,7 @@ public class ChatGPTClient : IChatGPTClient
     private bool _isDisposed;
 
     #region Constructors
-    
+
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
@@ -47,7 +47,7 @@ public class ChatGPTClient : IChatGPTClient
     {
     }
 
-    
+
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
@@ -95,7 +95,7 @@ public class ChatGPTClient : IChatGPTClient
     /// <exception cref="ArgumentException">API Key is required.</exception>
     private ChatGPTClient(ChatGPTCredentials credentials, HttpClient httpClient)
     {
-        if(credentials is null)
+        if (credentials is null)
         {
             throw new ArgumentNullException(nameof(credentials));
         }
@@ -258,9 +258,9 @@ public class ChatGPTClient : IChatGPTClient
         }
     }
 
-#endregion Completions
+    #endregion Completions
 
-#region Edits
+    #region Edits
     /// <inheritdoc cref="IChatGPTClient.CreateEditAsync"/>
     public async Task<ChatGPTCreateEditResponse?> CreateEditAsync(ChatGPTCreateEditRequest createEditRequest, CancellationToken? cancellationToken = null)
     {
@@ -282,9 +282,9 @@ public class ChatGPTClient : IChatGPTClient
 
         return await SendRequestAsync<ChatGPTCreateEditRequest, ChatGPTCreateEditResponse>(HttpMethod.Post, "edits", createEditRequest, cancellationToken).ConfigureAwait(false);
     }
-#endregion
+    #endregion
 
-#region File Operations
+    #region File Operations
 
     /// <inheritdoc cref="IChatGPTClient.UploadFileAsync"/>
     public async Task<ChatGPTFileInfo?> UploadFileAsync(ChatGPTUploadFileRequest? fileRequest, CancellationToken? cancellationToken = null)
@@ -401,12 +401,12 @@ public class ChatGPTClient : IChatGPTClient
         }
     }
 
-#endregion
+    #endregion
 
-#region Fine Tunes
+    #region Fine Tunes
 
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
-    public async Task<ChatGPTFineTuneJob?>  CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null)
+    public async Task<ChatGPTFineTuneJob?> CreateFineTuneAsync(ChatGPTCreateFineTuneRequest? createFineTuneRequest, CancellationToken? cancellationToken = null)
     {
         if (createFineTuneRequest is null)
         {
@@ -463,7 +463,7 @@ public class ChatGPTClient : IChatGPTClient
         {
             throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
         }
-        
+
         return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events", cancellationToken).ConfigureAwait(false);
     }
 
@@ -480,7 +480,7 @@ public class ChatGPTClient : IChatGPTClient
         CancellationToken cancelToken = cancellationToken ?? CancellationToken.None;
 
         using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events?stream=true");
-        
+
         HttpResponseMessage responseMessage = await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).ConfigureAwait(false);
 
         if (responseMessage.IsSuccessStatusCode)
@@ -521,7 +521,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
 
-#endregion
+    #endregion
 
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
     public async Task<ChatGPTCreateModerationResponse?> CreateModerationAsync(ChatGPTCreateModerationRequest? createModerationRequest, CancellationToken? cancellationToken = null)
@@ -558,7 +558,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException($"Inputs cannot be null", nameof(createEmbeddingsRequest));
         }
 
-        if(string.IsNullOrWhiteSpace(createEmbeddingsRequest.Model))
+        if (string.IsNullOrWhiteSpace(createEmbeddingsRequest.Model))
         {
             throw new ArgumentException($"Model cannot be null or empty", nameof(createEmbeddingsRequest));
         }
@@ -576,7 +576,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentNullException(nameof(createImageRequest));
         }
 
-        if(string.IsNullOrWhiteSpace(createImageRequest.Prompt))
+        if (string.IsNullOrWhiteSpace(createImageRequest.Prompt))
         {
             throw new ArgumentException($"Prompt cannot be null or empty", nameof(createImageRequest));
         }
@@ -586,7 +586,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException($"Prompt cannot be longer than 1000 characters", nameof(createImageRequest));
         }
 
-        if (createImageRequest.NumberOfImagesToGenerate<0)
+        if (createImageRequest.NumberOfImagesToGenerate < 0)
         {
             throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(createImageRequest));
         }
@@ -683,7 +683,7 @@ public class ChatGPTClient : IChatGPTClient
         {
             throw new ArgumentException($"Prompt cannot be longer than 1000 characters", nameof(imageEditRequest));
         }
-        
+
         if (imageEditRequest.NumberOfImagesToGenerate < 0)
         {
             throw new ArgumentException($"NumberOfImagesToGenerate must be between 1 and 10", nameof(imageEditRequest));
@@ -716,7 +716,7 @@ public class ChatGPTClient : IChatGPTClient
 
         ByteArrayContent? maskContent = null;
 
-        if(imageEditRequest.Mask is not null)
+        if (imageEditRequest.Mask is not null)
         {
             if (imageEditRequest.Mask.Content is null)
             {
@@ -766,12 +766,12 @@ public class ChatGPTClient : IChatGPTClient
         httpReq.Content = formContent;
 
         using HttpResponseMessage? httpResponse = await _client.SendAsync(
-            httpReq, 
+            httpReq,
             cancellationToken is null ? CancellationToken.None : cancellationToken.Value).ConfigureAwait(false);
-        
+
         return await ProcessResponseAsync<ChatGPTImageResponse>(httpResponse, cancellationToken);
     }
-    
+
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
     public async Task<byte[]?> DownloadImageAsync(GeneratedImage generatedImage, CancellationToken? cancellationToken = null)
     {
@@ -809,7 +809,7 @@ public class ChatGPTClient : IChatGPTClient
                 RequestUri = uri
             };
 
-            using HttpResponseMessage? httpResponse = await  _client.SendAsync(requestMessage, cancelToken).ConfigureAwait(false);
+            using HttpResponseMessage? httpResponse = await _client.SendAsync(requestMessage, cancelToken).ConfigureAwait(false);
 
             if (httpResponse is not null)
             {
@@ -851,7 +851,7 @@ public class ChatGPTClient : IChatGPTClient
         return await ProcessResponseAsync<TR>(httpResponse, cancellationToken).ConfigureAwait(false);
     }
 
-    
+
     private async Task<T?> SendRequestAsync<T>(HttpMethod method, string url, CancellationToken? cancellationToken) where T : class
     {
         using HttpRequestMessage request = CreateRequestMessage(method, url);
@@ -908,8 +908,8 @@ public class ChatGPTClient : IChatGPTClient
     private HttpRequestMessage CreateRequestMessage(HttpMethod method, string url)
     {
         HttpRequestMessage request = new(method, url);
-        
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _chatCredentials.ApiKey);        
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _chatCredentials.ApiKey);
 
         if (!string.IsNullOrWhiteSpace(_chatCredentials.Organization))
         {
@@ -919,9 +919,9 @@ public class ChatGPTClient : IChatGPTClient
         return request;
     }
 
-#endregion
+    #endregion
 
-#region Clean Up
+    #region Clean Up
     ~ChatGPTClient()
     {
         Dispose(true);
@@ -944,5 +944,5 @@ public class ChatGPTClient : IChatGPTClient
             _isDisposed = true;
         }
     }
-#endregion
+    #endregion
 }
