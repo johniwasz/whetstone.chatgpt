@@ -19,6 +19,12 @@ using Tweetinvi.Core.Wrappers;
 using Tweetinvi.Logic.Wrapper;
 using Azure.Core;
 using Tweetinvi.Parameters;
+using Whetstone.ChatGPT;
+using Whetstone.ChatGPT.Models;
+using Tweetinvi.Exceptions;
+using System.Text;
+using Tweetinvi.Models.V2;
+using System.Threading;
 
 namespace Whetstone.TweetGPT.DirectMessageFunction
 {
@@ -31,21 +37,39 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
         private readonly ILogger _logger;
         private readonly WebhookCredentials _creds;
         private readonly TwitterClient _client;
+        private readonly IChatGPTClient _chatClient;
+        private readonly string _basePrompt;
 
-        public ChatCPTDirectMessageFunction(IOptions<WebhookCredentials> creds, ILogger<ChatCPTDirectMessageFunction> logger)
+        public ChatCPTDirectMessageFunction(IChatGPTClient chatGPT, IOptions<WebhookCredentials> creds, ILogger<ChatCPTDirectMessageFunction> logger)
         {            
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _creds = creds?.Value ?? throw new ArgumentNullException(nameof(creds));
 
+            _chatClient = chatGPT ?? throw new ArgumentNullException(nameof(chatGPT));
+
             _client = GetClient();
+
+            StringBuilder promptBuilder = new();
+            promptBuilder.AppendLine("Monty is an arrogant, rich, CEO that reluctantly answers questions with condescending responses:");
+            promptBuilder.AppendLine();
+            promptBuilder.AppendLine("You: How many pounds are in a kilogram?");
+            promptBuilder.AppendLine("Monty: This again? There are 2.2 pounds in a kilogram, you ninny.");
+            promptBuilder.AppendLine("You: What does HTML stand for?");
+            promptBuilder.AppendLine("Monty: I'm too busy for this? Hypertext Markup Language. The T is for try to get a job.");
+            promptBuilder.AppendLine("You: When did the first airplane fly?");
+            promptBuilder.AppendLine("Monty: On December 17, 1903, Wilbur and Orville Wright made the first flights. I funded their construction.");
+            promptBuilder.AppendLine("You: What is the meaning of life?");
+            promptBuilder.AppendLine("Monty: To get rich. Family, religion, friendship. These are the three demons you must slay if you wish to succeed in busniess.");
+            _basePrompt = promptBuilder.ToString();
+
         }
 
         [Function("chatgptdm")]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
-             FunctionContext executionContext)
+        public async Task<HttpResponseData> RunAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
+            FunctionContext executionContext)
         {
-
             WebhooksRequestHandlerForAzureFunction request = new WebhooksRequestHandlerForAzureFunction(req);
             
             IAccountActivityRequestHandler activityHandler = _client.AccountActivity.CreateRequestHandler();
@@ -54,6 +78,8 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
 
             if (userId.HasValue)
             {
+                _logger.LogInformation($"Processing message for user {userId.Value}");
+                
                 IAccountActivityStream activityStream = activityHandler.GetAccountActivityStream(userId.Value, "devchatgpt");
 
                 if (!_trackedStreams.Contains(activityStream.AccountUserId))
@@ -68,6 +94,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
 
             if (isRequestManagedByTweetinvi)
             {
+                _logger.LogInformation("Request is managed by Tweetinvi.");
                 var routeHandled = await activityHandler.TryRouteRequestAsync(request).ConfigureAwait(false);
                 if (routeHandled)
                 {
@@ -75,39 +102,6 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
                 }
             }
 
-            /*
-             string? crcToken;
-            string? nonce;
-
-            if (req.FunctionContext.BindingContext.BindingData.ContainsKey("crc_token"))
-            {
-                crcToken = (string?) req.FunctionContext.BindingContext.BindingData["crc_token"];
-                nonce = (string?) req.FunctionContext.BindingContext.BindingData["nonce"];                
-
-                var crcResponse = _webhookVerifier.GenerateCrcResponse(crcToken, _creds.ConsumerSecret);
-                var httpCrcResp = req.CreateResponse(HttpStatusCode.OK);
-
-                await httpCrcResp.WriteAsJsonAsync(crcResponse);
-
-                return httpCrcResp;
-            }
-
-          
-            var accountActivityHandler = _client.AccountActivity.CreateRequestHandler();
-
-            IWebhooksRequest webhookRequest = new WebhooksRequestHandlerForAzureFunction(req);
-
-            bool isRouted = await accountActivityHandler.TryRouteRequestAsync(webhookRequest);
-
-            //accountActivityHandler.Web
-
-         
-
-            Stopwatch funcTime = Stopwatch.StartNew();
-
-
-            this._logger.LogInformation($"Alexa request processing time: {funcTime.ElapsedMilliseconds} milliseconds");
-            */
             var httpResp = req.CreateResponse(HttpStatusCode.OK);
             return httpResp;
         }
@@ -116,11 +110,85 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
         {
             if (e is not null)
             {
-                IPublishMessageParameters publishParameters = new PublishMessageParameters("Hello back from the webs", e.Sender.Id);
 
-                TwitterClient client = EnsureBearerTokenAsync(_client).Result;
+                string messageFromSender = e.Message.Text;
 
-                client.Messages.PublishMessageAsync(publishParameters).Wait();
+                long senderId = e.Message.SenderId;
+
+                _logger.LogInformation($"Received message from {senderId}.");
+                _logger.LogInformation($"Received message text: {messageFromSender}");
+
+                string userInput = $"You: {messageFromSender}\nMonty: ";
+
+                string userPrompt = string.Concat(_basePrompt, userInput);
+
+                _logger.LogInformation($"User prompt: {userPrompt}");
+
+                ChatGPTCompletionRequest completionRequest = new()
+                {
+                    Temperature = 1.0f,
+                    Model = ChatGPTCompletionModels.Davinci,
+                    Prompt = userPrompt,
+                    MaxTokens = 200,
+                    User = senderId.ToString()
+                };
+
+                try
+                {
+                    ChatGPTCompletionResponse? gptResponse = _chatClient.CreateCompletionAsync(completionRequest).GetAwaiter().GetResult();
+
+                    if (gptResponse?.Choices is not null)
+                    {
+                        string? responseMessage = gptResponse.GetCompletionText();
+
+                        if (!string.IsNullOrWhiteSpace(responseMessage))
+                        {
+                            SendResponseAsync(e, responseMessage).Wait();
+                        }
+                    }
+                }
+                catch(ChatGPTException chatEx)
+                {
+                    _logger.LogError(chatEx, $"ChatGPT had an error processing prompt: {messageFromSender}");
+
+                    _logger.LogError(chatEx, $"  ChatGPT Status: {chatEx.StatusCode}");
+
+                    if (chatEx.ChatGPTError is not null)
+                    {
+                        _logger.LogError(chatEx, $"  ChatGPT error details: {chatEx.ChatGPTError.Message}, Code: {chatEx.ChatGPTError.Code}, Type: {chatEx.ChatGPTError.Type}");
+                    }
+
+                    SendResponseAsync(e, "I'm attending to important business. Await your turn, plebian.").Wait();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"An error occurred processing prompt: {messageFromSender}");
+                }
+            }
+        }
+
+        private async Task SendResponseAsync(MessageReceivedEvent? e, string responseMessage)
+        {
+            if (e is not null)
+            {
+                try
+                {
+                    _logger.LogInformation($"Sending Response: {responseMessage}");
+
+                    IPublishMessageParameters publishParameters = new PublishMessageParameters(responseMessage, e.Sender.Id);
+
+                    TwitterClient client = await EnsureBearerTokenAsync(_client).ConfigureAwait(false);
+
+                    await client.Messages.PublishMessageAsync(publishParameters).ConfigureAwait(false);
+                }
+                catch (TwitterAuthException authEx)
+                {
+                    _logger.LogError(authEx, $"Error authenticating with Twitter credentials while sending response: {responseMessage}");
+                }
+                catch (TwitterResponseException respEx)
+                {
+                    _logger.LogError(respEx, $"Error sending Twitter message while sending response: {responseMessage}");
+                }
             }
         }
 

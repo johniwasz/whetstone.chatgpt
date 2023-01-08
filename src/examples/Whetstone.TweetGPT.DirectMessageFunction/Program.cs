@@ -7,7 +7,10 @@ using Tweetinvi;
 using Tweetinvi.AspNet;
 using Tweetinvi.Models;
 using System.Text.Json;
-using Grpc.Core;
+using Whetstone.ChatGPT;
+using Whetstone.ChatGPT.Models;
+using Polly.Extensions.Http;
+using Polly;
 
 public class Program
 {
@@ -29,10 +32,36 @@ public class Program
                 configuration.AddUserSecrets("117cec77-f121-4f75-9054-584941f6df04");
 #endif
                 configuration.AddEnvironmentVariables();
-                
+
+
             })
             .ConfigureServices((context, services) =>
             {
+
+                services.Configure<ChatGPTCredentials>(options =>
+                {
+                    IConfiguration config = context.Configuration;
+                    
+                    string? gptCredentialsText = config["OPENAI_API_CREDS"];
+
+                    if (string.IsNullOrWhiteSpace(gptCredentialsText))
+                    {
+                        throw new InvalidOperationException("OPENAI_API_CREDS is not set.");
+                    }
+                    
+                    ChatGPTCredentials? gptCredentials = JsonSerializer.Deserialize<ChatGPTCredentials>(gptCredentialsText);
+
+                    if (gptCredentials == null)
+                    {
+                        throw new InvalidOperationException("OPENAI_API_CREDS is not set.");
+                    }
+                    
+                    options.ApiKey = gptCredentials.ApiKey;
+                    options.Organization = gptCredentials.Organization;
+
+                });
+
+
                 services.Configure<WebhookCredentials>(options =>
                     {
                         IConfiguration config = context.Configuration;
@@ -58,12 +87,29 @@ public class Program
                             options.ConsumerKey = config["WebhookCredentials:ConsumerKey"];
                         }
 #endif
-                    });              
-            });        
+                    });
+
+                
+                services.AddHttpClient<IChatGPTClient, ChatGPTClient>()
+                    .SetHandlerLifetime(TimeSpan.FromSeconds(150))
+                    .AddPolicyHandler(GetRetryPolicy());
+
+                services.AddLogging();
+
+                // services.AddScoped<IChatGPTClient, ChatGPTClient>();
+            });
 
         var host = hostBuilder.Build();
 
         host.Run();
     }
 
+
+    public static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+    {
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+    }
 }

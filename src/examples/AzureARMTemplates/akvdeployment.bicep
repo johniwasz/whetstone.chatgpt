@@ -43,7 +43,7 @@ resource twitter_chatgpt_funcid 'Microsoft.ManagedIdentity/userAssignedIdentitie
   location: twitgptgrouppname
 }
 
-resource twitterchatgpt_dev 'Microsoft.KeyVault/vaults@2019-09-01' = {
+resource twitterchatgpt_dev_kv01 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: 'twitterchatgpt-dev'
   location: twitgptgrouppname
   tags: {
@@ -86,16 +86,16 @@ resource twitterchatgpt_dev 'Microsoft.KeyVault/vaults@2019-09-01' = {
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2018-09-01-preview' = {
-  scope: twitterchatgpt_dev
-  name: guid(twitterchatgpt_dev.id, twitter_chatgpt_funcid.id, 'Key Vault Secrets User')
+  scope: twitterchatgpt_dev_kv01
+  name: guid(twitterchatgpt_dev_kv01.id, twitter_chatgpt_funcid.id, 'Key Vault Secrets User')
   properties: {
     roleDefinitionId: '4633458b-17de-408a-b874-0445c86b69e6'
     principalId: twitter_chatgpt_funcid.properties.principalId
   }
 }
 
-resource twitterchatgpt_dev_twittercreds 'Microsoft.KeyVault/vaults/secrets@2016-10-01' = {
-  parent: twitterchatgpt_dev
+resource twitterchatgpt_dev_kv01_twittercreds 'Microsoft.KeyVault/vaults/secrets@2016-10-01' = {
+  parent: twitterchatgpt_dev_kv01
   name: 'twittercreds'
   properties: {
     value: '{ "AccessToken": "${twitterAccessToken}", "AccessTokenSecret": "${twitterAccessTokenSecret}", "ConsumerKey": "${twitterConsumerKey}", "ConsumerSecret": "${twitterConsumerSecret}"}'
@@ -171,7 +171,7 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
         }
         {
           name: 'TWITTER_CREDS'
-          value: '@MicrosoftValueSecret(${twitterchatgpt_dev_twittercreds.id})'
+          value: '@MicrosoftValueSecret(${twitterchatgpt_dev_kv01_twittercreds.id})'
         }
       ]
     }
