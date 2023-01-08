@@ -89,14 +89,18 @@ public class Program
 #endif
                     });
 
+
+                /// services.AddHttpClient();
+
                 
                 services.AddHttpClient<IChatGPTClient, ChatGPTClient>()
                     .SetHandlerLifetime(TimeSpan.FromSeconds(150))
                     .AddPolicyHandler(GetRetryPolicy());
+                
 
                 services.AddLogging();
 
-                // services.AddScoped<IChatGPTClient, ChatGPTClient>();
+                //services.AddScoped<IChatGPTClient, ChatGPTClient>();
             });
 
         var host = hostBuilder.Build();

@@ -2,15 +2,7 @@
 
 # Whetstone.ChatGPT
 
-A simple light-weight library that wraps ChatGPT API completions. 
-
-This library includes quality of life improvements:
-
-- including support for __CancellationTokens__
-- documentation comments
-- conversions of Unix Epoch time to DateTime, etc.
-- __IChatGPTClient__ interface for use with dependency injection
-- Streaming completion responses and fine tune events
+A simple light-weight library that wraps ChatGPT API completions with support for dependency injection.
 
 Supported features include:
 
@@ -21,6 +13,35 @@ Supported features include:
 - Images
 - Embeddings
 - Moderations
+- Response streaming
+
+[Examples](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples) include:
+
+- Command line bot
+- Azure Function Twitter Webhook that responds to DMs
+
+## Dependency Injection Quickstart
+
+```C#
+services.Configure<ChatGPTCredentials>(options =>
+{    
+    options.ApiKey = "YOURAPIKEY";
+    options.Organization = "YOURORGANIZATIONID";
+});
+```
+
+Use: 
+```C#
+services.AddHttpClient();
+```
+OR:
+```C#
+services.AddHttpClient<IChatGPTClient, ChatGPTClient>();
+```
+Configure `IChatGPTClient` service:
+```C#
+services.AddScoped<IChatGPTClient, ChatGPTClient>();
+```
 
 ## Completion
 
