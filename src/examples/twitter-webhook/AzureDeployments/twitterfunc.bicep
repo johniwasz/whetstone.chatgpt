@@ -16,6 +16,9 @@ param openAIAPICredsJson string
 @description('region of the resouce group.')
 param twitgptgrouppname string = 'eastus'
 
+@description('If settings are overwritten, then the function needs to be redeployed.')
+param overwriteFuncSettings bool = false
+
 param storageAccountType string = 'Standard_LRS'
 
 
@@ -97,23 +100,25 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   }
 }
 
+
+
 resource function 'Microsoft.Web/sites@2020-12-01' = {
   name: appName
   location: twitgptgrouppname
   kind: 'functionapp'
   tags: {
     displayName: 'twitterchatgpt'
-  }
+  }  
   identity: {
     type: 'SystemAssigned'
-  }
-  properties: {
+  } 
+  properties:  {
     serverFarmId: hostingPlan.id
     siteConfig: {
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       http20Enabled: true      
-      appSettings: [
+      appSettings: overwriteFuncSettings ? [
         {
           name: 'AzureWebJobsDashboard'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccount.listKeys().keys[0].value}'          
@@ -142,6 +147,10 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: 'dotnet'
         }
+        { 
+          name: 'WEBSITE_RUN_FROM_PACKAGE'
+          value: '1'
+        }
         {
           name: 'TWITTER_CREDS'
           value: '@Microsoft.KeyVault(VaultName=${twitterchatgpt_dev_kv.name};SecretName=${twitterchatgpt_dev_kv_twittercreds.name})'
@@ -150,7 +159,7 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
           name: 'OPENAI_API_CREDS'
           value: '@Microsoft.KeyVault(VaultName=${twitterchatgpt_dev_kv.name};SecretName=${twitterchatgpt_dev_kv_openaiapicreds.name})'
         }
-      ]
+      ] : null
     }
     httpsOnly: true
   }

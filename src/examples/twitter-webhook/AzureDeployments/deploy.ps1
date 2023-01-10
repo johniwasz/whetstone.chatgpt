@@ -15,4 +15,5 @@ New-AzResourceGroupDeployment `
   -ResourceGroupName $resourceGroupName `
   -TemplateFile $templateFile `
   -twitterCredsJson $twitterCredsJson `
-  -openAIAPICredsJson $OpenAIAPICreds
+  -openAIAPICredsJson $OpenAIAPICreds `
+  -overwriteFuncSettings $true

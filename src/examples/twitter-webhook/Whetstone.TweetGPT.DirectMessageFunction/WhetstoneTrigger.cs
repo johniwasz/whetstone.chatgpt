@@ -25,6 +25,7 @@ using Tweetinvi.Exceptions;
 using System.Text;
 using Tweetinvi.Models.V2;
 using System.Threading;
+using Tweetinvi.Core.Events;
 
 namespace Whetstone.TweetGPT.DirectMessageFunction
 {
