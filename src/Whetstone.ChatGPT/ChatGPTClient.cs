@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 #if NET6_0_OR_GREATER
@@ -32,9 +33,11 @@ public class ChatGPTClient : IChatGPTClient
 
     private readonly bool _isHttpClientProvided = true;
 
-    private readonly ChatGPTCredentials _chatCredentials;
+    private ChatGPTCredentials? _chatCredentials;
 
     private bool _isDisposed;
+
+    public ChatGPTCredentials? Credentials { set => _chatCredentials = value; }
 
     #region Constructors
 
@@ -87,6 +90,8 @@ public class ChatGPTClient : IChatGPTClient
     {
     }
 
+
+
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
@@ -95,16 +100,6 @@ public class ChatGPTClient : IChatGPTClient
     /// <exception cref="ArgumentException">API Key is required.</exception>
     private ChatGPTClient(ChatGPTCredentials credentials, HttpClient httpClient)
     {
-        if (credentials is null)
-        {
-            throw new ArgumentNullException(nameof(credentials));
-        }
-
-        if (string.IsNullOrWhiteSpace(credentials.ApiKey))
-        {
-            throw new ArgumentException("ApiKey preoperty cannot be null or whitespace.", nameof(credentials));
-        }
-
         _chatCredentials = credentials;
 
         if (httpClient is null)
@@ -908,6 +903,16 @@ public class ChatGPTClient : IChatGPTClient
     private HttpRequestMessage CreateRequestMessage(HttpMethod method, string url)
     {
         HttpRequestMessage request = new(method, url);
+
+        if (_chatCredentials is null)
+        {
+            throw new ChatGPTException("ChatGPTCredentials are null.");
+        }
+
+        if (string.IsNullOrWhiteSpace(_chatCredentials.ApiKey))
+        {
+            throw new ChatGPTException("ApiKey property cannot be null or whitespace.");
+        }
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _chatCredentials.ApiKey);
 

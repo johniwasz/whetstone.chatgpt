@@ -1,0 +1,31 @@
+﻿@page "/"
+@inject IVersionProvider VersionProvider
+<Heading Size="HeadingSize.Is1" Margin="Margin.Is3.FromBottom">Blazorise</Heading>
+
+<Paragraph>
+    Blazorise is a component library built on top of Blazor and CSS frameworks like <Anchor To="https://getbootstrap.com/" Target="Target.Blank">Bootstrap</Anchor>, <Anchor To="https://bulma.io/" Target="Target.Blank">Bulma</Anchor>, <Anchor To="https://ant.design/" Target="Target.Blank">Ant Design</Anchor>, and <Anchor To="http://daemonite.github.io/material/" Target="Target.Blank">Material</Anchor>. It can be used to build responsive, single-page web applications.
+</Paragraph>
+
+<Alert Color="Color.Info" Visible>
+    <Paragraph>
+        This is a Blazorise Starting Template allowing you to quickly get started building your project!
+    </Paragraph>
+
+    <Paragraph>
+        The bare minimum has been installed for you:
+        <ul>
+            <li>Blazorise @($"v{VersionProvider.MilestoneVersion}")</li>
+            <li>The Blazorise Provider you have selected</li>
+            <li>The corresponding icon provider</li>
+        </ul>
+        However Blazorise has many more extensions at your disposal.
+        You can find them <Anchor To="https://blazorise.com/docs/extensions" Target="Target.Blank">here</Anchor>.
+    </Paragraph>
+
+    <Paragraph>
+        Please visit the official <Anchor To="https://bootstrapdemo.blazorise.com/" Target="Target.Blank">Blazorise Demo</Anchor> for component examples.
+    </Paragraph>
+    <Paragraph>
+        Please visit the official <Anchor To="https://blazorise.com/docs/" Target="Target.Blank">Blazorise Documentation</Anchor> to learn more about the available components.
+    </Paragraph>
+</Alert>

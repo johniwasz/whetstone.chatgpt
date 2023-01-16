@@ -298,5 +298,10 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentException">Requires generatedImage</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
         Task<byte[]?> DownloadImageAsync(GeneratedImage generatedImage, CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Apply new credentails.
+        /// </summary>
+        public ChatGPTCredentials? Credentials { set; }
     }
 }

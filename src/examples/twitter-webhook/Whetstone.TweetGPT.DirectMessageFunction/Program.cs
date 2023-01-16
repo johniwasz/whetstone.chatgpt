@@ -89,7 +89,7 @@ public class Program
 #endif
                 });
                 /// services.AddHttpClient();
-
+                /// 
                 services.AddHttpClient<IChatGPTClient, ChatGPTClient>()
                     .SetHandlerLifetime(TimeSpan.FromSeconds(150))
                     .AddPolicyHandler(GetRetryPolicy());
