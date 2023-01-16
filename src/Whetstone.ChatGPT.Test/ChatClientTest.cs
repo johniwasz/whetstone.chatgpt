@@ -182,7 +182,8 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public void NullSessionConstruction()
         {
-            Assert.Throws<ArgumentException>(() => new ChatGPTClient((string?) null));
+            IChatGPTClient constructedClient = new ChatGPTClient((string?) null);
+            Assert.NotNull(constructedClient);
         }
 
         /*

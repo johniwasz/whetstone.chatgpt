@@ -1,4 +1,8 @@
 ﻿
+#if NET6_0_OR_GREATER
+using System.ComponentModel.DataAnnotations;
+#endif 
+
 namespace Whetstone.ChatGPT.Models
 {
 
@@ -45,6 +49,10 @@ namespace Whetstone.ChatGPT.Models
         /// The OpenAI API uses API keys for authentication. Visit your <see href="https://beta.openai.com/account/api-keys">API Keys</see> page to retrieve the API key you'll use in your requests.
         /// </summary>
         /// <remarks>Required for authentication.</remarks>
+#if NET6_0_OR_GREATER
+        [Required]
+        [DataType(DataType.Password)]
+#endif
         public string? ApiKey
         {
             get;

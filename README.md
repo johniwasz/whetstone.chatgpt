@@ -19,6 +19,7 @@ Supported features include:
 
 - Command line bot
 - Azure Function Twitter Webhook that responds to DMs
+- Blazor UI
 
 ## Dependency Injection Quickstart
 

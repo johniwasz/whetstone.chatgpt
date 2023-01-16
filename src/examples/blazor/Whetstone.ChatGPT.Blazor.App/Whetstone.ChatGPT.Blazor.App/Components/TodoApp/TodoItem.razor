@@ -1,0 +1,22 @@
+﻿<ListGroupItem>
+    <Field Horizontal Padding="Padding.IsAuto.OnAll">
+        <FieldBody ColumnSize="ColumnSize.Is1">
+            <Check TValue="bool" Checked="@Todo.Completed" CheckedChanged="@OnCheckedChanged"></Check>
+        </FieldBody>
+        <FieldBody ColumnSize="ColumnSize.Is11">
+            @Todo.Description
+        </FieldBody>
+    </Field>
+</ListGroupItem>
+@code{
+    Task OnCheckedChanged( bool isChecked )
+    {
+        Todo.Completed = isChecked;
+
+        return StatusChanged?.Invoke( isChecked );
+    }
+
+    [Parameter] public Todo Todo { get; set; }
+
+    [Parameter] public Func<bool, Task> StatusChanged { get; set; }
+}
