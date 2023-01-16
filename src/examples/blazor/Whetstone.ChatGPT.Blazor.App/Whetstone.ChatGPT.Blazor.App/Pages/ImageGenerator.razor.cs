@@ -35,23 +35,14 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages
 
                 ChatGPTImageResponse? imageResponse = await ChatClient.CreateImageAsync(gptRequest);
 
-                if (imageResponse is not null)
+                if (imageResponse?.Data is not null && imageResponse.Data.Count > 0 && imageResponse.Data[0].Url is not null)
                 {
-                    if (imageResponse.Data is not null)
-                    {
-                        if (imageResponse.Data.Count > 0)
-                        {
-                            if (imageResponse.Data[0].Url is not null)
-                            {
 #pragma warning disable CS8604 // Possible null reference argument.
-                                imageUrl = new Uri(imageResponse.Data[0].Url);
+                    imageUrl = new Uri(imageResponse.Data[0].Url);
 #pragma warning restore CS8604 // Possible null reference argument.
-                            }
-                        }
-                    }
                 }
             }
-            catch(ChatGPTException chatEx)
+            catch (ChatGPTException chatEx)
             {
                 exception = chatEx;
             }
