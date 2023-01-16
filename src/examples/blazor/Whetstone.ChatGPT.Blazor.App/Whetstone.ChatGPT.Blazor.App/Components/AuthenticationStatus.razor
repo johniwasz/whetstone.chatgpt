@@ -1,0 +1,34 @@
+﻿
+@inject NavigationManager Navigation
+
+@inject ApplicationState CurrentState
+@inject IChatGPTClient ChatClient
+
+
+
+<h4>
+    @if (CurrentState.IsOpenAIAuthenticated)
+    {
+        <Button Clicked="@PurgeCredentials"><Blazorise.Icons.FontAwesome.Icon Name="IconName.LockOpen" IconSize="IconSize.Large" />Clear API Key</Button>
+    }
+    else
+    {
+        <Button Clicked="@ShowLogin">
+            <Blazorise.Icons.FontAwesome.Icon Name="IconName.LockOpen" IconSize="IconSize.Large"/>Validate API Key</Button>
+    }
+</h4>
+
+<LogIn @ref="loginModal"></LogIn>
+
+<!--
+
+<Button Color="" @onclick="() => smModal?.ShowAsync()">Small modal</Button>
+
+
+<Modal @ref="smModal" Title="Small modal" Size="ModalSize.Small">
+    <BodyTemplate>Small modal</BodyTemplate>
+</Modal>
+
+
+
+-->

@@ -1,0 +1,58 @@
+﻿@using Whetstone.ChatGPT.Blazor.App.Models
+@using Whetstone.ChatGPT.Blazor.App.State
+@using Whetstone.ChatGPT.Models
+
+@page "/imagegenerator"
+
+@inject ILogger<ImageGenerator> Logger   
+@inject IChatGPTClient ChatClient
+
+<PageTitle>Image Generator</PageTitle>
+
+<h3>Image Generator</h3>
+
+<EditForm Model="@imageRequest" OnValidSubmit="@( async() => await HandleSubmitAsync())" class="w-50 p-3">
+    <DataAnnotationsValidator />
+    <Blazorise.ValidationSummary />
+    <div class="form-group">
+        <label for="ImageDescription" class="form-label">Image Description:</label>
+    <InputTextArea id="ImageDescription" @bind-Value="imageRequest.ImageDescription" placeholder="Enter image description" DisplayName="Image Description" class="w-100 p-3" />
+    <ValidationMessage For="@(() => imageRequest.ImageDescription)"/>
+    </div>
+    <div class="form-group">
+    <label for="ImageSize" class="form-label">Image Size:</label>
+    <InputSelect id="ImageSize" @bind-Value="imageRequest.ImageSize">
+        @foreach (var gender in Enum.GetValues(typeof(CreatedImageSize)))
+        {
+            <option value="@gender">@gender</option>
+        }
+    </InputSelect>
+    </div>   
+    <button type="submit" class="btn btn-primary float-end">Submit</button>
+
+    <ErrorNotification Exception="@exception" />
+    
+</EditForm>
+
+<br />
+<div class="border-width: 10px">
+
+@if (isLoading)
+{
+    <div class="spinner-border float-md-none" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+else
+{
+    if (imageUrl is not null)
+    {
+        
+        <ProfilePicture>
+            <span class="border border-5">
+            <img class="img-fluid" src="@imageUrl" />
+            </span>
+        </ProfilePicture>
+    }
+}
+</div>
