@@ -2,7 +2,7 @@
 
 # Whetstone.ChatGPT
 
-A simple light-weight library that wraps ChatGPT API completions with support for dependency injection.
+A simple light-weight library that wraps the GPT-3 API with support for dependency injection.
 
 Supported features include:
 
@@ -46,7 +46,7 @@ services.AddScoped<IChatGPTClient, ChatGPTClient>();
 
 ## Completion
 
-ChatGPT Completions use [models](https://beta.openai.com/docs/models) to answer a wide variety of tasks, including but not limited to classification, sentiment analysis, answering questions, etc. 
+GPT-3 Completions use [models](https://beta.openai.com/docs/models) to answer a wide variety of tasks, including but not limited to classification, sentiment analysis, answering questions, etc. 
 
 ### Completion Quickstart
 
@@ -71,7 +71,7 @@ var response = await client.CreateCompletionAsync(gptRequest);
 Console.WriteLine(response.GetCompletionText());
 ```
 
-ChatGPT is not deterministic. One of the test runs of the sample above returned:
+GPT-3 is not deterministic. One of the test runs of the sample above returned:
 
 > The weather can vary greatly depending on location. In general, you can expect temperatures to be moderate and climate to be comfortable, but it is always best to check the forecast for your specific area.
 
