@@ -1,15 +1,14 @@
 ﻿
 @inject NavigationManager Navigation
 
-@inject ApplicationState CurrentState
+
 @inject IChatGPTClient ChatClient
 
 
-
 <h4>
-    @if (CurrentState.IsOpenAIAuthenticated)
+    @if (AppState.IsOpenAIAuthenticated)
     {
-        <Button Clicked="@PurgeCredentials"><Blazorise.Icons.FontAwesome.Icon Name="IconName.LockOpen" IconSize="IconSize.Large" />Clear API Key</Button>
+        <Button Clicked="@PurgeCredentials"><Blazorise.Icons.FontAwesome.Icon Name="IconName.Lock" IconSize="IconSize.Large" />Clear API Key</Button>
     }
     else
     {

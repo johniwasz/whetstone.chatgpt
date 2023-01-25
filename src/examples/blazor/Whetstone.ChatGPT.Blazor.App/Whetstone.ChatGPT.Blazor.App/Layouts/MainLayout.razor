@@ -1,8 +1,10 @@
 ﻿@using Whetstone.ChatGPT.Blazor.App.Components.Layout
+
 @inherits LayoutComponentBase
 
 
 <Layout>
+    <CascadingValue Value="@AppState">
     <LayoutHeader Fixed>
         <TopMenu ThemeEnabledChanged="@OnThemeEnabledChanged"
                 ThemeGradientChanged="@OnThemeGradientChanged"
@@ -21,4 +23,5 @@
             </LayoutContent>
         </Layout>
     </Layout>
+    </CascadingValue>
 </Layout>

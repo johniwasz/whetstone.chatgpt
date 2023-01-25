@@ -1,7 +1,6 @@
 ﻿@using Whetstone.ChatGPT.Blazor.App.State
 @using System.ComponentModel.DataAnnotations
 
-@inject ApplicationState ApplicationState
 @inject IChatGPTClient ChatClient
 
 <Blazorise.Bootstrap5.Modal @ref="loginDialog">
@@ -32,8 +31,8 @@
             </Validations>
             
         </ModalBody>
-       <ModalFooter>
-           <Blazorise.Bootstrap5.Button Color="Color.Primary" Type="ButtonType.Submit" Clicked="@ValidateCredentialsAsync">
+       <ModalFooter>           
+           <Blazorise.Bootstrap5.Button Color="Color.Primary" Type="ButtonType.Submit" @ref="submitButton" Clicked="@ValidateCredentialsAsync">
             @if (authenticationSucceeded)
             {
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.Check" IconSize="IconSize.Large"></Blazorise.Icons.FontAwesome.Icon>
