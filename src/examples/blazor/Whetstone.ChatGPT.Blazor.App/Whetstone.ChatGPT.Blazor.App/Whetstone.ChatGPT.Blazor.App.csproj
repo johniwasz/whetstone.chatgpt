@@ -13,7 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazorise.Components" Version="1.1.5" />
+		<PackageReference Include="Blazorise.Components" Version="1.1.6" />
 		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.1.6" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.*" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.*" PrivateAssets="all" />
