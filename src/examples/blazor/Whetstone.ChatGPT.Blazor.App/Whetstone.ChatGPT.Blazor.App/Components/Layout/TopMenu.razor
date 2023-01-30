@@ -18,37 +18,6 @@
         </BarStart>
         <BarEnd>
             <BarItem>
-                <BarDropdown RightAligned>
-                    <BarDropdownToggle><Icon Name="IconName.Tint" /> Theme</BarDropdownToggle>
-                    <BarDropdownMenu Style="padding: 15px; min-width:550px;">
-                        <Row>
-                            <Column Margin="Margin.Is2.FromBottom">
-                                <Field>
-                                    <Switch TValue="bool" Checked="@(Theme?.Enabled == true)" CheckedChanged="@ThemeEnabledChanged">Theme enabled</Switch>
-                                </Field>
-                            </Column>
-                        </Row>
-                        <Row>
-                            <Column Margin="Margin.Is2.FromBottom">
-                                <Field>
-                                    <Check TValue="bool" Checked="@(Theme?.IsGradient == true)" CheckedChanged="@ThemeGradientChanged">Gradient colors</Check>
-                                </Field>
-                                <Field>
-                                    <Check TValue="bool" Checked="@(Theme?.IsRounded == true)" CheckedChanged="@ThemeRoundedChanged">Rounded elements</Check>
-                                </Field>
-                            </Column>
-                        </Row>
-                        <Row>
-                            <Column>
-                                <Container Fluid>
-                                    <ThemeColorSelector Value="@(Theme?.ColorOptions?.Primary)" ValueChanged="@ThemeColorChanged"></ThemeColorSelector>
-                                </Container>
-                            </Column>
-                        </Row>
-                    </BarDropdownMenu>
-                </BarDropdown>
-            </BarItem>
-            <BarItem>
                 <BarLink To="https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor" Target="Target.Blank">GitHub</BarLink>
             </BarItem>
             <BarItem>

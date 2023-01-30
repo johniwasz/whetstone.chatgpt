@@ -26,29 +26,14 @@
                 <BarDropdown @bind-Visible="pagesBarVisible">
                     <BarDropdownToggle>
                         <BarIcon IconName="IconName.Edit" />
-                        Pages
+                        Prompts
                     </BarDropdownToggle>
                     <BarDropdownMenu>
-                        <BarDropdownItem To="/simple-form">Simple Form</BarDropdownItem>
+                        <BarDropdownItem To="/prompts/basic">Basic Prompt</BarDropdownItem>
                     </BarDropdownMenu>
                 </BarDropdown>
             </BarItem>
         </BarStart>
-        <BarEnd>
-            <BarItem>
-                <BarDropdown>
-                    <BarDropdownToggle>
-                        <BarIcon IconName="IconName.Smartphone" />
-                        Apps
-                    </BarDropdownToggle>
-                    <BarDropdownMenu>
-                        <BarDropdownItem To="/apps/todo">
-                            Todo
-                        </BarDropdownItem>
-                    </BarDropdownMenu>
-                </BarDropdown>
-            </BarItem>
-        </BarEnd>
     </BarMenu>
 </Bar>
 @code {

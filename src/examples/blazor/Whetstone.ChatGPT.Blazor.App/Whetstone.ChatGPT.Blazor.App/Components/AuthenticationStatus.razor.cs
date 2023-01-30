@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components;
 using System.Net.NetworkInformation;
 using Whetstone.ChatGPT.Blazor.App.State;
 
+
+
+
 namespace Whetstone.ChatGPT.Blazor.App.Components
 {
     public partial class AuthenticationStatus
@@ -16,6 +19,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         protected override void OnInitialized()
         {
+
             AppState.OnChange += StateHasChanged;
 
 
@@ -34,6 +38,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         public void PurgeCredentials()
         {
             AppState.IsOpenAIAuthenticated = false;
+            ChatClient.Credentials = null;
         }
 
         ~AuthenticationStatus()
