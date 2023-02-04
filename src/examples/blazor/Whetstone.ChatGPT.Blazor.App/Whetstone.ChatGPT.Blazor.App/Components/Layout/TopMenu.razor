@@ -21,6 +21,9 @@
                 <BarLink To="https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor" Target="Target.Blank">GitHub</BarLink>
             </BarItem>
             <BarItem>
+                <TokenCounter />
+            </BarItem>
+            <BarItem>
                <AuthenticationStatus/>
             </BarItem>
         </BarEnd>
@@ -43,34 +46,7 @@
 
     private bool topbarVisible = false;
 
-    Task OnLayoutTypeChecked( string layoutType )
-    {
-        LayoutType = layoutType;
-
-        return LayoutTypeChanged.InvokeAsync( layoutType );
-    }
-
-    [Parameter] 
-    public EventCallback<bool> ThemeEnabledChanged { get; set; }
-
-    [Parameter] 
-    public EventCallback<bool> ThemeGradientChanged { get; set; }
-
-    [Parameter] 
-    public EventCallback<bool> ThemeRoundedChanged { get; set; }
-
-    [Parameter] 
-    public EventCallback<string> ThemeColorChanged { get; set; }
-
-    [Parameter] 
-    public string LayoutType { get; set; }
-
-    [Parameter] 
-    public EventCallback<string> LayoutTypeChanged { get; set; }
-
     [Inject] 
     protected ITextLocalizerService LocalizationService { get; set; } = default!;
-
-    [CascadingParameter]
-    protected Theme Theme { get; set; } = default!;
+    
 }

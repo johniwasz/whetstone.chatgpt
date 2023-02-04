@@ -1,0 +1,20 @@
+﻿@inject IChatGPTClient ChatClient
+
+<h3>@Title</h3>
+
+
+<Field>
+<FieldLabel>Prompt</FieldLabel>
+<MemoEdit @bind-Text="@Prompt" @bind-Placeholder="@placeholderText" TabSize="4" AutoSize Rows="5"/>
+</Field>
+
+<Blazorise.Bootstrap5.Button Color="Color.Primary" Type="ButtonType.Submit" @ref="submitButton" Clicked="@SubmitPromptAsync" Loading="@isLoading" Disabled="@isLoading">Submit</Blazorise.Bootstrap5.Button>
+
+<ErrorNotification Exception="@exception" />
+
+<Text>@PromptResponse</Text>
+
+@if(completionUsage is not null)
+{
+    <Text>Usage: @completionUsage.TotalTokens</Text>
+}

@@ -13,16 +13,13 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
     {
 
         [CascadingParameter]
-        public ApplicationState AppState { get; set; }
+        public ApplicationState AppState { get; set; } = default!;
 
         private LogIn? loginModal;
 
         protected override void OnInitialized()
         {
-
             AppState.OnChange += StateHasChanged;
-
-
             base.OnInitialized();
         }
 
