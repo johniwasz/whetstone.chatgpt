@@ -1,20 +1,62 @@
 ﻿@inject IChatGPTClient ChatClient
 
-<h3>@Title</h3>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Heading Size="HeadingSize.Is1" Margin="Margin.Is3.FromBottom">@Title</Heading>
+    </Column>
+</Row>
+<Row>
+<Column ColumnSize="ColumnSize.Is10">
+    <Row>
+        <EditForm Model="@completionRequest" OnValidSubmit="@(async() => await HandleSubmitAsync())">
+            <DataAnnotationsValidator />
+            <Blazorise.ValidationSummary />
+            <Field>
+            <FieldLabel>Prompt</FieldLabel>
+                <MemoEdit @bind-Text="completionRequest.Prompt" @bind-Placeholder="@placeholderText" TabSize="4" AutoSize Rows="5" />
+            <ValidationMessage For="@(() => completionRequest.Prompt)" />
+            </Field>
+            <Button Type="ButtonType.Submit" class="btn btn-primary float-end" Loading="@isLoading" Disabled="@isLoading">Submit</Button>
+        </EditForm>
+    </Row>
+    
+    <Row>
+        <ErrorNotification Exception="@exception" />
+    </Row>
 
 
-<Field>
-<FieldLabel>Prompt</FieldLabel>
-<MemoEdit @bind-Text="@Prompt" @bind-Placeholder="@placeholderText" TabSize="4" AutoSize Rows="5"/>
-</Field>
-
-<Blazorise.Bootstrap5.Button Color="Color.Primary" Type="ButtonType.Submit" @ref="submitButton" Clicked="@SubmitPromptAsync" Loading="@isLoading" Disabled="@isLoading">Submit</Blazorise.Bootstrap5.Button>
-
-<ErrorNotification Exception="@exception" />
-
-<Text>@PromptResponse</Text>
-
-@if(completionUsage is not null)
-{
-    <Text>Usage: @completionUsage.TotalTokens</Text>
-}
+    @if(completionUsage is not null)
+    {
+        <Row>
+            <Card>
+                <CardBody>
+                    <CardTitle Size="2">
+                        Prompt Response
+                    </CardTitle>
+                    <CardText>@PromptResponse</CardText>
+                    <CardFooter>
+                        <Table>
+                            <TableRow>
+                                <TableRowCell>Prompt Tokens:</TableRowCell>
+                                <TableRowCell>@completionUsage.PromptTokens</TableRowCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableRowCell>Completion Tokens:</TableRowCell>
+                                <TableRowCell>@completionUsage.CompletionTokens</TableRowCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableRowCell>Total Tokens:</TableRowCell>
+                                <TableRowCell>@completionUsage.TotalTokens</TableRowCell>
+                            </TableRow>
+                        </Table>
+                
+                    </CardFooter>
+                </CardBody>
+            </Card>
+        </Row>
+    }
+</Column>
+<Column ColumnSize="ColumnSize.Is2">
+    <ChatOptionsSelector @ref="optionsSelector"></ChatOptionsSelector>
+</Column>
+</Row>

@@ -21,8 +21,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         private string placeholderText { get; set; } = "Write a tagline for an ice cream shop.";
 
-        private Blazorise.Bootstrap5.Button? submitButton = default!;
-
         private MarkupString? PromptResponse { get; set; } = default!;
         
         private ChatGPTUsage? completionUsage { get; set; } = default!;
@@ -30,26 +28,34 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         private Exception? exception { get; set; } = default!;
 
         private bool isLoading { get; set; } = false;
+        
+        private CompletionPromptRequest completionRequest = new();
+        
+        private ChatOptionsSelector? optionsSelector = default!;
 
-        private async Task SubmitPromptAsync()
+        protected override void OnParametersSet()
+        {
+            completionRequest.Prompt = Prompt;
+            base.OnParametersSet();
+        }
+
+        private async Task HandleSubmitAsync()
         {
             exception = null;
 
-            ChatGPTCompletionRequest promptRequest = new()
+            ChatGPTCompletionRequest gptPromptRequest = new()
             {
-                Prompt = Prompt,
-                Model = ChatGPTCompletionModels.Davinci,
-                MaxTokens = 200
+                Prompt = completionRequest.Prompt,
+                Model = optionsSelector is null ? ChatGPTCompletionModels.Davinci : optionsSelector.SelectedModel,
+                MaxTokens = optionsSelector is null ? 200 : optionsSelector.MaxTokens,
+                Temperature = optionsSelector is null ? 0.1f : optionsSelector.Temperature
             };
 
             try
             {
-                if (submitButton is not null)
-                {
-                    isLoading = true;
-                }
+                isLoading = true;
 
-                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(promptRequest);
+                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptPromptRequest);
 
                 if (completionResponse is not null)
                 {
@@ -62,8 +68,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
                     completionUsage = completionResponse.Usage;
 
-                    AppState.UpdateTokenUsage(completionUsage);
-
+                    if (completionUsage is not null)
+                    {
+                        AppState.UpdateTokenUsage(completionUsage);
+                    }
                 }
             }
             catch (ChatGPTException chatEx)
@@ -72,12 +80,8 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             }
             finally
             {
-                if (submitButton is not null)
-                {
-                    isLoading = false;
-                }
+                isLoading = false;
             }
-
         }
     }
 }

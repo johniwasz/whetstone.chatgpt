@@ -16,21 +16,22 @@
                     Dashboard
                 </BarLink>
             </BarItem>
-            <BarItem>
+            <BarItem @bind-Visibility="@IsVisible">
                 <BarLink To="/imagegenerator">
                     <BarIcon IconName="IconName.Image" />
                     Image Generator
                 </BarLink>
             </BarItem>
-            <BarItem>
-                <BarDropdown @bind-Visible="pagesBarVisible">
+            <BarItem @bind-Visibility="@IsVisible">
+                <BarDropdown>
                     <BarDropdownToggle>
                         <BarIcon IconName="IconName.Edit" />
                         Prompts
                     </BarDropdownToggle>
                     <BarDropdownMenu>
-                        <BarDropdownItem To="/prompts/playground">Playground</BarDropdownItem>
+                        <BarDropdownItem  To="/prompts/playground">Playground</BarDropdownItem>
                         <BarDropdownItem To="/prompts/studynotes">Study Notes</BarDropdownItem>
+                        <BarDropdownItem To="/prompts/tablegenerator">Table Generator</BarDropdownItem>
                     </BarDropdownMenu>
                 </BarDropdown>
             </BarItem>
@@ -38,7 +39,5 @@
     </BarMenu>
 </Bar>
 @code {
-    private bool pagesBarVisible = true;
-
     RenderFragment customIcon =@<img src="/brand-logo.png" style="width:32px; height: 32px" />;
 }

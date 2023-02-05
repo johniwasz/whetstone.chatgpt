@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
-using System.Reflection;
 using Whetstone.ChatGPT.Blazor.App.State;
 using Whetstone.ChatGPT.Models;
-using Blazorise.Bootstrap5;
 using Blazorise;
 
 namespace Whetstone.ChatGPT.Blazor.App.Components
@@ -12,7 +9,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
     {
 
         [CascadingParameter]
-        public ApplicationState AppState { get; set; } 
+        public ApplicationState? AppState { get; set; } = default!;
 
         private ChatGPTCredentials credentials { get; set; } = new();
 
@@ -23,14 +20,15 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         private Blazorise.Bootstrap5.Modal? loginDialog { get; set; } = default!;
 
         private Validations? validations = default!;
-
-        private Blazorise.Bootstrap5.Button submitButton = default!;
-
+        private bool isLoading { get; set; } = false;
 
         protected override void OnInitialized()
         {
-            AppState.OnChange += StateHasChanged;
-
+            if (AppState is not null)
+            {
+                AppState.OnChange += StateHasChanged;
+            }
+            
             base.OnInitialized();
         }
 
@@ -40,7 +38,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             {
                 validations?.ClearAll();
 
-                authenticationSucceeded = AppState.IsOpenAIAuthenticated;
+                authenticationSucceeded = AppState is null ? false : AppState.IsOpenAIAuthenticated;
 
                 this.exception = null;
 
@@ -64,34 +62,45 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             if (validations is not null && await validations.ValidateAll())
             {
 
-                AppState.IsOpenAIAuthenticated = false;
-                
-                if (submitButton is not null)
-                    submitButton.Loading = true;
+                if (AppState is not null)
+                {
+                    AppState.IsOpenAIAuthenticated = false;
+                }
+
+                isLoading = true;
 
                 try
                 {
                     ChatClient.Credentials = credentials;
                     var fineTunes = await ChatClient.ListFineTunesAsync();
-                    AppState.IsOpenAIAuthenticated = true;
+                    if (AppState is not null)
+                    {
+                        AppState.IsOpenAIAuthenticated = true;
+                    }
+                    
                     authenticationSucceeded = true;
                 }
                 catch (ChatGPTException chatEx)
                 {
                     exception = chatEx;
-                    AppState.IsOpenAIAuthenticated = false;
+                    if (AppState is not null)
+                    {
+                        AppState.IsOpenAIAuthenticated = false;
+                    }
                     authenticationSucceeded = false;
                 }
                 catch (Exception ex)
                 {
                     exception = ex;
-                    AppState.IsOpenAIAuthenticated = false;
+                    if (AppState is not null)
+                    {
+                        AppState.IsOpenAIAuthenticated = false;
+                    }
                     authenticationSucceeded = false;
                 }
                 finally
                 {
-                    if (submitButton is not null)
-                        submitButton.Loading = false;
+                    isLoading = false;
                 }
             }
         }

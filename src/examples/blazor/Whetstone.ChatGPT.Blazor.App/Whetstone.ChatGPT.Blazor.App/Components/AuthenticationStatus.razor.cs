@@ -1,11 +1,6 @@
 ﻿
-using Blazorise.Bootstrap5;
 using Microsoft.AspNetCore.Components;
-using System.Net.NetworkInformation;
 using Whetstone.ChatGPT.Blazor.App.State;
-
-
-
 
 namespace Whetstone.ChatGPT.Blazor.App.Components
 {

@@ -29,24 +29,3 @@
         </BarEnd>
     </BarMenu>
 </Bar>
-@code {
-    protected override async Task OnInitializedAsync()
-    {
-        await SelectCulture( "en-US" );
-
-        await base.OnInitializedAsync();
-    }
-
-    Task SelectCulture( string name )
-    {
-        LocalizationService.ChangeLanguage( name );
-
-        return Task.CompletedTask;
-    }
-
-    private bool topbarVisible = false;
-
-    [Inject] 
-    protected ITextLocalizerService LocalizationService { get; set; } = default!;
-    
-}
