@@ -41,6 +41,7 @@
       "System.ComponentModel.EventBasedAsync.dll": "sha256-s8UiGKrKnwd4IX9TiVsrn7gdNSsxklfsG2NlydP2lLQ=",
       "System.ComponentModel.Primitives.dll": "sha256-1x+7gp+WDifFCrPXj6uNvQxtc9FMjJLjndlhtRZz\/J0=",
       "System.ComponentModel.TypeConverter.dll": "sha256-x2Sr\/A9APtwuEQYNrzuLVRTMNXMPYvGMIxUvlicC0NI=",
+      "System.Console.dll": "sha256-H6lJml\/KDag\/hjWFkUyHVTICG9uP\/Oa5K665mNE4Tko=",
       "System.dll": "sha256-SE5w0R\/2966FzzsrP\/SGXRHMfA1K21SGrJ+nuGYJHSg=",
       "System.Drawing.dll": "sha256-qBbdBc\/vEYaCpm\/NcahPsAe7TJNWvdpPLS5Eh01wM4k=",
       "System.Drawing.Primitives.dll": "sha256-+AIltSjJqS8t0J\/P6H8kbdTHthMZBKrR23+2Y+Rml3M=",
@@ -52,7 +53,7 @@
       "System.Net.Http.dll": "sha256-F+5\/qC+Tq4FRqeN2hMbMr4GNeOLib4zQ\/WVRZRxcWGw=",
       "System.Net.Primitives.dll": "sha256-9HPX58vRDB8MH55CDzizwlJP0siDBfwdA8zRMlHVfhU=",
       "System.ObjectModel.dll": "sha256-RxgbVd1DAZ\/DEbSrLOzoqPJumVshaTYyzxoSOCNKiNA=",
-      "System.Private.CoreLib.dll": "sha256-2iD3Y2oJWD7FvZ98yThGED+tu2A7YPDmvIEkp7iYzV8=",
+      "System.Private.CoreLib.dll": "sha256-6Sj+ZsG41t\/XBbm4K20oqDoqIYyDOY1ELNhUbZJEB6Q=",
       "System.Private.Uri.dll": "sha256-ykTOL21GabxOV6v2gRPnbPXjwapARRJDNWcc1OHWFi0=",
       "System.Runtime.dll": "sha256-nxEjWuabjWR2UdlrzvxmANXKobEZ7ntV3F4cnSKr\/Ko=",
       "System.Runtime.InteropServices.JavaScript.dll": "sha256-EzGhQIMaKrFHvQy7Gsocd2nxqH\/qR+t\/Kjh\/82HRnYU=",
@@ -64,7 +65,7 @@
       "System.Text.Json.dll": "sha256-ZBbpiI+dxQmLgjW\/H6kUWLhptGPbduAPsi3m9hp7Tkg=",
       "System.Text.RegularExpressions.dll": "sha256-U\/npXWeeUUBk7nCwPjx0zdAJ3QVIro3I3WVW96ulsEU=",
       "System.Threading.dll": "sha256-2\/7cKBgyz8CGzGqNfSxAKONieletWdd5cfhGQmfqZH0=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-V2d0mjTv9+IiBsrwhlE4EpM7ApK3t\/Sd9d3MoucV83I=",
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-HGB8TprdeQA2llA9hieD7KtpTdYtb64rUwZJi+MbuOM=",
       "Whetstone.ChatGPT.dll": "sha256-pzGeKvfshwdWpsIEfpWAYwIgzZOtfEZKWKdaanKw8xg="
     },
     "extensions": null,
@@ -74,7 +75,7 @@
     "runtime": {
       "dotnet.7.0.2.hrhyeuhak4.js": "sha256-s2Dh5j9IpzxLHDuArO4cZLnA61dzyj0aoHWRtcWf8Ks=",
       "dotnet.timezones.blat": "sha256-ics+RIevvtH3z9plMxv4\/GSMK9+LKYd9sy3FRRI5qTI=",
-      "dotnet.wasm": "sha256-yjH27lBJGpturqYeKcm1Xh2J3RQVgJVfjhuh03+VGHQ=",
+      "dotnet.wasm": "sha256-hfqJPipfn5DC5WE4vL\/oWHWevA7q1GLj5ev4IJKgfJQ=",
       "icudt_CJK.dat": "sha256-SZLtQnRc0JkwqHab0VUVP7T3uBPSeYzxzDnpxPpUnHk=",
       "icudt_EFIGS.dat": "sha256-l7NtS3cI+3VUoQ2XQvlzMb8x4Ow1BtnOJNLWc6bifW0=",
       "icudt_no_CJK.dat": "sha256-SNAStZO8ryN4gEbGzRYHea+b+VMpFMMNWXKTM3Y1gH4=",
@@ -83,7 +84,7 @@
     "runtimeAssets": {
       "dotnet.wasm": {
         "behavior": "dotnetwasm",
-        "hash": "sha256-yjH27lBJGpturqYeKcm1Xh2J3RQVgJVfjhuh03+VGHQ="
+        "hash": "sha256-hfqJPipfn5DC5WE4vL\/oWHWevA7q1GLj5ev4IJKgfJQ="
       }
     },
     "satelliteResources": null
