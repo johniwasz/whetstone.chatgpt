@@ -46,7 +46,35 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             if (!isScriptLoaded)
             {
                 path = "../../../../js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync("../../../../js/TableGenerator.js");
+                isScriptLoaded = await LoadTableGeneratorAsync(path);
+                if(isScriptLoaded)
+                {
+                    Console.WriteLine($"{path} loaded");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{path} loaded");
+            }
+
+            if (!isScriptLoaded)
+            {
+                path = "../../../../../js/TableGenerator.js";
+                isScriptLoaded = await LoadTableGeneratorAsync(path);
+                if(isScriptLoaded)
+                {
+                    Console.WriteLine($"{path} loaded");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{path} loaded");
+            }
+
+            if (!isScriptLoaded)
+            {
+                path = "/whetstone.chatgpt/js/TableGenerator.js";
+                isScriptLoaded = await LoadTableGeneratorAsync(path);
                 if(isScriptLoaded)
                 {
                     Console.WriteLine($"{path} loaded");
