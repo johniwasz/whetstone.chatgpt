@@ -41,53 +41,99 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         {
 #if GHPAGES
             string path = "../../../js/TableGenerator.js";
-            bool isScriptLoaded = await LoadTableGeneratorAsync(path);
+            string exportLib = "ExportLib-1";
+            bool isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
 
             if (!isScriptLoaded)
             {
+                exportLib = "ExportLib-2";
                 path = "../../../../js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync(path);
-                if(isScriptLoaded)
-                {
-                    Console.WriteLine($"{path} loaded");
-                }
+                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
             }
             else
             {
-                Console.WriteLine($"{path} loaded");
+                Console.WriteLine($"{exportLib} {path} loaded");
             }
 
             if (!isScriptLoaded)
             {
+                exportLib = "ExportLib-3";
                 path = "../../../../../js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync(path);
-                if(isScriptLoaded)
-                {
-                    Console.WriteLine($"{path} loaded");
-                }
+                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
             }
             else
             {
-                Console.WriteLine($"{path} loaded");
+                Console.WriteLine($"{exportLib} {path} loaded");
             }
 
             if (!isScriptLoaded)
             {
+                exportLib = "ExportLib-4";
                 path = "/whetstone.chatgpt/js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync(path);
+                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
                 if(isScriptLoaded)
                 {
-                    Console.WriteLine($"{path} loaded");
+                    Console.WriteLine($"{exportLib} {path} loaded");
                 }
             }
             else
             {
-                Console.WriteLine($"{path} loaded");
+                Console.WriteLine($"{exportLib} {path} loaded");
+            }
+
+            if (!isScriptLoaded)
+            {
+                exportLib = "ExportLib-5";
+                path = "whetstone.chatgpt/js/TableGenerator.js";
+                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
+                if (isScriptLoaded)
+                {
+                    Console.WriteLine($"{exportLib} {path} loaded");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{exportLib} {path} loaded");
+            }
+
+            if (!isScriptLoaded)
+            {
+                exportLib = "ExportLib-6";
+                path = @"https://jiwasz.github.io/whetstone.chatgpt/js/TableGenerator.js";
+                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
+                if(isScriptLoaded)
+                {
+                    Console.WriteLine($"{exportLib} {path} loaded");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{exportLib} {path} loaded");
             }
 #else
             await LoadTableGeneratorAsync("../../../js/TableGenerator.js");
 #endif
             
+        }
+
+
+        private async Task<bool> LoadTableGeneratorAsync(string exportName, string generatorScriptPath)
+        {
+            bool isScriptLoaded = false;
+            try
+            {
+                await JSHost.ImportAsync(exportName, generatorScriptPath);
+                isScriptLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{exportName} {generatorScriptPath} not loaded");
+                Console.WriteLine(ex);
+            }
+
+            return isScriptLoaded;
+
+
         }
 
         private async Task<bool> LoadTableGeneratorAsync(string generatorScriptPath)
