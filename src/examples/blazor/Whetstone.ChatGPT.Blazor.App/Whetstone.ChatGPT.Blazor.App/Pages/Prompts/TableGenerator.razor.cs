@@ -20,9 +20,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
     [SupportedOSPlatform("browser")]
     public partial class TableGenerator
     {
-        private const string PROMPTTEMPLATE = "Top {0} {1}. CSV Format. Include Columns. Columns: {2}.";
+        private const string PROMPTTEMPLATE = "Top {0} {1}. CSV Format.";
 
-        private readonly string DEFAULTCOLUMNS = "Number, Name";
+        private readonly string DEFAULTCOLUMNS = "Number, \"Category\"";
 
         [CascadingParameter]
         public ApplicationState AppState { get; set; } = default!;
@@ -40,100 +40,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         protected override async Task OnInitializedAsync()
         {
 #if GHPAGES
-            string path = "../../../js/TableGenerator.js";
-            string exportLib = "ExportLib-1";
-            bool isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
-
-            if (!isScriptLoaded)
-            {
-                exportLib = "ExportLib-2";
-                path = "../../../../js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
-            }
-            else
-            {
-                Console.WriteLine($"{exportLib} {path} loaded");
-            }
-
-            if (!isScriptLoaded)
-            {
-                exportLib = "ExportLib-3";
-                path = "../../../../../js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
-            }
-            else
-            {
-                Console.WriteLine($"{exportLib} {path} loaded");
-            }
-
-            if (!isScriptLoaded)
-            {
-                exportLib = "ExportLib-4";
-                path = "/whetstone.chatgpt/js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
-                if(isScriptLoaded)
-                {
-                    Console.WriteLine($"{exportLib} {path} loaded");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"{exportLib} {path} loaded");
-            }
-
-            if (!isScriptLoaded)
-            {
-                exportLib = "ExportLib-5";
-                path = "whetstone.chatgpt/js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
-                if (isScriptLoaded)
-                {
-                    Console.WriteLine($"{exportLib} {path} loaded");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"{exportLib} {path} loaded");
-            }
-
-            if (!isScriptLoaded)
-            {
-                exportLib = "ExportLib-6";
-                path = @"https://jiwasz.github.io/whetstone.chatgpt/js/TableGenerator.js";
-                isScriptLoaded = await LoadTableGeneratorAsync(exportLib, path);
-                if(isScriptLoaded)
-                {
-                    Console.WriteLine($"{exportLib} {path} loaded");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"{exportLib} {path} loaded");
-            }
+            await LoadTableGeneratorAsync("/whetstone.chatgpt/js/TableGenerator.js");
 #else
             await LoadTableGeneratorAsync("../../../js/TableGenerator.js");
 #endif
-            
-        }
-
-
-        private async Task<bool> LoadTableGeneratorAsync(string exportName, string generatorScriptPath)
-        {
-            bool isScriptLoaded = false;
-            try
-            {
-                await JSHost.ImportAsync(exportName, generatorScriptPath);
-                isScriptLoaded = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"{exportName} {generatorScriptPath} not loaded");
-                Console.WriteLine(ex);
-            }
-
-            return isScriptLoaded;
-
-
         }
 
         private async Task<bool> LoadTableGeneratorAsync(string generatorScriptPath)
@@ -157,9 +67,15 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         {
             exception = null;
 
+            StringBuilder promptBuilder = new StringBuilder();
+
+            promptBuilder.AppendLine(string.Format(PROMPTTEMPLATE, tableRequest.MaxItems, tableRequest.Category));
+            promptBuilder.Append(DEFAULTCOLUMNS);
+            promptBuilder.Append('.');
+
             ChatGPTCompletionRequest gptPromptRequest = new()
             {
-                Prompt = string.Format(PROMPTTEMPLATE, tableRequest.MaxItems, tableRequest.Category, DEFAULTCOLUMNS),
+                Prompt = promptBuilder.ToString(),
                 Model = ChatGPTCompletionModels.Davinci,
                 MaxTokens = 1000,
                 Temperature = 0.0f,
@@ -177,7 +93,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
                     if (rawResponse is not null)
                     {
-                        rawResponse = string.Concat(DEFAULTCOLUMNS, rawResponse.Trim());
+                        rawResponse = string.Concat(DEFAULTCOLUMNS, @"\n", rawResponse.Trim());
 
                         int lineIndex = 0;
                         using (StringReader reader = new StringReader(rawResponse))
