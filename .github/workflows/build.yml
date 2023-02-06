@@ -103,8 +103,7 @@ jobs:
       # Publishes Blazor project to the release-folder
       - name: Publish .NET Blazor Project
         run: dotnet publish src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App.csproj -c:Release -p:GHPages=true -o dist/web --nologo
-
-      # changes the base-tag in index.html from '/' to 'BlazorGitHubPagesDemo' to match GitHub Pages repository subdirectory
+      
       - name: Change base-tag in index.html from / to whetstone.chatgpt
         run: sed -i 's/<base href="\/" \/>/<base href="\/whetstone.chatgpt\/" \/>/g' dist/web/wwwroot/index.html
       
