@@ -93,10 +93,7 @@ jobs:
       # https://ilovedotnet.org/blogs/blazor-wasm-publishing-to-github-pages/
       # Publishes Blazor project to the release-folder
       - name: Publish .NET Blazor Project
-        run: dotnet publish src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App.csproj -c:Release -p:GHPages=true -o dist/web --nologo
-      
-      - name: Change base-tag in index.html from / to whetstone.chatgpt
-        run: sed -i 's/<base href="\/" \/>/<base href="\/whetstone.chatgpt\/" \/>/g' dist/web/wwwroot/index.html
+        run: dotnet publish src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App.csproj -c:Release -p:GHPages=true -p:DefineConstants=GHPages -o dist/web --nologo
       
       - name: Change base-tag in index.html from / to whetstone.chatgpt
         run: sed -i 's/<base href="\/" \/>/<base href="\/whetstone.chatgpt\/" \/>/g' dist/web/wwwroot/index.html
