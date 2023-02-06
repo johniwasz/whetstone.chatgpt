@@ -41,9 +41,13 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         protected override async Task OnInitializedAsync()
         {
+#if GHPages
+            await JSHost.ImportAsync("ExportLib",
+                "../../../Pages/Prompts/TableGenerator.razor.js");
+#else
             await JSHost.ImportAsync("ExportLib",
                 "../../Pages/Prompts/TableGenerator.razor.js");
-
+#endif
         }
 
         private async Task HandleSubmitAsync()
