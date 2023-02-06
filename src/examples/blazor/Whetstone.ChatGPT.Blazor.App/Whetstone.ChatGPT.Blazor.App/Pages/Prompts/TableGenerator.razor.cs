@@ -41,12 +41,12 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         protected override async Task OnInitializedAsync()
         {
-#if GHPages
+#if GHPAGES
             await JSHost.ImportAsync("ExportLib",
-                "../../../Pages/Prompts/TableGenerator.razor.js");
+                "../../../js/TableGenerator.js");
 #else
             await JSHost.ImportAsync("ExportLib",
-                "../../Pages/Prompts/TableGenerator.razor.js");
+                "../../js/TableGenerator.js");
 #endif
         }
 
