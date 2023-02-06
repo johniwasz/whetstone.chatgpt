@@ -15,8 +15,8 @@
             <Blazorise.ValidationSummary />
             <Field>
             <FieldLabel>Category</FieldLabel>
-                <InputText @bind-Value="tableRequest.Description" Placeholder="NFL Teams"></InputText>
-                <ValidationMessage For="@(() => tableRequest.Description)" />
+                <TextEdit @bind-Text="tableRequest.Category"  Placeholder="NFL Teams" ></TextEdit>
+                <ValidationMessage For="@(() => tableRequest.Category)" />
             </Field>
 
             <Field>
@@ -33,7 +33,7 @@
         <ErrorNotification Exception="@exception" />
     </Row>
     <Row>
-        <Text>@TableResponse</Text>
+    <Column ColumnSize="ColumnSize.IsFull">
         <Table>
             <TableHeader>
                 <TableRow>
@@ -61,12 +61,15 @@
                 }
             </TableBody>
         </Table>
+    </Column>
     </Row>
     <Row>
+        <Column>
         @if(Fields is not null)
         {
                 <Button Type="ButtonType.Button" class="btn btn-primary float-end" Clicked="@ExportCSV">Export</Button>
         }
+        </Column>
     </Row>
 </Column>
 </Row>

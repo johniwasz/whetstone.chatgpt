@@ -33,8 +33,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         private bool isLoading = false;
 
-        private string TableResponse = string.Empty;
-        
         private IEnumerable<string>? Fields = default;
 
         private IEnumerable<IEnumerable<string>>? DataRows = default!;
@@ -88,7 +86,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
             ChatGPTCompletionRequest gptPromptRequest = new()
             {
-                Prompt = string.Format(PROMPTTEMPLATE, tableRequest.MaxItems, tableRequest.Description, DEFAULTCOLUMNS),
+                Prompt = string.Format(PROMPTTEMPLATE, tableRequest.MaxItems, tableRequest.Category, DEFAULTCOLUMNS),
                 Model = ChatGPTCompletionModels.Davinci,
                 MaxTokens = 1000,
                 Temperature = 0.0f,
@@ -147,8 +145,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
                                 DataRows = dataRows;
                             }
-
-                            TableResponse = rawResponse.Replace(Environment.NewLine, "<br/>");
                         }
                     }
                     
