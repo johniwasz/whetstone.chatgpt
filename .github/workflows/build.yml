@@ -22,7 +22,7 @@ env:
   TWITTER_CREDS:  ${{ secrets.TWITTER_CREDS }}
 
 jobs:
-  setup-version:
+  build-test:
     runs-on: 'windows-latest'
     permissions:
       actions: read
@@ -72,6 +72,43 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
+
+      # https://ilovedotnet.org/blogs/blazor-wasm-publishing-to-github-pages/
+      # Publishes Blazor project to the release-folder
+      - name: Publish .NET Core Project
+        run: dotnet publish src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App.csproj -c:Release -p:GHPages=true -o dist/Web --nologo
+
+      - name: Commit wwwroot to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: dist/Web/wwwroot
+
+  deploy-pages:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+
+      - name: List Environment Variables
+        run: env
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: setup-dotnet
+        uses: xt0rted/setup-dotnet@v1.5.0
+        with:
+          dotnet-version: '7.0'
+
+      - name: setup-dotnet
+        uses: xt0rted/setup-dotnet@v1.5.0
+        with:
+          dotnet-version: '6.0'
+
+      # Install dotnet wasm buildtools workload
+      - name: Install .NET WASM Build Tools
+        run: dotnet workload install wasm-tools
 
       # https://ilovedotnet.org/blogs/blazor-wasm-publishing-to-github-pages/
       # Publishes Blazor project to the release-folder
