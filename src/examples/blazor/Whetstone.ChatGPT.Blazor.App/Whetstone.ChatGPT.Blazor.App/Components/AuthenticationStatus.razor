@@ -1,0 +1,17 @@
+﻿
+@inject NavigationManager Navigation
+
+@inject IChatGPTClient ChatClient
+
+
+@if (AppState.IsOpenAIAuthenticated)
+{
+    <Button Clicked="@PurgeCredentials"><Blazorise.Icons.FontAwesome.Icon Name="IconName.Lock" IconSize="IconSize.Large" />Clear API Key</Button>
+}
+else
+{
+    <Button Clicked="@ShowLogin">
+        <Blazorise.Icons.FontAwesome.Icon Name="IconName.LockOpen" IconSize="IconSize.Large"/>Validate API Key</Button>
+}
+
+<LogIn @ref="loginModal"></LogIn>
