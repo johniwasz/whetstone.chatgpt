@@ -20,7 +20,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
     [SupportedOSPlatform("browser")]
     public partial class TableGenerator
     {
-        private const string PROMPTTEMPLATE = "Top {0} {1}. CSV Format. Include Columns. Columns: {2}";
+        private const string PROMPTTEMPLATE = "Top {0} {1}. CSV Format. Include Columns. Columns: {2}.";
 
         private readonly string DEFAULTCOLUMNS = "Number, Name";
 
