@@ -42,12 +42,33 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         protected override async Task OnInitializedAsync()
         {
 #if GHPAGES
-            await JSHost.ImportAsync("ExportLib",
-                "../../../js/TableGenerator.js");
+            Console.WriteLine("GHPAGES compiled");
 #else
-            await JSHost.ImportAsync("ExportLib",
-                "../../js/TableGenerator.js");
+            Console.WriteLine("GHPAGES not compiled");
 #endif
+            
+            bool isScriptLoaded = await LoadTableGeneratorAsync("../../../js/TableGenerator.js");
+
+            if (!isScriptLoaded)
+            {
+                await LoadTableGeneratorAsync("../../js/TableGenerator.js");
+            }
+        }
+
+        private async Task<bool> LoadTableGeneratorAsync(string generatorScriptPath)
+        {
+            bool isScriptLoaded = false;
+            try
+            {
+                await JSHost.ImportAsync("ExportLib", generatorScriptPath);
+                isScriptLoaded = true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return isScriptLoaded;
         }
 
         private async Task HandleSubmitAsync()
@@ -130,6 +151,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             }
             catch (ChatGPTException chatEx)
             {
+                Console.WriteLine(chatEx);
                 exception = chatEx;
             }
             finally
@@ -148,10 +170,12 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                 string csvContents = GetCSV();
                 byte[] file = System.Text.Encoding.UTF8.GetBytes(csvContents);
 
+                //JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "exportfile.csv", "text/csv", csvContents);
                 BlazorDownloadFile("exportfile.csv", "text/csv", csvContents);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 exception = ex;
             }
         }
