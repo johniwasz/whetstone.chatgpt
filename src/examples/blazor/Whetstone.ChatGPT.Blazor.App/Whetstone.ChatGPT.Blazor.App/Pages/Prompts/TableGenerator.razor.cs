@@ -42,17 +42,27 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         protected override async Task OnInitializedAsync()
         {
 #if GHPAGES
-            Console.WriteLine("GHPAGES compiled");
-#else
-            Console.WriteLine("GHPAGES not compiled");
-#endif
-            
-            bool isScriptLoaded = await LoadTableGeneratorAsync("../../../js/TableGenerator.js");
+            string path = "../../js/TableGenerator.js";
+            bool isScriptLoaded = await LoadTableGeneratorAsync(path);
 
             if (!isScriptLoaded)
             {
-                await LoadTableGeneratorAsync("../../js/TableGenerator.js");
+                path = "../../../../js/TableGenerator.js";
+                isScriptLoaded = await LoadTableGeneratorAsync("../../../../js/TableGenerator.js");
+                if(isScriptLoaded)
+                {
+                    Console.WriteLine($"{path} loaded");
+                }
             }
+            else
+            {
+                Console.WriteLine($"{path} loaded");
+            }
+#else
+            await LoadTableGeneratorAsync("../../../js/TableGenerator.js");
+            Console.WriteLine("GHPAGES not compiled");
+#endif
+            
         }
 
         private async Task<bool> LoadTableGeneratorAsync(string generatorScriptPath)
@@ -65,6 +75,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             }
             catch(Exception ex)
             {
+                Console.WriteLine($"{generatorScriptPath} not loaded");
                 Console.WriteLine(ex);
             }
 
