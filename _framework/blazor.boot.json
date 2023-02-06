@@ -17,7 +17,7 @@
       "Blazorise.Snackbar.dll": "sha256-YRNBkDno5rU7EAQkRGEJp8yFrLO\/iYpU1UEL9QXxGQ8=",
       "Microsoft.AspNetCore.Components.dll": "sha256-hffyfAJsOIsnnIiwfLTXgpCSRP4+\/QpFzPIRQrM38jw=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-yrV9RulQ8\/X8lVD8kHyRCllV0BCwPQUJgD+LVodGXRQ=",
-      "Microsoft.AspNetCore.Components.Web.dll": "sha256-D6wgPuu4VRRkDk+KIaB1woNYuzIoXXmPZoFSf24JX+k=",
+      "Microsoft.AspNetCore.Components.Web.dll": "sha256-HnLffBVdSbFr0syOw0MIw1G6gTK3uv90dW1rgPmT+\/w=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-g4EpOfI0NhfodcPv4xv92B8ULILAVB8qcqAUWBm3N4Y=",
       "Microsoft.Extensions.Configuration.Abstractions.dll": "sha256-X\/f4fDl2cuIRXeWHhK\/f2UqQbFioD+RU4a4CEh0zrrQ=",
       "Microsoft.Extensions.Configuration.dll": "sha256-DBOKSPriP2JDxVbbWrLXyD3K4\/x3RBifNBWk\/q1I39M=",
@@ -65,7 +65,7 @@
       "System.Text.Json.dll": "sha256-ZBbpiI+dxQmLgjW\/H6kUWLhptGPbduAPsi3m9hp7Tkg=",
       "System.Text.RegularExpressions.dll": "sha256-U\/npXWeeUUBk7nCwPjx0zdAJ3QVIro3I3WVW96ulsEU=",
       "System.Threading.dll": "sha256-2\/7cKBgyz8CGzGqNfSxAKONieletWdd5cfhGQmfqZH0=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-knGu0CDsbW7+PhvZFLm+wS55RrQi8DjtDJzGfylfyTI=",
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-6tBP0q1mkGD36P9dYG9Sg\/UZUIHaKY4jogHpSwqTGp4=",
       "Whetstone.ChatGPT.dll": "sha256-pzGeKvfshwdWpsIEfpWAYwIgzZOtfEZKWKdaanKw8xg="
     },
     "extensions": null,
