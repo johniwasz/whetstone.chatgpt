@@ -1,16 +1,23 @@
 ﻿
 using Microsoft.AspNetCore.Components;
+using System.Text;
 using Whetstone.ChatGPT.Blazor.App.State;
 
 namespace Whetstone.ChatGPT.Blazor.App.Components
 {
-    public partial class AuthenticationStatus
+    public partial class TokenCounter
     {
-
         [CascadingParameter]
         public ApplicationState AppState { get; set; } = default!;
 
-        private LogIn? loginModal;
+        public string? TokenBreakdownText { 
+            get
+            {
+                string breakDown = $"Prompt Tokens: {AppState.PromptTokens}<br/>Completion Tokens: {AppState.CompletionTokens}";
+                return breakDown;
+            }
+        } 
+
 
         protected override void OnInitialized()
         {
@@ -19,24 +26,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         }
 
 
-        private void ShowLogin()
-        {
-            if (loginModal is not null)
-            {
-                loginModal?.Show();
-            }
-        }
-
-        public void PurgeCredentials()
-        {
-            AppState.IsOpenAIAuthenticated = false;
-            ChatClient.Credentials = null;
-        }
-
-        ~AuthenticationStatus()
+        ~TokenCounter()
         {
             AppState.OnChange -= StateHasChanged;
         }
-        
+
     }
 }

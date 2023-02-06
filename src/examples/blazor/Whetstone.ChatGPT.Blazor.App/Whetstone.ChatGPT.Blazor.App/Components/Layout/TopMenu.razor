@@ -18,38 +18,10 @@
         </BarStart>
         <BarEnd>
             <BarItem>
-                <BarDropdown RightAligned>
-                    <BarDropdownToggle><Icon Name="IconName.Tint" /> Theme</BarDropdownToggle>
-                    <BarDropdownMenu Style="padding: 15px; min-width:550px;">
-                        <Row>
-                            <Column Margin="Margin.Is2.FromBottom">
-                                <Field>
-                                    <Switch TValue="bool" Checked="@(Theme?.Enabled == true)" CheckedChanged="@ThemeEnabledChanged">Theme enabled</Switch>
-                                </Field>
-                            </Column>
-                        </Row>
-                        <Row>
-                            <Column Margin="Margin.Is2.FromBottom">
-                                <Field>
-                                    <Check TValue="bool" Checked="@(Theme?.IsGradient == true)" CheckedChanged="@ThemeGradientChanged">Gradient colors</Check>
-                                </Field>
-                                <Field>
-                                    <Check TValue="bool" Checked="@(Theme?.IsRounded == true)" CheckedChanged="@ThemeRoundedChanged">Rounded elements</Check>
-                                </Field>
-                            </Column>
-                        </Row>
-                        <Row>
-                            <Column>
-                                <Container Fluid>
-                                    <ThemeColorSelector Value="@(Theme?.ColorOptions?.Primary)" ValueChanged="@ThemeColorChanged"></ThemeColorSelector>
-                                </Container>
-                            </Column>
-                        </Row>
-                    </BarDropdownMenu>
-                </BarDropdown>
+                <BarLink To="https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor" Target="Target.Blank">GitHub</BarLink>
             </BarItem>
             <BarItem>
-                <BarLink To="https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor">GitHub</BarLink>
+                <TokenCounter />
             </BarItem>
             <BarItem>
                <AuthenticationStatus/>
@@ -57,51 +29,3 @@
         </BarEnd>
     </BarMenu>
 </Bar>
-@code {
-    protected override async Task OnInitializedAsync()
-    {
-        await SelectCulture( "en-US" );
-
-        await base.OnInitializedAsync();
-    }
-
-    Task SelectCulture( string name )
-    {
-        LocalizationService.ChangeLanguage( name );
-
-        return Task.CompletedTask;
-    }
-
-    private bool topbarVisible = false;
-
-    Task OnLayoutTypeChecked( string layoutType )
-    {
-        LayoutType = layoutType;
-
-        return LayoutTypeChanged.InvokeAsync( layoutType );
-    }
-
-    [Parameter] 
-    public EventCallback<bool> ThemeEnabledChanged { get; set; }
-
-    [Parameter] 
-    public EventCallback<bool> ThemeGradientChanged { get; set; }
-
-    [Parameter] 
-    public EventCallback<bool> ThemeRoundedChanged { get; set; }
-
-    [Parameter] 
-    public EventCallback<string> ThemeColorChanged { get; set; }
-
-    [Parameter] 
-    public string LayoutType { get; set; }
-
-    [Parameter] 
-    public EventCallback<string> LayoutTypeChanged { get; set; }
-
-    [Inject] 
-    protected ITextLocalizerService LocalizationService { get; set; } = default!;
-
-    [CascadingParameter]
-    protected Theme Theme { get; set; } = default!;
-}

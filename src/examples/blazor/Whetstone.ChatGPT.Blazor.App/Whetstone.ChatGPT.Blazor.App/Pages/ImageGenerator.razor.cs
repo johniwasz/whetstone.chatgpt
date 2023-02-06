@@ -1,4 +1,5 @@
 ﻿
+using Blazorise.LoadingIndicator;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Whetstone.ChatGPT.Blazor.App.Models;
@@ -11,10 +12,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages
     {
         private ImageRequest imageRequest = new();
 
-        private Uri? imageUrl { get; set; } = default!;
-
-        private bool isLoading { get; set; }
+        private Uri imageUrl { get; set; } = default!;
         private Exception? exception { get; set; } = default!;
+
+        private bool isLoading { get; set; } = false;
 
         private async Task HandleSubmitAsync()
         {
@@ -29,6 +30,8 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages
 
             try
             {
+                imageUrl = default!;
+
                 isLoading = true;
 
                 Logger.LogInformation($"Calling OpenAI API with prompt: {imageRequest.ImageDescription} and size {imageRequest.ImageSize}");

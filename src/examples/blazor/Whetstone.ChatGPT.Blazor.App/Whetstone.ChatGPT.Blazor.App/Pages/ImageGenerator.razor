@@ -15,7 +15,7 @@
     <DataAnnotationsValidator />
     <Blazorise.ValidationSummary />
     <div class="form-group">
-        <label for="ImageDescription" class="form-label">Image Description:</label>
+    <label for="ImageDescription" class="form-label">Image Description:</label>
     <InputTextArea id="ImageDescription" @bind-Value="imageRequest.ImageDescription" placeholder="Enter image description" DisplayName="Image Description" class="w-100 p-3" />
     <ValidationMessage For="@(() => imageRequest.ImageDescription)"/>
     </div>
@@ -27,32 +27,17 @@
             <option value="@gender">@gender</option>
         }
     </InputSelect>
-    </div>   
-    <button type="submit" class="btn btn-primary float-end">Submit</button>
-
+    </div>
+    <Button Type="ButtonType.Submit" class="btn btn-primary float-end" Loading="@isLoading" Disabled="@isLoading">Submit</Button>
     <ErrorNotification Exception="@exception" />
-    
 </EditForm>
 
 <br />
 <div class="border-width: 10px">
-
-@if (isLoading)
-{
-    <div class="spinner-border float-md-none" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-}
-else
-{
-    if (imageUrl is not null)
+    <Figure>
+    @if (imageUrl is not null)
     {
-        
-        <ProfilePicture>
-            <span class="border border-5">
-            <img class="img-fluid" src="@imageUrl" />
-            </span>
-        </ProfilePicture>
+        <FigureImage Source="@imageUrl.ToString()"/>
     }
-}
+    </Figure>
 </div>
