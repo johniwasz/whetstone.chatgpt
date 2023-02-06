@@ -86,7 +86,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             }
 #else
             await LoadTableGeneratorAsync("../../../js/TableGenerator.js");
-            Console.WriteLine("GHPAGES not compiled");
 #endif
             
         }
@@ -204,15 +203,21 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             {
                 string csvContents = GetCSV();
                 byte[] file = System.Text.Encoding.UTF8.GetBytes(csvContents);
+                string fileName = BuildFileName();
 
-                //JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "exportfile.csv", "text/csv", csvContents);
-                BlazorDownloadFile("exportfile.csv", "text/csv", csvContents);
+                BlazorDownloadFile(fileName, "text/csv", csvContents);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 exception = ex;
             }
+        }
+
+        private string BuildFileName()
+        {
+            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            return $"exportlist-{formattedDate}.csv";
         }
 
         private string GetCSV()
