@@ -40,7 +40,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         protected override async Task OnInitializedAsync()
         {
 #if GHPAGES
-            string path = "../../js/TableGenerator.js";
+            string path = "../../../js/TableGenerator.js";
             bool isScriptLoaded = await LoadTableGeneratorAsync(path);
 
             if (!isScriptLoaded)
