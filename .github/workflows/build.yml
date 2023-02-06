@@ -52,10 +52,6 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      # Install dotnet wasm buildtools workload
-      - name: Install .NET WASM Build Tools
-        run: dotnet workload install wasm-tools
-
       - name: Build with dotnet
         run: dotnet build ./src --configuration Release
         
@@ -90,11 +86,6 @@ jobs:
         with:
           dotnet-version: '7.0'
 
-      - name: setup-dotnet
-        uses: xt0rted/setup-dotnet@v1.5.0
-        with:
-          dotnet-version: '6.0'
-
       # Install dotnet wasm buildtools workload
       - name: Install .NET WASM Build Tools
         run: dotnet workload install wasm-tools
@@ -107,6 +98,9 @@ jobs:
       - name: Change base-tag in index.html from / to whetstone.chatgpt
         run: sed -i 's/<base href="\/" \/>/<base href="\/whetstone.chatgpt\/" \/>/g' dist/web/wwwroot/index.html
       
+      - name: Change base-tag in index.html from / to whetstone.chatgpt
+        run: sed -i 's/<base href="\/" \/>/<base href="\/whetstone.chatgpt\/" \/>/g' dist/web/wwwroot/index.html
+
       # copy index.html to 404.html to serve the same file when a file is not found
       - name: copy index.html to 404.html
         run: cp dist/web/wwwroot/index.html dist/web/wwwroot/404.html
