@@ -93,9 +93,17 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
                     if (rawResponse is not null)
                     {
-                        rawResponse = string.Concat(DEFAULTCOLUMNS, @"\n", rawResponse.Trim());
+                        List<string> fieldList = new();
+                        string[] columnArr = DEFAULTCOLUMNS.Split(',');
+                        for (int i = 0; i < columnArr.Length; i++)
+                        {
+                            fieldList.Add(columnArr[i].Trim().Replace("\"", ""));
+                        }
+                        
+                        this.Fields = fieldList;
 
-                        int lineIndex = 0;
+                        rawResponse = rawResponse.Trim();
+
                         using (StringReader reader = new StringReader(rawResponse))
                         {
                             using (TextFieldParser parser = new TextFieldParser(reader))
@@ -110,7 +118,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                                     string[]? fields = parser.ReadFields();
                                     if (fields is not null)
                                     {
-                                        List<string> fieldList = new();
+                                        fieldList = new();
 
                                         foreach (string field in fields)
                                         {
@@ -119,17 +127,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                                                 fieldList.Add(field);
                                             }
                                         }
+                                        dataRows.Add(fieldList);
                                         
-                                        if (lineIndex == 0)
-                                        {
-                                            this.Fields = fieldList;
-                                        }
-                                        else
-                                        {
-                                            dataRows.Add(fieldList);
-                                        }
                                     }
-                                    lineIndex++;
+                                    
                                 }
 
                                 DataRows = dataRows;
@@ -149,6 +150,11 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             {
                 Console.WriteLine(chatEx);
                 exception = chatEx;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                exception = ex;
             }
             finally
             {
