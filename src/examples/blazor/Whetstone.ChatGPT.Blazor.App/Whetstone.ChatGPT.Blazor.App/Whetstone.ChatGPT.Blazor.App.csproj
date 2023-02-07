@@ -18,10 +18,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Pages\Prompts\TableGenerator.razor.js" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Blazorise.Components" Version="1.2.0" />
 		<PackageReference Include="Blazorise.DataGrid" Version="1.2.0" />
 		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.0" />

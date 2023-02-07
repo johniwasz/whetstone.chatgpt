@@ -20,9 +20,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
     [SupportedOSPlatform("browser")]
     public partial class TableGenerator
     {
-        private const string PROMPTTEMPLATE = "Top {0} {1}. CSV Format. Include Columns. Columns: {2}";
+        private const string PROMPTTEMPLATE = "Top {0} {1}. CSV Format.";
 
-        private readonly string DEFAULTCOLUMNS = "Number, Name";
+        private readonly string DEFAULTCOLUMNS = "Number, \"Category\"";
 
         [CascadingParameter]
         public ApplicationState AppState { get; set; } = default!;
@@ -33,26 +33,49 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         private bool isLoading = false;
 
-        private string TableResponse = string.Empty;
-        
         private IEnumerable<string>? Fields = default;
 
         private IEnumerable<IEnumerable<string>>? DataRows = default!;
 
         protected override async Task OnInitializedAsync()
         {
-            await JSHost.ImportAsync("ExportLib",
-                "../../Pages/Prompts/TableGenerator.razor.js");
+#if GHPAGES
+            await LoadTableGeneratorAsync("/whetstone.chatgpt/js/TableGenerator.js");
+#else
+            await LoadTableGeneratorAsync("../../../js/TableGenerator.js");
+#endif
+        }
 
+        private async Task<bool> LoadTableGeneratorAsync(string generatorScriptPath)
+        {
+            bool isScriptLoaded = false;
+            try
+            {
+                await JSHost.ImportAsync("ExportLib", generatorScriptPath);
+                isScriptLoaded = true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"{generatorScriptPath} not loaded");
+                Console.WriteLine(ex);
+            }
+
+            return isScriptLoaded;
         }
 
         private async Task HandleSubmitAsync()
         {
             exception = null;
 
+            StringBuilder promptBuilder = new StringBuilder();
+
+            promptBuilder.AppendLine(string.Format(PROMPTTEMPLATE, tableRequest.MaxItems, tableRequest.Category));
+            promptBuilder.Append(DEFAULTCOLUMNS);
+            promptBuilder.Append('.');
+
             ChatGPTCompletionRequest gptPromptRequest = new()
             {
-                Prompt = string.Format(PROMPTTEMPLATE, tableRequest.MaxItems, tableRequest.Description, DEFAULTCOLUMNS),
+                Prompt = promptBuilder.ToString(),
                 Model = ChatGPTCompletionModels.Davinci,
                 MaxTokens = 1000,
                 Temperature = 0.0f,
@@ -70,9 +93,17 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
                     if (rawResponse is not null)
                     {
-                        rawResponse = string.Concat(DEFAULTCOLUMNS, rawResponse.Trim());
+                        List<string> fieldList = new();
+                        string[] columnArr = DEFAULTCOLUMNS.Split(',');
+                        for (int i = 0; i < columnArr.Length; i++)
+                        {
+                            fieldList.Add(columnArr[i].Trim().Replace("\"", ""));
+                        }
+                        
+                        this.Fields = fieldList;
 
-                        int lineIndex = 0;
+                        rawResponse = rawResponse.Trim();
+
                         using (StringReader reader = new StringReader(rawResponse))
                         {
                             using (TextFieldParser parser = new TextFieldParser(reader))
@@ -87,7 +118,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                                     string[]? fields = parser.ReadFields();
                                     if (fields is not null)
                                     {
-                                        List<string> fieldList = new();
+                                        fieldList = new();
 
                                         foreach (string field in fields)
                                         {
@@ -96,23 +127,14 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                                                 fieldList.Add(field);
                                             }
                                         }
+                                        dataRows.Add(fieldList);
                                         
-                                        if (lineIndex == 0)
-                                        {
-                                            this.Fields = fieldList;
-                                        }
-                                        else
-                                        {
-                                            dataRows.Add(fieldList);
-                                        }
                                     }
-                                    lineIndex++;
+                                    
                                 }
 
                                 DataRows = dataRows;
                             }
-
-                            TableResponse = rawResponse.Replace(Environment.NewLine, "<br/>");
                         }
                     }
                     
@@ -126,7 +148,13 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             }
             catch (ChatGPTException chatEx)
             {
+                Console.WriteLine(chatEx);
                 exception = chatEx;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                exception = ex;
             }
             finally
             {
@@ -143,13 +171,21 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             {
                 string csvContents = GetCSV();
                 byte[] file = System.Text.Encoding.UTF8.GetBytes(csvContents);
+                string fileName = BuildFileName();
 
-                BlazorDownloadFile("exportfile.csv", "text/csv", csvContents);
+                BlazorDownloadFile(fileName, "text/csv", csvContents);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 exception = ex;
             }
+        }
+
+        private string BuildFileName()
+        {
+            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            return $"exportlist-{formattedDate}.csv";
         }
 
         private string GetCSV()
