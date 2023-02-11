@@ -9,9 +9,11 @@ on:
   push:
     branches:
       - main
-      - releases/*
     paths-ignore:
       - '**.md'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
   schedule:
     - cron: '0 1 * * *'
@@ -22,7 +24,7 @@ env:
   TWITTER_CREDS:  ${{ secrets.TWITTER_CREDS }}
 
 jobs:
-  build-test:
+  build-and-test:
     runs-on: 'windows-latest'
     permissions:
       actions: read
@@ -69,9 +71,10 @@ jobs:
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
 
-  build-blazor:
-    needs: build-test
-    runs-on: 'ubuntu-latest'
+  deploy-pages:
+    needs: build-and-test
+    runs-on: 'ubuntu-latest'    
+
     steps:
 
       - name: List Environment Variables
@@ -105,33 +108,9 @@ jobs:
       - name: Add .nojekyll file
         run: touch dist/web/wwwroot/.nojekyll
 
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
+      - name: Commit wwwroot to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          name: blazor-deployment
-          path: dist/web/wwwroot
-          retention-days: 5
-
-  deploy-pages:
-    needs: build-blazor
-
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: List Environment Variables
-        run: env
-
-      - name: Deploy GitHub Pages site
-        uses: actions/deploy-pages@v1.2.4
-        id: deployment
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}          
-          artifact_name: blazor-deployment
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: dist/web/wwwroot
+          branch: gh-pages

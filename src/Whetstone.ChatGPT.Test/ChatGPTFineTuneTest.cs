@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
+using xRetry;
 using Xunit.Abstractions;
 
 namespace Whetstone.ChatGPT.Test
@@ -70,7 +71,7 @@ namespace Whetstone.ChatGPT.Test
         }
        
         
-        [Fact(Skip = "Takes to long to validate during an automatited test run. Run manually.")]
+        [Fact(Skip = "Takes too long to validate during an automated test run. Run manually.")]
         public async Task SubmitFineTuneJobAndGetEventsAsync()
         {
 
@@ -120,7 +121,7 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [Fact]
+        [RetryFact]
         public async Task SubmitBadFineTuningRequestAsync()
         {
 
@@ -145,7 +146,7 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [Fact]
+        [RetryFact]
         public async Task RetrieveFineTuningAsync()
         {
 
@@ -183,8 +184,8 @@ namespace Whetstone.ChatGPT.Test
                 }
             }
         }
-
-        [Fact]
+        
+        [RetryFact]
         public async Task RetrieveFineTuningEventsAsync()
         {
 
@@ -206,7 +207,7 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [Fact]
+        [RetryFact]
         public async Task CancelCompletedFineTuneJobAsync()
         {
 
@@ -241,7 +242,7 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [Fact]
+        [RetryFact]
         public async Task GPTFineTuneCompletion()
         {
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())

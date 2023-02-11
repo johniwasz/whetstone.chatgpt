@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
+using xRetry;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -46,8 +47,7 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-
-        [Fact]
+        [RetryFact]
         public async Task GenerateImageVariation()
         {
             ChatGPTCreateImageVariationRequest imageRequest = new()
@@ -81,7 +81,7 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-        [Fact]
+        [RetryFact]
         public async Task CreateImageEdit()
         {
 

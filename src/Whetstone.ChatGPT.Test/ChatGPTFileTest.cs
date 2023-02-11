@@ -11,6 +11,7 @@ using Whetstone.ChatGPT.Models;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 using System.Diagnostics.CodeAnalysis;
+using xRetry;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -30,7 +31,7 @@ namespace Whetstone.ChatGPT.Test
 
 
 
-        [Fact]
+        [RetryFact]
         public async Task ListFilesAsync()
         {
 
@@ -57,7 +58,7 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [Fact]
+        [RetryFact]
         public async Task RetrieveFileAsync()
         {
             await InitializeExistingFileIdAsync();
@@ -77,7 +78,7 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-        [Fact]
+        [RetryFact]
         public async Task RetrieveExistingFileContents()
         {
 
@@ -127,7 +128,7 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [Fact]
+        [RetryFact]
         public async Task FileUploadBadFile()
         {
             // Build a fine tine file to upload.

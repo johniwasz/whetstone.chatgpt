@@ -1,15 +1,9 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System.Runtime.CompilerServices;
 using Tweetinvi;
-using Tweetinvi.Client;
-using Tweetinvi.Exceptions;
 using Tweetinvi.Models;
-using Tweetinvi.Parameters;
-using Tweetinvi.Parameters.V2;
-using Whetstone.TweetGPT.WebHookManager;
 using Whetstone.TweetGPT.WebHookManager.Models;
 using System.Text.Json;
+using xRetry;
 
 namespace Whetstone.TweetGPT.WebhookManager.Test
 {
@@ -17,7 +11,7 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
     public class TwitterClientTest
     {
 
-        [Fact]
+        [RetryFact]
         public async Task TwitterClientConnect()
         {
 
