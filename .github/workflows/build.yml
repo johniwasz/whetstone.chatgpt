@@ -71,8 +71,17 @@ jobs:
 
   deploy-pages:
     needs: build-test
-    runs-on: 'ubuntu-latest'    
 
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: 'ubuntu-latest'
     steps:
 
       - name: List Environment Variables
@@ -106,8 +115,16 @@ jobs:
       - name: Add .nojekyll file
         run: touch dist/web/wwwroot/.nojekyll
 
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: blazor-deployment
+          path: dist/web/wwwroot
+          retention-days: 5
+
       - name: Deploy GitHub Pages site
         uses: actions/deploy-pages@v1.2.4
+        id: deployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}          
-          artifact_name: dist/web/wwwroot
+          artifact_name: blazor-deployment
