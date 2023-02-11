@@ -1,7 +1,8 @@
-﻿
+﻿using System.Text.Json.Serialization;
+
 #if NET6_0_OR_GREATER
 using System.ComponentModel.DataAnnotations;
-#endif 
+#endif
 
 namespace Whetstone.ChatGPT.Models
 {
@@ -22,7 +23,6 @@ namespace Whetstone.ChatGPT.Models
         /// </remarks>
         public ChatGPTCredentials()
         {
-            
         }
 
         /// <summary>
@@ -53,6 +53,7 @@ namespace Whetstone.ChatGPT.Models
         [Required]
         [DataType(DataType.Password)]
 #endif
+        [JsonPropertyName("apiKey")]
         public string? ApiKey
         {
             get;
@@ -62,6 +63,7 @@ namespace Whetstone.ChatGPT.Models
         /// <summary>
         /// For users who belong to multiple organizations, you can pass a header to specify which organization is used for an API request. Usage from these API requests will count against the specified organization's subscription quota.
         /// </summary>
+        [JsonPropertyName("organization")]
         public string? Organization
         {
             get;

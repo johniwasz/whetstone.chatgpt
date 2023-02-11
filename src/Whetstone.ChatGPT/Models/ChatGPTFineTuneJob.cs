@@ -26,8 +26,6 @@ namespace Whetstone.ChatGPT.Models
         [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "This is the name of the property returned by the API.")]
         public string? @Object { get; set; }
 
-       
-
         /// <summary>
         /// Name of the model used to generate this fine-tune job.
         /// </summary>
@@ -81,7 +79,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonConverter(typeof(UnixEpochTimeJsonConverter))]
         [JsonPropertyName("updated_at")]
         public DateTime UpdatedAt { get; set; }
-
     }
 
     public class HyperParams
@@ -98,5 +95,4 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("prompt_loss_weight")]
         public float PromptLossWeight { get; set; }
     }
-
 }

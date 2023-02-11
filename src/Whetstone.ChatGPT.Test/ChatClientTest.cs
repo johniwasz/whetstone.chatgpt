@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using NuGet.Frameworks;
-using Whetstone.ChatGPT;
 using Whetstone.ChatGPT.Models;
 using Xunit.Abstractions;
 using Xunit.Sdk;

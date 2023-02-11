@@ -1,12 +1,11 @@
 ﻿
 @inject NavigationManager Navigation
 
-@inject IChatGPTClient ChatClient
-
+@inject IOpenAICredentialValidator credentialValidator
 
 @if (AppState.IsOpenAIAuthenticated)
 {
-    <Button Clicked="@PurgeCredentials"><Blazorise.Icons.FontAwesome.Icon Name="IconName.Lock" IconSize="IconSize.Large" />Clear API Key</Button>
+    <Button Clicked="@(async() => await PurgeCredentialsAsync())"><Blazorise.Icons.FontAwesome.Icon Name="IconName.Lock" IconSize="IconSize.Large" />Clear API Key</Button>
 }
 else
 {

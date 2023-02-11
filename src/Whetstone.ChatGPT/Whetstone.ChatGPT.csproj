@@ -1,12 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;netstandard2.1;netstandard2.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+# 1.4.0
+
+- Added support for .NET Standard 2.0
+- Built a working Blazor sample project
+
 # 1.3.0
 
 - Added set-only Credentials property to IChatGPTClient so that credentials can be changed after instantiation.
@@ -30,7 +35,7 @@
     <PackageTags>chatgpt; api; openapi; gpt; gpt-3</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2023</Copyright>
-    <Version>1.3.0</Version>
+    <Version>1.4.0</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps the ChatGPT API. Includes support for dependency injection.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
@@ -69,6 +74,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
 

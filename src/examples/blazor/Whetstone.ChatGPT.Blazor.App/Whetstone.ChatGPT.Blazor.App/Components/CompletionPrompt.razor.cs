@@ -83,5 +83,11 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
                 isLoading = false;
             }
         }
+
+        private void ProcessOptionsException(Exception ex)
+        {
+            exception = ex;
+        }
+
     }
 }

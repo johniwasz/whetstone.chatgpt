@@ -3,6 +3,7 @@ using System.Net;
 using System;
 using Blazorise;
 using Whetstone.ChatGPT.Models;
+using Microsoft.AspNetCore.Components;
 
 namespace Whetstone.ChatGPT.Blazor.App.Components
 {
@@ -15,9 +16,8 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         public string? SelectedModel { get; set; } = null;
 
-        // <Select @ref = "ModelList" @bind-SelectedValue="@SelectedModel">
-
-        private Select<string?> modelList = default!;
+        [Parameter]
+        public EventCallback<Exception> OnException { get; set; }
 
         private IEnumerable<ChatGPTModel>? models = default!;
 
@@ -35,18 +35,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
                 SelectedModel = ChatGPTCompletionModels.Davinci;
                 
             }
-            catch (ChatGPTException chatEx)
-            {
-            //    exception = chatEx;
-                
-            }
             catch (Exception ex)
             {
-              //  exception = ex;
-            }
-            finally
-            {
-            
+                await OnException.InvokeAsync(ex);
             }
 
             await base.OnInitializedAsync();

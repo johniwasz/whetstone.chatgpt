@@ -9,9 +9,11 @@ on:
   push:
     branches:
       - main
-      - releases/*
     paths-ignore:
       - '**.md'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
   schedule:
     - cron: '0 1 * * *'
@@ -22,7 +24,7 @@ env:
   TWITTER_CREDS:  ${{ secrets.TWITTER_CREDS }}
 
 jobs:
-  build-test:
+  build-and-test:
     runs-on: 'windows-latest'
     permissions:
       actions: read
@@ -70,7 +72,7 @@ jobs:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
 
   deploy-pages:
-    needs: build-test
+    needs: build-and-test
     runs-on: 'ubuntu-latest'    
 
     steps:
@@ -107,8 +109,8 @@ jobs:
         run: touch dist/web/wwwroot/.nojekyll
 
       - name: Commit wwwroot to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: dist/web/wwwroot
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: dist/web/wwwroot
+          branch: gh-pages

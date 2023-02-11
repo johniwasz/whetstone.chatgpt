@@ -18,7 +18,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             base.OnInitialized();
         }
 
-
         private void ShowLogin()
         {
             if (loginModal is not null)
@@ -27,10 +26,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             }
         }
 
-        public void PurgeCredentials()
+        public async Task PurgeCredentialsAsync()
         {
-            AppState.IsOpenAIAuthenticated = false;
-            ChatClient.Credentials = null;
+            await credentialValidator.PurgeCredentialsAsync(AppState);
+            Navigation.NavigateTo(Navigation.BaseUri);
         }
 
         ~AuthenticationStatus()

@@ -17,9 +17,9 @@ Supported features include:
 
 [Examples](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples) include:
 
-- Command line bot
-- Azure Function Twitter Webhook that responds to DMs
-- Blazor UI
+- [Command line bot](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/Whetstone.ChatGPT.SimpleCommandlineBot)
+- [Azure Function Twitter Webhook](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/twitter-webhook) that responds to DMs
+- [GPT-3 UI](https://johniwasz.github.io/whetstone.chatgpt/) - a Blazor WebAssembly UI hosted on Github Pages. Example project is at [Whetstone.ChatGPT.Blazor.App](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App)
 
 ## Dependency Injection Quickstart
 
@@ -35,7 +35,7 @@ Use:
 ```C#
 services.AddHttpClient();
 ```
-OR:
+or:
 ```C#
 services.AddHttpClient<IChatGPTClient, ChatGPTClient>();
 ```

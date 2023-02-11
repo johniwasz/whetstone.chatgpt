@@ -4,7 +4,6 @@ using System.ComponentModel;
 
 namespace Whetstone.ChatGPT.Models;
 
-
 /// <summary>
 /// Given a prompt, the model will return one or more predicted completions, and can also return the probabilities of alternative tokens at each position.
 /// </summary>
@@ -63,7 +62,6 @@ public class ChatGPTCompletionRequest
         get;
         set;
     }
-
 
     /// <summary>
     /// The maximum number of <see href="https://beta.openai.com/tokenizer">tokens</see> to generate in the completion.

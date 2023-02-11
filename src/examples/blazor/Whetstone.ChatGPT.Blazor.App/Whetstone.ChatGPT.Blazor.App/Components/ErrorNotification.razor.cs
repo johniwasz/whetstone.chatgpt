@@ -9,7 +9,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
     {
 
         [Parameter]
-        public Exception? Exception 
+        public Exception? Exception
         {
             get
             {
@@ -18,7 +18,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             set
             {
                 exception = value;
-
                 if (exception is null)
                 {
                     errAlert?.Hide();

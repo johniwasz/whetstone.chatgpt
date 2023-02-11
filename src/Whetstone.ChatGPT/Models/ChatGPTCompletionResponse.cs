@@ -6,14 +6,12 @@ namespace Whetstone.ChatGPT.Models
 {
     public class ChatGPTCompletionResponse
     {
-
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 
         [JsonPropertyName("object")]
         [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "This is the name of the property returned by the API.")]
         public string? @Object { get; set; }
-
 
         [JsonConverter(typeof(UnixEpochTimeJsonConverter))]
         [JsonPropertyName("created")]
@@ -40,7 +38,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("usage")]
         public ChatGPTUsage? Usage { get; set; }
     }
-
 
     /// <summary>
     /// Detailed breakdown of tokens used to process the completion request.

@@ -10,8 +10,6 @@ namespace Whetstone.ChatGPT
 {
     public static class ModelExtensions
     {
-
-
         /// <summary>
         /// Returns the text of the first choice returned from an edit request.
         /// </summary>
@@ -22,7 +20,6 @@ namespace Whetstone.ChatGPT
             return response?.Choices?[0]?.Text;
         }
 
-
         /// <summary>
         /// Returns the text of the first choice returned from an edit request.
         /// </summary>
@@ -32,8 +29,6 @@ namespace Whetstone.ChatGPT
         {
             return response?.Choices?[0]?.Text;
         }
-
-
 
         /// <summary>
         /// Returns text formatted according to JsonL

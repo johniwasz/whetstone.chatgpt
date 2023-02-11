@@ -1,4 +1,5 @@
-﻿using Blazorise;
+﻿using Blazored.LocalStorage;
+using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.Web;
@@ -16,6 +17,10 @@ builder.Services.AddHttpClient<IChatGPTClient, ChatGPTClient>();
 builder.Services.AddSingleton<ApplicationState>();
 
 builder.Services.AddScoped<IChatGPTClient, ChatGPTClient>();
+
+builder.Services.AddScoped<IOpenAICredentialValidator, OpenAICredentialValidator>();
+
+builder.Services.AddBlazoredLocalStorage();
 
 AddBlazorise(builder.Services);
 

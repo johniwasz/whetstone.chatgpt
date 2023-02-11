@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
 
 namespace Whetstone.ChatGPT.Test
@@ -45,7 +41,6 @@ namespace Whetstone.ChatGPT.Test
                 File.WriteAllBytes("sailboat.png", imageBytes);
             }
         }
-
 
         [Fact]
         public async Task GenerateImageVariation()

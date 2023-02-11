@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
 using Xunit.Abstractions;
 
@@ -70,7 +67,7 @@ namespace Whetstone.ChatGPT.Test
         }
        
         
-        [Fact(Skip = "Takes to long to validate during an automatited test run. Run manually.")]
+        [Fact(Skip = "Takes too long to validate during an automated test run. Run manually.")]
         public async Task SubmitFineTuneJobAndGetEventsAsync()
         {
 
@@ -183,7 +180,7 @@ namespace Whetstone.ChatGPT.Test
                 }
             }
         }
-
+        
         [Fact]
         public async Task RetrieveFineTuningEventsAsync()
         {

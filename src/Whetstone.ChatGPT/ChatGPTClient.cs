@@ -1,23 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 #if NET6_0_OR_GREATER
 using System.Net.Http.Json;
 #endif
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Xml.Linq;
 using Whetstone.ChatGPT.Models;
-using static System.Net.WebRequestMethods;
 
 namespace Whetstone.ChatGPT;
 
@@ -218,7 +207,7 @@ public class ChatGPTClient : IChatGPTClient
         if (responseMessage.IsSuccessStatusCode)
         {
 
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
             using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
 #else
             using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync(cancelToken).ConfigureAwait(false);
@@ -242,7 +231,7 @@ public class ChatGPTClient : IChatGPTClient
         }
         else
         {
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
             string? responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 #else
             string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
@@ -377,7 +366,7 @@ public class ChatGPTClient : IChatGPTClient
         {
 
             fileContent = new();
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
             fileContent.Content = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 #else
             fileContent.Content = await httpResponse.Content.ReadAsByteArrayAsync(cancelToken).ConfigureAwait(false);
@@ -481,7 +470,7 @@ public class ChatGPTClient : IChatGPTClient
         if (responseMessage.IsSuccessStatusCode)
         {
 
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
             using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
 #else
             using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync(cancelToken).ConfigureAwait(false);
@@ -504,7 +493,7 @@ public class ChatGPTClient : IChatGPTClient
         }
         else
         {
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
                 string? responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 #else
             string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
@@ -576,10 +565,12 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException($"Prompt cannot be null or empty", nameof(createImageRequest));
         }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         if (createImageRequest.Prompt.Length > 1000)
         {
             throw new ArgumentException($"Prompt cannot be longer than 1000 characters", nameof(createImageRequest));
         }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         if (createImageRequest.NumberOfImagesToGenerate < 0)
         {
@@ -674,10 +665,12 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException($"Prompt cannot be null or empty", nameof(imageEditRequest));
         }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         if (imageEditRequest.Prompt.Length > 1000)
         {
             throw new ArgumentException($"Prompt cannot be longer than 1000 characters", nameof(imageEditRequest));
         }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         if (imageEditRequest.NumberOfImagesToGenerate < 0)
         {
@@ -810,7 +803,7 @@ public class ChatGPTClient : IChatGPTClient
             {
                 if (httpResponse.IsSuccessStatusCode)
                 {
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
                     retVal = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 #else
                     retVal = await httpResponse.Content.ReadAsByteArrayAsync(cancelToken).ConfigureAwait(false);
@@ -889,7 +882,7 @@ public class ChatGPTClient : IChatGPTClient
 
     private static async Task<string> GetResponseStringAsync(HttpResponseMessage responseMessage, CancellationToken? cancellationToken)
     {
-#if NETSTANDARD2_1
+#if NETSTANDARD2_1 || NETSTANDARD2_0
         string responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 #else
         string responseString = cancellationToken is null ?

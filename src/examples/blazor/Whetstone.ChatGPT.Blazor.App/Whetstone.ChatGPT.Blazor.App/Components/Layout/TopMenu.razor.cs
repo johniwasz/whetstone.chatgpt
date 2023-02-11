@@ -5,11 +5,8 @@ namespace Whetstone.ChatGPT.Blazor.App.Components.Layout
 {
     public partial class TopMenu
     {
-
         [Inject]
         protected ITextLocalizerService LocalizationService { get; set; } = default!;
-
-        private bool topbarVisible = false;
 
         protected override async Task OnInitializedAsync()
         {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Globalization;
 
 namespace Whetstone.ChatGPT
 {
@@ -26,7 +20,7 @@ namespace Whetstone.ChatGPT
                 return GetEnumValue(stringValue);
             }
 
-            return default(TEnum);
+            return default;
         }
 
 
@@ -44,15 +38,15 @@ namespace Whetstone.ChatGPT
 
         private static TEnum GetEnumValue(string enumMemberText)
         {
-            TEnum retVal = default(TEnum);
+            TEnum retVal = default;
 
-            if (Enum.TryParse<TEnum>(enumMemberText, true, out TEnum parsedVal))
+            if (Enum.TryParse(enumMemberText, true, out TEnum parsedVal))
                 return parsedVal;
 
 
             var enumVals = GetEnumValues();
 
-            Dictionary<string, TEnum> enumMemberNameMappings = new Dictionary<string, TEnum>();
+            Dictionary<string, TEnum> enumMemberNameMappings = new();
 
             foreach (TEnum enumVal in enumVals)
             {
@@ -74,12 +68,9 @@ namespace Whetstone.ChatGPT
 
     }
 
-
-    
     internal static class EnumExtensions
     {
         internal const BindingFlags EnumBindings = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
-
         
         internal static string GetDescriptionFromEnumValue<TEnum>(this TEnum value)
             where TEnum : struct, Enum
@@ -101,8 +92,5 @@ namespace Whetstone.ChatGPT
 
             return enumStringValue;
         }
-
-
     }
-
 }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Whetstone.ChatGPT.Models
 {
@@ -29,7 +24,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyOrder(0)]
         [JsonPropertyName("training_file")]
         public string? TrainingFileId { get; set; }
-
 
         /// <summary>
         /// The ID of an uploaded file that contains validation data.
@@ -58,7 +52,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("model")]
         public string? Model { get; set; }
 
-
         /// <summary>
         /// The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
         /// </summary>
@@ -67,7 +60,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("n_epochs")]
         public int NumberOfEpochs { get; set; } = 4;
-
 
         /// <summary>
         /// The batch size to use for training. The batch size is the number of training examples used to train a single forward and backward pass.
@@ -79,7 +71,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("batch_size")]
         public int? BatchSize { get; set; }
-
 
         /// <summary>
         /// The learning rate multiplier to use for training. The fine-tuning learning rate is the original learning rate used for pretraining multiplied by this value.
@@ -103,7 +94,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("compute_classification_metrics")]
         public bool ComputeClassificationMetrics { get; set; }
 
-
         /// <summary>
         /// <para>The number of classes in a classification task.</para>
         /// <para>This parameter is required for multiclass classification.</para>
@@ -111,9 +101,7 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyOrder(7)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("classification_n_classes")]
-
         public int? NumberOfClasses { get; set; }
-
 
         /// <summary>
         /// <para>The positive class in binary classification.</para>
@@ -123,7 +111,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("classification_positive_class")]
         public string? PositiveClass { get; set; }
-
 
         /// <summary>
         /// <para>If this is provided, we calculate F-beta scores at the specified beta values. The F-beta score is a generalization of F-1 score. This is only used for binary classification.</para>        
@@ -136,7 +123,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("classification_betas")]
         public List<float>? ClassificationBetas { get; set; }
 
-
         /// <summary>
         /// <para>A string of up to 40 characters that will be added to your fine-tuned model name.</para>
         /// <para>For example, a suffix of "custom-model-name" would produce a model name like <c>ada:ft-your-org:custom-model-name-2022-02-15-04-21-04.</c></para>
@@ -145,6 +131,5 @@ namespace Whetstone.ChatGPT.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("suffix")]
         public string? Suffix { get; set; }
-
     }
 }

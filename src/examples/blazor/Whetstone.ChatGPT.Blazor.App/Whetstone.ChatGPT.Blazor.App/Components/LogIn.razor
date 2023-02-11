@@ -1,7 +1,7 @@
 ﻿@using Whetstone.ChatGPT.Blazor.App.State
 @using System.ComponentModel.DataAnnotations
 
-@inject IChatGPTClient ChatClient
+@inject IOpenAICredentialValidator credentialValidator
 
 <Blazorise.Bootstrap5.Modal @ref="loginDialog">
     <Blazorise.Bootstrap5.ModalContent Centered>
@@ -22,20 +22,18 @@
                         </TextEdit>
                     </Field>
                 </Validation>
-                <Validation>
-                    <Field>
-                        <FieldLabel>Organization</FieldLabel>
-                        <TextEdit Role="TextRole.Text" @bind-Text="credentials.Organization" Placeholder="Organization"></TextEdit>
-                    </Field>
-                </Validation>
+                <Field>
+                    <FieldLabel>Organization</FieldLabel>
+                    <TextEdit Role="TextRole.Text" @bind-Text="credentials.Organization" Placeholder="Organization"></TextEdit>
+                </Field>
             </Validations>
-            
         </ModalBody>
        <ModalFooter>
-            <Blazorise.Bootstrap5.Button Color="Color.Primary" Type="ButtonType.Submit" Loading="@isLoading" Disabled="@isLoading" Clicked="@ValidateCredentialsAsync">
+            <Check TValue="bool" Float="Float.Start" @bind-Checked="@rememberMe">Remember Me</Check>
+            <Blazorise.Bootstrap5.Button Float="Float.End" Color="Color.Primary" Type="ButtonType.Submit" Loading="@isLoading" Disabled="@isLoading" Clicked="@ValidateCredentialsAsync">
             @if (authenticationSucceeded)
             {
-                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Check" IconSize="IconSize.Large"></Blazorise.Icons.FontAwesome.Icon>
+               <Blazorise.Icons.FontAwesome.Icon Name="IconName.Check" IconSize="IconSize.Large"></Blazorise.Icons.FontAwesome.Icon>
             } Apply
             </Blazorise.Bootstrap5.Button>
        </ModalFooter>
