@@ -3,7 +3,6 @@ using Tweetinvi;
 using Tweetinvi.Models;
 using Whetstone.TweetGPT.WebHookManager.Models;
 using System.Text.Json;
-using xRetry;
 
 namespace Whetstone.TweetGPT.WebhookManager.Test
 {
@@ -11,7 +10,7 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
     public class TwitterClientTest
     {
 
-        [RetryFact]
+        [Fact]
         public async Task TwitterClientConnect()
         {
 

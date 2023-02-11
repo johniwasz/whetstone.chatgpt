@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using NuGet.Frameworks;
-using Whetstone.ChatGPT;
 using Whetstone.ChatGPT.Models;
-using xRetry;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -24,7 +19,7 @@ namespace Whetstone.ChatGPT.Test
             _testOutputHelper = testOutputHelper ?? throw new ArgumentNullException(nameof(testOutputHelper));
         }
 
-        [RetryFact]
+        [Fact]
         public async Task TestGPTClientCompletion()
         {
             
@@ -49,7 +44,7 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-        [RetryFact]
+        [Fact]
         public async Task TestGPTClientEdit()
         {
 
@@ -90,7 +85,7 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-        [RetryFact]
+        [Fact]
         public async Task GPTModelsList()
         {
             
@@ -113,7 +108,7 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-        [RetryFact]
+        [Fact]
         public async Task GPTModelsListWithHttpClient()
         {
 
@@ -137,7 +132,7 @@ namespace Whetstone.ChatGPT.Test
 
         }
 
-        [RetryFact]
+        [Fact]
         public async Task TestGPTClientStreamCompletion()
         {
 
@@ -163,7 +158,7 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [RetryFact]
+        [Fact]
         public async Task GPTModel()
         {
 

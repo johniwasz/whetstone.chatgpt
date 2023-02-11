@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
-using xRetry;
 
 namespace Whetstone.ChatGPT.Test
 {
     public class ModerationTests
     {
-        [RetryFact]
+        [Fact]
         public void SerializeModerationRequest()
         {
             ChatGPTCreateModerationRequest moderationRequest = new ChatGPTCreateModerationRequest
@@ -35,7 +30,7 @@ namespace Whetstone.ChatGPT.Test
             Assert.Equal(ModerationModels.Stable, modRequestDeser.Model);
         }
 
-        [RetryFact]
+        [Fact]
         public void SerializeModerationRequestNullModel()
         {
             ChatGPTCreateModerationRequest moderationRequest = new ChatGPTCreateModerationRequest
@@ -54,7 +49,7 @@ namespace Whetstone.ChatGPT.Test
             
         }
 
-        [RetryFact]
+        [Fact]
         public async Task ValidateModerationAsync()
         {
             ChatGPTCreateModerationRequest moderationRequest = new ChatGPTCreateModerationRequest
