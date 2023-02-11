@@ -2,7 +2,7 @@
 
 <Field>
     <FieldLabel>Model</FieldLabel>
-    <Select @ref="modelList" @bind-SelectedValue="@SelectedModel">
+    <Select @bind-SelectedValue="@SelectedModel">
         @if (models is not null)
         {
             foreach (ChatGPT.Models.ChatGPTModel model in models)

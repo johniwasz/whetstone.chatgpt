@@ -16,7 +16,6 @@ namespace Whetstone.ChatGPT.Models
     {
         public ChatGPTFileContent()
         {
-            
         }
 
         public ChatGPTFileContent(byte[] content, string fileName)

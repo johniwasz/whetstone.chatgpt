@@ -9,7 +9,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
     {
 
         [CascadingParameter]
-        public ApplicationState? AppState { get; set; } = default!;
+        public ApplicationState AppState { get; set; } = default!;
 
         private ChatGPTCredentials credentials { get; set; } = new();
 
@@ -22,13 +22,23 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         private Validations? validations = default!;
         private bool isLoading { get; set; } = false;
 
-        protected override void OnInitialized()
+        private bool rememberMe = false;
+
+        protected override async Task OnInitializedAsync()
         {
             if (AppState is not null)
             {
                 AppState.OnChange += StateHasChanged;
             }
-            
+
+            rememberMe = await credentialValidator.GetStoreCredentialsLocalOption();
+
+            ChatGPTCredentials foundCreds = await credentialValidator.GetCredentialsAsync();
+
+            if(foundCreds is not null)
+            {
+                credentials = foundCreds;
+            }
             base.OnInitialized();
         }
 
@@ -62,40 +72,20 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             if (validations is not null && await validations.ValidateAll())
             {
 
-                if (AppState is not null)
-                {
-                    AppState.IsOpenAIAuthenticated = false;
-                }
-
                 isLoading = true;
 
                 try
                 {
-                    ChatClient.Credentials = credentials;
-                    var fineTunes = await ChatClient.ListFineTunesAsync();
-                    if (AppState is not null)
-                    {
-                        AppState.IsOpenAIAuthenticated = true;
-                    }
-                    
-                    authenticationSucceeded = true;
+                    authenticationSucceeded = await credentialValidator.ValidateCredentialsAsync(credentials, AppState!, rememberMe);
                 }
                 catch (ChatGPTException chatEx)
                 {
                     exception = chatEx;
-                    if (AppState is not null)
-                    {
-                        AppState.IsOpenAIAuthenticated = false;
-                    }
                     authenticationSucceeded = false;
                 }
                 catch (Exception ex)
                 {
                     exception = ex;
-                    if (AppState is not null)
-                    {
-                        AppState.IsOpenAIAuthenticated = false;
-                    }
                     authenticationSucceeded = false;
                 }
                 finally
@@ -112,7 +102,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         ~LogIn()
         {
-            AppState.OnChange -= StateHasChanged;
+            if (AppState is not null)
+            {
+                AppState.OnChange -= StateHasChanged;
+            }
         }
 
     }

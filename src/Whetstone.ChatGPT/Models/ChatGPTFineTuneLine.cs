@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace Whetstone.ChatGPT.Models
 {
@@ -17,10 +12,8 @@ namespace Whetstone.ChatGPT.Models
     /// </remarks>
     public class ChatGPTFineTuneLine
     {
-
         public ChatGPTFineTuneLine()
         {
-            
         }
 
         public ChatGPTFineTuneLine(string prompt, string completion)
@@ -37,7 +30,6 @@ namespace Whetstone.ChatGPT.Models
         /// </remarks>
         [JsonPropertyName("prompt")]
         public string? Prompt { get; set; }
-
 
         /// <summary>
         /// Ideal generated text.

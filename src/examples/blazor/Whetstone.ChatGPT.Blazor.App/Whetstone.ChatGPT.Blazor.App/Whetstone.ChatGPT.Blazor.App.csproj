@@ -18,6 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
 		<PackageReference Include="Blazorise.Components" Version="1.2.0" />
 		<PackageReference Include="Blazorise.DataGrid" Version="1.2.0" />
 		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.0" />
@@ -34,6 +35,14 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\..\Whetstone.ChatGPT\Whetstone.ChatGPT.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="wwwroot\brand-logo.png">
+	    <PackagePath>\</PackagePath>
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <Pack>True</Pack>
+	  </Content>
 	</ItemGroup>
 
 </Project>

@@ -170,9 +170,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             try
             {
                 string csvContents = GetCSV();
-                byte[] file = System.Text.Encoding.UTF8.GetBytes(csvContents);
                 string fileName = BuildFileName();
-
                 BlazorDownloadFile(fileName, "text/csv", csvContents);
             }
             catch (Exception ex)

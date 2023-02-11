@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace Whetstone.ChatGPT.Models
 {
@@ -12,7 +7,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonConverter(typeof(UnixEpochTimeJsonConverter))]
         [JsonPropertyName("created")]
         public DateTime Created { get; set; }
-
 
         [JsonPropertyName("data")]
         public List<GeneratedImage>? Data { get; set; }

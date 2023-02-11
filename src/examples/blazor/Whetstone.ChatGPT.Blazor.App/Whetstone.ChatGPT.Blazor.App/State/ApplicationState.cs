@@ -4,12 +4,12 @@ namespace Whetstone.ChatGPT.Blazor.App.State
 {
     public class ApplicationState
     {
-        private bool isOpenAIAuthenticated { get; set; }
-
         public int TokensUsed { get; set; }
 
         public int PromptTokens { get; set; }
         public int CompletionTokens { get; set; }
+
+        private bool isOpenAIAuthenticated;
 
         public void UpdateTokenUsage(ChatGPTUsage usage)
         {

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Whetstone.ChatGPT.Models
 {
-
     public enum ModerationModels
     {        
         [EnumMember(Value = "text-moderation-latest")]
@@ -34,7 +28,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("input")]
         public List<string>? Inputs { get; set; }
 
-
         /// <summary>
         /// Two content moderations models are available: <c>text-moderation-stable</c> and <c>text-moderation-latest.</c>
         /// </summary>
@@ -50,6 +43,5 @@ namespace Whetstone.ChatGPT.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("model")]
         public ModerationModels? Model { get; set; }
-
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Whetstone.ChatGPT.Models
 {
@@ -19,7 +14,6 @@ namespace Whetstone.ChatGPT.Models
         /// </summary>
         [JsonPropertyName("error")]
         public ChatGPTError? Error { get; set; }
-
     }
 
     /// <summary>
@@ -27,7 +21,6 @@ namespace Whetstone.ChatGPT.Models
     /// </summary>
     public class ChatGPTError
     {
-
         /// <summary>
         /// Human-readable error message.
         /// </summary>
@@ -40,9 +33,7 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("param")]
         public object? Param { get; set; }
 
-
         [JsonPropertyName("code")]
         public string? Code { get; set; }
     }
-
 }
