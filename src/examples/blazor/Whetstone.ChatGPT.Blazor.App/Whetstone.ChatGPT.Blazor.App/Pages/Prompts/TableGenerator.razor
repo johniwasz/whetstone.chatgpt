@@ -25,7 +25,30 @@
                 <ValidationMessage For="@(() => tableRequest.MaxItems)" />
             </Field>
             
-            <Button Type="ButtonType.Submit" class="btn btn-primary float-end" Loading="@isLoading" Disabled="@isLoading">Submit</Button>
+            <FieldLabel>Attributes</FieldLabel>
+            <Column ColumnSize="ColumnSize.IsFull">
+            <Repeater Items="@tableRequest.Attributes" Context="attribcontext">
+            <Field>
+                <Row>
+                     <Column ColumnSize="ColumnSize.Is2">
+                        <FieldLabel Float="Float.End">Is Numeric</FieldLabel>
+                        <Check TValue="bool" Disabled="@attribcontext.IsFixed" Float="Float.End" @bind-Checked="attribcontext.IsNumeric"/>
+                     </Column>
+                     <Column ColumnSize="ColumnSize.Is7">
+                        <TextEdit ReadOnly="@attribcontext.IsFixed" @bind-Text="@attribcontext.Name" Float="Float.Default" />
+                     </Column>
+                     <Column ColumnSize="ColumnSize.Is1">
+                        <Icon Visibility="IsVisible(attribcontext.IsFixed)" Name="IconName.Remove" Clicked="() => RemoveAttribute(attribcontext)" Float="Float.Start" />
+                    </Column>
+                </Row>
+                <Row>
+                <ValidationMessage For="@(() => attribcontext)" />
+                </Row>
+            </Field>
+            </Repeater>
+            </Column>
+            <Button Type="ButtonType.Button" class="btn btn-primary" Float="Float.Start" Clicked="@AddAttribute" Disabled="@isLoading">Add</Button>
+            <Button Type="ButtonType.Submit" class="btn btn-primary" Float="Float.End" Loading="@isLoading" Disabled="@isLoading">Submit</Button>
         </EditForm>
     </Row>
     

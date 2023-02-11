@@ -1,9 +1,11 @@
 ﻿using Blazorise;
 using Blazorise.Bootstrap5;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Primitives;
 using Microsoft.JSInterop;
 using Microsoft.VisualBasic.FileIO;
 using System;
+using System.Linq;
 using System.Net.Mime;
 using System.Net.NetworkInformation;
 using System.Reflection.Metadata;
@@ -21,8 +23,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
     public partial class TableGenerator
     {
         private const string PROMPTTEMPLATE = "Top {0} {1}. CSV Format.";
-
-        private readonly string DEFAULTCOLUMNS = "Number, \"Category\"";
 
         [CascadingParameter]
         public ApplicationState AppState { get; set; } = default!;
@@ -54,7 +54,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                 await JSHost.ImportAsync("ExportLib", generatorScriptPath);
                 isScriptLoaded = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"{generatorScriptPath} not loaded");
                 Console.WriteLine(ex);
@@ -70,7 +70,11 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             StringBuilder promptBuilder = new StringBuilder();
 
             promptBuilder.AppendLine(string.Format(PROMPTTEMPLATE, tableRequest.MaxItems, tableRequest.Category));
-            promptBuilder.Append(DEFAULTCOLUMNS);
+
+
+            List<string> fieldList = tableRequest.Attributes.Where(x => !string.IsNullOrWhiteSpace(x.Name)).Select(x => x.IsNumeric ? x.Name.Trim() : $"\"{x.Name.Trim()}\"").ToList();
+
+            promptBuilder.Append(string.Join(", ", fieldList));
             promptBuilder.Append('.');
 
             ChatGPTCompletionRequest gptPromptRequest = new()
@@ -80,6 +84,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                 MaxTokens = 1000,
                 Temperature = 0.0f,
             };
+
+            // Remove any quotes from the lables that will be used in the table display
+            fieldList = fieldList.Select(x => x.Trim('"')).ToList();
 
             try
             {
@@ -93,26 +100,19 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
                     if (rawResponse is not null)
                     {
-                        List<string> fieldList = new();
-                        string[] columnArr = DEFAULTCOLUMNS.Split(',');
-                        for (int i = 0; i < columnArr.Length; i++)
-                        {
-                            fieldList.Add(columnArr[i].Trim().Replace("\"", ""));
-                        }
-                        
                         this.Fields = fieldList;
 
                         rawResponse = rawResponse.Trim();
 
-                        using (StringReader reader = new StringReader(rawResponse))
+                        using (StringReader reader = new(rawResponse))
                         {
-                            using (TextFieldParser parser = new TextFieldParser(reader))
+                            using (TextFieldParser parser = new(reader))
                             {
                                 parser.TextFieldType = FieldType.Delimited;
                                 parser.SetDelimiters(",");
 
-                                List<List<string>> dataRows = new List<List<string>>();
-                                
+                                List<List<string>> dataRows = new();
+
                                 while (!parser.EndOfData)
                                 {
                                     string[]? fields = parser.ReadFields();
@@ -128,16 +128,13 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                                             }
                                         }
                                         dataRows.Add(fieldList);
-                                        
                                     }
-                                    
                                 }
-
                                 DataRows = dataRows;
                             }
                         }
                     }
-                    
+
                     ChatGPTUsage? completionUsage = completionResponse.Usage;
 
                     if (completionUsage is not null)
@@ -160,6 +157,21 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             {
                 isLoading = false;
             }
+        }
+
+        private void AddAttribute()
+        {
+            tableRequest.Attributes.Add(new AtttribueItem());
+        }
+
+        private void RemoveAttribute(AtttribueItem attribContext)
+        {
+            tableRequest.Attributes.Remove(attribContext);
+        }
+
+        private Visibility IsVisible(bool isFixed)
+        {
+            return isFixed ? Visibility.Invisible : Visibility.Visible;
         }
 
         [JSImport("BlazorDownloadFile", "ExportLib")]
