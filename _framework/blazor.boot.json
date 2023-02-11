@@ -66,7 +66,7 @@
       "System.Text.Json.dll": "sha256-ZBbpiI+dxQmLgjW\/H6kUWLhptGPbduAPsi3m9hp7Tkg=",
       "System.Text.RegularExpressions.dll": "sha256-mEA\/Ei2g8mWTwQ6z2JL\/FEY6lThjFMg2MlEMlHqFT7E=",
       "System.Threading.dll": "sha256-2\/7cKBgyz8CGzGqNfSxAKONieletWdd5cfhGQmfqZH0=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-gmdWsRWaL8L3X2cGBCKbDq7h3Fge6crFQ0JTvoKbvaM=",
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-cGm7OqkCgCF0vVDh+LvHCpJMP6hMxRZiP7I+6slQuu0=",
       "Whetstone.ChatGPT.dll": "sha256-3C48uk+aHLkb8slBhccgsltO9wihfgoBAIW5X0xhrMk="
     },
     "extensions": null,
