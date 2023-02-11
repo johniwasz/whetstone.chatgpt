@@ -9,9 +9,9 @@ namespace Whetstone.ChatGPT.Blazor.App
 {
     public sealed class OpenAICredentialValidator : IOpenAICredentialValidator
     {
-        private IChatGPTClient _chatClient;
-        private ILocalStorageService _localStorage;
-        private ILogger<OpenAICredentialValidator> _logger;
+        private readonly IChatGPTClient _chatClient;
+        private readonly ILocalStorageService _localStorage;
+        private readonly ILogger<OpenAICredentialValidator> _logger;
 
         private const string CREDSTORE = "openaicredentials";
 
