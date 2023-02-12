@@ -1,0 +1,37 @@
+﻿
+
+<Accordion>
+    <Collapse>
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Tokens Used</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <Table>
+                <TableRow>
+                    <TableRowCell>Prompt Tokens:</TableRowCell>
+                    <TableRowCell>@CompletionUsage.PromptTokens</TableRowCell>
+                </TableRow>
+                <TableRow>
+                    <TableRowCell>Completion Tokens:</TableRowCell>
+                    <TableRowCell>@CompletionUsage.CompletionTokens</TableRowCell>
+                </TableRow>
+                <TableRow>
+                    <TableRowCell>Total Tokens:</TableRowCell>
+                    <TableRowCell>@CompletionUsage.TotalTokens</TableRowCell>
+                </TableRow>
+            </Table>
+        </CollapseBody>
+    </Collapse>
+    <Collapse>
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <AccordionToggle>Completion Request Details</AccordionToggle>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <Text>@completionCode</Text>
+        </CollapseBody>
+    </Collapse>
+</Accordion>

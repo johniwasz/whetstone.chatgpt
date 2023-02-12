@@ -22,7 +22,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
     [SupportedOSPlatform("browser")]
     public partial class TableGenerator
     {
-        private const string PROMPTTEMPLATE = "Top {0} {1}. CSV Format.";
+        private const string PROMPTTEMPLATE = "{0} {1}. CSV Format.";
 
         [CascadingParameter]
         public ApplicationState AppState { get; set; } = default!;
@@ -36,6 +36,12 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         private IEnumerable<string>? Fields = default;
 
         private IEnumerable<IEnumerable<string>>? DataRows = default!;
+
+        private ChatGPTCompletionRequest gptCompletionRequest = new();
+
+        private ChatGPTUsage completionUsage = new();
+
+        private Visibility completionDetailsVisibility = Visibility.Invisible;
 
         protected override async Task OnInitializedAsync()
         {
@@ -77,7 +83,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             promptBuilder.Append(string.Join(", ", fieldList));
             promptBuilder.Append('.');
 
-            ChatGPTCompletionRequest gptPromptRequest = new()
+            gptCompletionRequest = new()
             {
                 Prompt = promptBuilder.ToString(),
                 Model = ChatGPTCompletionModels.Davinci,
@@ -92,7 +98,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             {
                 isLoading = true;
 
-                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptPromptRequest);
+                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptCompletionRequest);
 
                 if (completionResponse is not null)
                 {
@@ -120,11 +126,13 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                                     {
                                         fieldList = new();
 
-                                        foreach (string field in fields)
+                                        for (int fieldIndex = 0; fieldIndex < fields.Length; fieldIndex++)
                                         {
+                                            string field = fields[fieldIndex];
+                                            
                                             if (!string.IsNullOrWhiteSpace(field))
                                             {
-                                                fieldList.Add(field);
+                                                fieldList.Add(field.Trim());
                                             }
                                         }
                                         dataRows.Add(fieldList);
@@ -135,12 +143,13 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                         }
                     }
 
-                    ChatGPTUsage? completionUsage = completionResponse.Usage;
-
-                    if (completionUsage is not null)
+                    if (completionResponse.Usage is not null)
                     {
-                        AppState.UpdateTokenUsage(completionUsage);
+                        AppState.UpdateTokenUsage(completionResponse.Usage);
+                        completionUsage = completionResponse.Usage;
                     }
+
+                    completionDetailsVisibility = Visibility.Visible;
                 }
             }
             catch (ChatGPTException chatEx)
@@ -161,10 +170,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         private void AddAttribute()
         {
-            tableRequest.Attributes.Add(new AtttribueItem());
+            tableRequest.Attributes.Add(new AttribueItem());
         }
 
-        private void RemoveAttribute(AtttribueItem attribContext)
+        private void RemoveAttribute(AttribueItem attribContext)
         {
             tableRequest.Attributes.Remove(attribContext);
         }

@@ -15,7 +15,7 @@
             <Blazorise.ValidationSummary />
             <Field>
             <FieldLabel>Category</FieldLabel>
-                <TextEdit @bind-Text="tableRequest.Category"  Placeholder="NFL Teams" ></TextEdit>
+                <TextEdit @bind-Text="tableRequest.Category"  Placeholder="Most Populous Cities" ></TextEdit>
                 <ValidationMessage For="@(() => tableRequest.Category)" />
             </Field>
 
@@ -93,6 +93,10 @@
                 <Button Type="ButtonType.Button" class="btn btn-primary float-end" Clicked="@ExportCSV">Export</Button>
         }
         </Column>
+    </Row>
+        <Row Visibility="@completionDetailsVisibility">
+            <br/>
+            <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" />
     </Row>
 </Column>
 </Row>
