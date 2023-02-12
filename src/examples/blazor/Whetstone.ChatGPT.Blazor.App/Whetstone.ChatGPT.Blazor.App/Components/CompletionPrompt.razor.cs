@@ -30,7 +30,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         private bool isLoading { get; set; } = false;
         
         private CompletionPromptRequest completionRequest = new();
-        
+
+        private ChatGPTCompletionRequest gptCompletionRequest = new();
+
         private ChatOptionsSelector? optionsSelector = default!;
 
         protected override void OnParametersSet()
@@ -43,7 +45,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         {
             exception = null;
 
-            ChatGPTCompletionRequest gptPromptRequest = new()
+            gptCompletionRequest = new()
             {
                 Prompt = completionRequest.Prompt,
                 Model = optionsSelector is null ? ChatGPTCompletionModels.Davinci : optionsSelector.SelectedModel,
@@ -55,7 +57,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             {
                 isLoading = true;
 
-                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptPromptRequest);
+                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptCompletionRequest);
 
                 if (completionResponse is not null)
                 {

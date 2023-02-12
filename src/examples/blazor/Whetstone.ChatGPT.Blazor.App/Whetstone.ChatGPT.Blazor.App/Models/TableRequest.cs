@@ -10,12 +10,12 @@ namespace Whetstone.ChatGPT.Blazor.App.Models
         [Range(5, 30)]
         public int MaxItems { get; set; } = 10;
 
-        public List<AtttribueItem> Attributes { get; set; } = new()
-            { new AtttribueItem() { IsFixed = true, Name = "Number", IsNumeric = true },
-              new AtttribueItem() { IsFixed = true, Name = "Category", IsNumeric = false } };
+        public List<AttribueItem> Attributes { get; set; } = new()
+            { new AttribueItem() { IsFixed = true, Name = "Number", IsNumeric = true },
+              new AttribueItem() { IsFixed = true, Name = "Category", IsNumeric = false } };
     }
 
-    public class AtttribueItem
+    public class AttribueItem
     {
         public bool IsFixed { get; set; }
 

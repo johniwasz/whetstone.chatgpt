@@ -35,21 +35,8 @@
                     </CardTitle>
                     <CardText>@PromptResponse</CardText>
                     <CardFooter>
-                        <Table>
-                            <TableRow>
-                                <TableRowCell>Prompt Tokens:</TableRowCell>
-                                <TableRowCell>@completionUsage.PromptTokens</TableRowCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableRowCell>Completion Tokens:</TableRowCell>
-                                <TableRowCell>@completionUsage.CompletionTokens</TableRowCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableRowCell>Total Tokens:</TableRowCell>
-                                <TableRowCell>@completionUsage.TotalTokens</TableRowCell>
-                            </TableRow>
-                        </Table>
-                
+                        <br/>
+                        <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" />
                     </CardFooter>
                 </CardBody>
             </Card>
