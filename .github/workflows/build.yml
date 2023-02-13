@@ -74,7 +74,8 @@ jobs:
   deploy-pages:
     needs: build-and-test
     runs-on: 'ubuntu-latest'    
-
+    permissions:
+      contents: write
     steps:
 
       - name: List Environment Variables
