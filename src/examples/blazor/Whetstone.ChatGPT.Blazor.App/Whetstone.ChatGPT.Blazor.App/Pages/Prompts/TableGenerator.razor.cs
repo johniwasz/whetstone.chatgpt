@@ -46,8 +46,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         private Visibility completionDetailsVisibility = Visibility.Invisible;
 
         private bool isDisposed = false;
-
-        CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+        CancellationTokenSource readonly cancelTokenSource = new CancellationTokenSource();
 
         protected override async Task OnInitializedAsync()
         {
@@ -140,8 +139,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
                                                 if (!string.IsNullOrWhiteSpace(field))
                                                 {
-                                                    string formattedField = field.Trim();
-
                                                     if (fieldIndex < tableRequest.Attributes.Count && tableRequest.Attributes[fieldIndex].IsNumeric)
                                                     {
                                                         field = field.Trim('"').Replace(",", string.Empty);
