@@ -46,7 +46,8 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         private Visibility completionDetailsVisibility = Visibility.Invisible;
 
         private bool isDisposed = false;
-        CancellationTokenSource readonly cancelTokenSource = new CancellationTokenSource();
+
+        private readonly CancellationTokenSource cancelTokenSource = new();
 
         protected override async Task OnInitializedAsync()
         {
