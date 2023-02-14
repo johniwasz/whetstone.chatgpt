@@ -1,6 +1,7 @@
 ﻿@page "/prompts/tablegenerator"
 @inject IJSRuntime JSRuntime
 @inject IChatGPTClient ChatClient
+@inject ILogger<TableGenerator> Logger
 
 <Row>
     <Column ColumnSize="ColumnSize.IsFull">
@@ -48,6 +49,7 @@
             </Repeater>
             </Column>
             <Button Type="ButtonType.Button" class="btn btn-primary" Float="Float.Start" Clicked="@AddAttribute" Disabled="@isLoading">Add</Button>
+            <Button Type="ButtonType.Button" class="btn btn-primary" Float="Float.End" Clicked="@CancelRequest" Disabled="@(!isLoading)">Cancel</Button>
             <Button Type="ButtonType.Submit" class="btn btn-primary" Float="Float.End" Loading="@isLoading" Disabled="@isLoading">Submit</Button>
         </EditForm>
     </Row>
