@@ -1,19 +1,9 @@
 ﻿using Blazorise;
-using Blazorise.Bootstrap5;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-using Microsoft.JSInterop;
 using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Linq;
-using System.Net.Mime;
-using System.Net.NetworkInformation;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using System.Text;
-using System.Threading;
+using Whetstone.ChatGPT.Blazor.App.Components;
 using Whetstone.ChatGPT.Blazor.App.Models;
 using Whetstone.ChatGPT.Blazor.App.State;
 using Whetstone.ChatGPT.Models;
@@ -41,6 +31,8 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         private ChatGPTCompletionRequest gptCompletionRequest = new();
 
+        private ChatGPTCompletionResponse gptCompletionResponse = new();
+
         private ChatGPTUsage completionUsage = new();
 
         private Visibility completionDetailsVisibility = Visibility.Invisible;
@@ -49,31 +41,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         private readonly CancellationTokenSource cancelTokenSource = new();
 
-        protected override async Task OnInitializedAsync()
-        {
-#if GHPAGES
-            await LoadTableGeneratorAsync("/whetstone.chatgpt/js/TableGenerator.js");
-#else
-            await LoadTableGeneratorAsync("../../../js/TableGenerator.js");
-#endif
-        }
-
-        private async Task<bool> LoadTableGeneratorAsync(string generatorScriptPath)
-        {
-            bool isScriptLoaded = false;
-            try
-            {
-                await JSHost.ImportAsync("ExportLib", generatorScriptPath);
-                isScriptLoaded = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"{generatorScriptPath} not loaded");
-                Console.WriteLine(ex);
-            }
-
-            return isScriptLoaded;
-        }
+        private ChatOptionsSelector? optionsSelector = default!;
 
         private async Task HandleSubmitAsync()
         {
@@ -91,75 +59,34 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             gptCompletionRequest = new()
             {
                 Prompt = promptBuilder.ToString(),
-                Model = ChatGPTCompletionModels.Davinci,
-                MaxTokens = 1000,
-                Temperature = 0.0f,
+                Model = optionsSelector.SelectedModel,
+                MaxTokens = optionsSelector.MaxTokens,
+                Temperature = optionsSelector.Temperature,
             };
 
             // Remove any quotes from the lables that will be used in the table display
             fieldList = fieldList.Select(x => x.Trim('"')).ToList();
 
+            string? rawResponse = default;
+            isLoading = true;
+
             try
             {
-                isLoading = true;
-
                 if (cancelTokenSource.TryReset())
                 {
-
                     ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptCompletionRequest, cancelTokenSource.Token);
-
+                    
                     if (completionResponse is not null)
                     {
-                        string? rawResponse = completionResponse.GetCompletionText();
-
-                        if (rawResponse is not null)
+                        gptCompletionResponse = completionResponse;
+                        
+                        rawResponse = gptCompletionResponse.GetCompletionText();
+                        rawResponse = rawResponse!.Trim();
+                        
+                        if (gptCompletionResponse.Usage is not null)
                         {
-                            this.Fields = fieldList;
-
-                            rawResponse = rawResponse.Trim();
-
-                            using (StringReader reader = new(rawResponse))
-                            {
-                                using (TextFieldParser parser = new(reader))
-                                {
-                                    parser.TextFieldType = FieldType.Delimited;
-                                    parser.SetDelimiters(",");
-
-                                    List<List<string>> dataRows = new();
-
-                                    while (!parser.EndOfData)
-                                    {
-                                        string[]? fields = parser.ReadFields();
-                                        if (fields is not null)
-                                        {
-                                            fieldList = new();
-
-                                            for (int fieldIndex = 0; fieldIndex < fields.Length; fieldIndex++)
-                                            {
-                                                string field = fields[fieldIndex];
-
-                                                if (!string.IsNullOrWhiteSpace(field))
-                                                {
-                                                    if (fieldIndex < tableRequest.Attributes.Count && tableRequest.Attributes[fieldIndex].IsNumeric)
-                                                    {
-                                                        field = field.Trim('"').Replace(",", string.Empty);
-                                                    }
-
-                                                    fieldList.Add(field.Trim());
-                                                }
-                                            }
-                                            dataRows.Add(fieldList);
-                                        }
-                                    }
-                                    DataRows = dataRows;
-                                }
-                            }
-                        }
-
-                        if (completionResponse.Usage is not null)
-                        {
-                            AppState.UpdateTokenUsage(completionResponse.Usage);
-                            completionUsage = completionResponse.Usage;
+                            AppState.UpdateTokenUsage(gptCompletionResponse.Usage);
+                            completionUsage = gptCompletionResponse.Usage;
                         }
 
                         completionDetailsVisibility = Visibility.Visible;
@@ -173,7 +100,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             }
             catch (TaskCanceledException)
             {
-                // do nothing
+                // do nothing except log.
                 Logger.LogInformation("Task cancelled while getting completion");
             }
             catch (Exception ex)
@@ -181,7 +108,60 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                 Logger.LogError($"Error getting completion: {ex}");
                 exception = ex;
             }
-            finally
+
+            if (rawResponse is not null)
+            {
+                this.Fields = fieldList;
+                try
+                {
+                    using (StringReader reader = new(rawResponse))
+                    {
+                        using (TextFieldParser parser = new(reader))
+                        {
+                            parser.TextFieldType = FieldType.Delimited;
+                            parser.SetDelimiters(",");
+
+                            List<List<string>> dataRows = new();
+
+                            while (!parser.EndOfData)
+                            {
+                                string[]? fields = parser.ReadFields();
+                                if (fields is not null)
+                                {
+                                    fieldList = new();
+
+                                    for (int fieldIndex = 0; fieldIndex < fields.Length; fieldIndex++)
+                                    {
+                                        string field = fields[fieldIndex];
+
+                                        if (!string.IsNullOrWhiteSpace(field))
+                                        {
+                                            if (fieldIndex < tableRequest.Attributes.Count && tableRequest.Attributes[fieldIndex].IsNumeric)
+                                            {
+                                                field = field.Trim('"').Replace(",", string.Empty);
+                                            }
+
+                                            fieldList.Add(field.Trim());
+                                        }
+                                    }
+                                    dataRows.Add(fieldList);
+                                }
+                            }
+                            DataRows = dataRows;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Error processing completion: {ex}");
+                    exception = ex;
+                }
+                finally
+                {
+                    isLoading = false;
+                }
+            }
+            else
             {
                 isLoading = false;
             }
@@ -207,40 +187,16 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             return isFixed ? Visibility.Invisible : Visibility.Visible;
         }
 
-        [JSImport("BlazorDownloadFile", "ExportLib")]
-        internal static partial string BlazorDownloadFile(string filename, string contentType, string content);
-
-        public void ExportCSV()
-        {
-            try
-            {
-                string csvContents = GetCSV();
-                string fileName = BuildFileName();
-                BlazorDownloadFile(fileName, "text/csv", csvContents);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                exception = ex;
-            }
-        }
-
-        private string BuildFileName()
-        {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-            return $"exportlist-{formattedDate}.csv";
-        }
-
         private string GetCSV()
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
 
             if (Fields is not null)
                 stringBuilder.AppendLine(string.Join(",", Fields));
 
             if (DataRows is not null)
             {
-                foreach(IEnumerable<string> row in DataRows)
+                foreach (IEnumerable<string> row in DataRows)
                 {
                     List<string> fieldValues = new();
                     for (int fieldIndex = 0; fieldIndex < row.Count(); fieldIndex++)
@@ -257,7 +213,14 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                     stringBuilder.AppendLine(string.Join(",", fieldValues));
                 }
             }
+
             return stringBuilder.ToString();
+        }
+
+        private async Task ProcessExceptionAsync(Exception ex)
+        {
+            exception = ex;
+            await Task.CompletedTask;
         }
 
         #region Clean Up

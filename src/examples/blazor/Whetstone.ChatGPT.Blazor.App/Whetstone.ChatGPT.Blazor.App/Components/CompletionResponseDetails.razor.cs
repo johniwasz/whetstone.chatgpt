@@ -1,6 +1,8 @@
 ﻿using Markdig;
 using Microsoft.AspNetCore.Components;
 using Microsoft.CodeAnalysis.CSharp;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using Whetstone.ChatGPT.Models;
 
 namespace Whetstone.ChatGPT.Blazor.App.Components
@@ -14,7 +16,12 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         [Parameter]
         public ChatGPTCompletionRequest CompletionRequest { get; set; } = new();
 
-        private MarkupString completionCode = new MarkupString();
+        [Parameter]
+        public ChatGPTCompletionResponse CompletionResponse { get; set; } = new();
+
+        private MarkupString completionCode = new();
+
+        private MarkupString completionResponseJson = new();
 
         protected override void OnParametersSet()
         {
@@ -30,6 +37,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             };
             ```
             """);
+
+            string completionJson = JsonSerializer.Serialize(CompletionResponse);
+
+            completionResponseJson = (MarkupString)completionJson;
 
             base.OnParametersSet();
         }
