@@ -1,5 +1,5 @@
 ﻿@page "/prompts/tablegenerator"
-@inject IJSRuntime JSRuntime
+
 @inject IChatGPTClient ChatClient
 @inject ILogger<TableGenerator> Logger
 
@@ -9,7 +9,7 @@
     </Column>
 </Row>
 <Row>
-<Column ColumnSize="ColumnSize.Is10">
+    <Column ColumnSize="ColumnSize.Is10">
     <Row>
         <EditForm Model="@tableRequest" OnValidSubmit="@(async() => await HandleSubmitAsync())">
             <DataAnnotationsValidator />
@@ -58,7 +58,8 @@
         <ErrorNotification Exception="@exception" />
     </Row>
     <Row>
-    <Column ColumnSize="ColumnSize.IsFull">
+        
+    <Column ColumnSize="ColumnSize.Is10">
         <Table>
             <TableHeader>
                 <TableRow>
@@ -87,18 +88,25 @@
             </TableBody>
         </Table>
     </Column>
+
     </Row>
     <Row>
-        <Column>
+        <Column ColumnSize="ColumnSize.Is10">
         @if(Fields is not null)
         {
-                <Button Type="ButtonType.Button" class="btn btn-primary float-end" Clicked="@ExportCSV">Export</Button>
+           <CSVExporter CSVRetriever="@GetCSV" OnException="@ProcessExceptionAsync"></CSVExporter>
         }
         </Column>
+
     </Row>
-        <Row Visibility="@completionDetailsVisibility">
+    <Row Visibility="@completionDetailsVisibility">
+        <Column ColumnSize="ColumnSize.Is10">
             <br/>
-            <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" />
+            <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" CompletionResponse="@gptCompletionResponse" />
+        </Column>
     </Row>
 </Column>
+    <Column ColumnSize="ColumnSize.Is2">
+        <ChatOptionsSelector @ref="optionsSelector" MaxTokens="1000" Temperature="0.0f" OnException="@ProcessExceptionAsync"></ChatOptionsSelector>
+    </Column>
 </Row>

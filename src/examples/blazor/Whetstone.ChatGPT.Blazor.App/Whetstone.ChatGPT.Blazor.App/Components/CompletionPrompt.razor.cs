@@ -1,5 +1,4 @@
-﻿using Blazorise.LoadingIndicator;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using System;
 using Whetstone.ChatGPT.Blazor.App.Models;
@@ -11,84 +10,70 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
     public partial class CompletionPrompt
     {
         [Parameter]
-        public string Title { get; set; }  = "Playground";
+        public string Title { get; set; } = "Playground";
 
         [Parameter]
-        public string Prompt { get; set; } = default!;
+        public string Prompt 
+        {
+            get; set;
+        } = default!;
 
         [CascadingParameter]
         public ApplicationState AppState { get; set; } = default!;
 
-        private string placeholderText { get; set; } = "Write a tagline for an ice cream shop.";
-
         private MarkupString? PromptResponse { get; set; } = default!;
-        
+
         private ChatGPTUsage? completionUsage { get; set; } = default!;
+
+        private ChatGPTCompletionRequest gptCompletionRequest = default!;
+
+        private ChatGPTCompletionResponse gptCompletionResponse = default!;
 
         private Exception? exception { get; set; } = default!;
 
-        private bool isLoading { get; set; } = false;
-        
-        private CompletionPromptRequest completionRequest = new();
-
-        private ChatGPTCompletionRequest gptCompletionRequest = new();
-
         private ChatOptionsSelector? optionsSelector = default!;
 
-        protected override void OnParametersSet()
+        public Task CompletionRequestedAsync(ChatGPTCompletionRequest completionRequest)
         {
-            completionRequest.Prompt = Prompt;
-            base.OnParametersSet();
+            gptCompletionRequest = completionRequest;
+            return Task.CompletedTask;
         }
 
-        private async Task HandleSubmitAsync()
+        public Task ProcessCompletionResponseAsync(ChatGPTCompletionResponse completionResponse)
         {
-            exception = null;
+            gptCompletionResponse = completionResponse;
 
-            gptCompletionRequest = new()
+            string? rawResponse = gptCompletionResponse.GetCompletionText();
+
+            if (rawResponse is not null)
             {
-                Prompt = completionRequest.Prompt,
-                Model = optionsSelector is null ? ChatGPTCompletionModels.Davinci : optionsSelector.SelectedModel,
+                PromptResponse = (MarkupString)rawResponse.Replace(Environment.NewLine, "<br/>");
+            }
+            completionUsage = gptCompletionResponse.Usage;
+
+            if (completionUsage is not null)
+            {
+                AppState.UpdateTokenUsage(completionUsage);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private void ProcessException(Exception ex)
+        {
+            exception = ex;
+        }
+
+        public CompletionOptions GetCompletionOptions()
+        {
+            CompletionOptions compOptions = new()
+            {
+                SelectedModel = optionsSelector is null ? ChatGPTCompletionModels.Davinci : optionsSelector.SelectedModel,
                 MaxTokens = optionsSelector is null ? 200 : optionsSelector.MaxTokens,
                 Temperature = optionsSelector is null ? 0.1f : optionsSelector.Temperature
             };
 
-            try
-            {
-                isLoading = true;
-
-                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptCompletionRequest);
-
-                if (completionResponse is not null)
-                {
-                    string? rawResponse = completionResponse.GetCompletionText();
-
-                    if (rawResponse is not null)
-                    {
-                        PromptResponse = (MarkupString)rawResponse.Replace(Environment.NewLine, "<br/>");
-                    }
-
-                    completionUsage = completionResponse.Usage;
-
-                    if (completionUsage is not null)
-                    {
-                        AppState.UpdateTokenUsage(completionUsage);
-                    }
-                }
-            }
-            catch (ChatGPTException chatEx)
-            {
-                exception = chatEx;
-            }
-            finally
-            {
-                isLoading = false;
-            }
-        }
-
-        private void ProcessOptionsException(Exception ex)
-        {
-            exception = ex;
+            return compOptions;
         }
 
     }

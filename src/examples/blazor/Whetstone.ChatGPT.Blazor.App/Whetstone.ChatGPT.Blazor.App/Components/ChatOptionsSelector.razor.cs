@@ -4,14 +4,14 @@ using System;
 using Blazorise;
 using Whetstone.ChatGPT.Models;
 using Microsoft.AspNetCore.Components;
+using Whetstone.ChatGPT.Blazor.App.Models;
 
 namespace Whetstone.ChatGPT.Blazor.App.Components
 {
     public partial class ChatOptionsSelector
     {
 
-        public int MaxTokens { get; set; } = 200;
-
+        [Parameter]
         public float Temperature { get; set; } = 0.1f;
 
         public string? SelectedModel { get; set; } = null;
@@ -19,7 +19,14 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         [Parameter]
         public EventCallback<Exception> OnException { get; set; }
 
+        [Parameter]
+        public EventCallback<CompletionOptions> OnCompletionOptionsChanged { get; set; }
+
+        [Parameter]
+        public int MaxTokens { get; set; } = 200;
+
         private IEnumerable<ChatGPTModel>? models = default!;
+
 
         protected override async Task OnInitializedAsync()
         {

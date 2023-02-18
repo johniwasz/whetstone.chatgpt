@@ -1,4 +1,5 @@
 ﻿@inject IChatGPTClient ChatClient
+@inject ILogger<CompletionPrompt> Logger
 
 <Row>
     <Column ColumnSize="ColumnSize.IsFull">
@@ -8,22 +9,12 @@
 <Row>
 <Column ColumnSize="ColumnSize.Is10">
     <Row>
-        <EditForm Model="@completionRequest" OnValidSubmit="@(async() => await HandleSubmitAsync())">
-            <DataAnnotationsValidator />
-            <Blazorise.ValidationSummary />
-            <Field>
-            <FieldLabel>Prompt</FieldLabel>
-                <MemoEdit @bind-Text="completionRequest.Prompt" @bind-Placeholder="@placeholderText" TabSize="4" AutoSize Rows="5" />
-            <ValidationMessage For="@(() => completionRequest.Prompt)" />
-            </Field>
-            <Button Type="ButtonType.Submit" class="btn btn-primary float-end" Loading="@isLoading" Disabled="@isLoading">Submit</Button>
-        </EditForm>
+            <CompletionPromptForm Prompt="@Prompt" OnException="@ProcessException" OnCompletionRequestedAsync="@CompletionRequestedAsync" OnCompletionResponseAsync="@ProcessCompletionResponseAsync" CompletionOptionsRetriever="GetCompletionOptions"></CompletionPromptForm>
     </Row>
     
     <Row>
         <ErrorNotification Exception="@exception" />
     </Row>
-
 
     @if(completionUsage is not null)
     {
@@ -36,14 +27,14 @@
                     <CardText>@PromptResponse</CardText>
                     <CardFooter>
                         <br/>
-                        <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" />
+                            <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" CompletionResponse="gptCompletionResponse" />
                     </CardFooter>
                 </CardBody>
             </Card>
         </Row>
     }
-</Column>
-<Column ColumnSize="ColumnSize.Is2">
-        <ChatOptionsSelector @ref="optionsSelector" OnException=@ProcessOptionsException></ChatOptionsSelector>
-</Column>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is2">
+        <ChatOptionsSelector @ref="optionsSelector" OnException="@ProcessException"></ChatOptionsSelector>
+    </Column>
 </Row>

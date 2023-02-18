@@ -1,0 +1,14 @@
+﻿@inject ILogger<CompletionPrompt> Logger
+@inject IChatGPTClient ChatClient
+
+<EditForm Model="@completionRequest" OnValidSubmit="@(async() => await HandleSubmitAsync())">
+    <DataAnnotationsValidator />
+    <Blazorise.ValidationSummary />
+    <Field>
+        <FieldLabel>Prompt</FieldLabel>
+        <MemoEdit @bind-Text="completionRequest.Prompt" @bind-Placeholder="@placeholderText" TabSize="4" AutoSize Rows="5" />
+        <ValidationMessage For="@(() => completionRequest.Prompt)" />
+    </Field>
+    <Button Type="ButtonType.Button" class="btn btn-primary" Float="Float.End" Clicked="@CancelRequest" Disabled="@(!isLoading)">Cancel</Button>
+    <Button Type="ButtonType.Submit" class="btn btn-primary" Float="Float.End" Loading="@isLoading" Disabled="@isLoading">Submit</Button>
+</EditForm>

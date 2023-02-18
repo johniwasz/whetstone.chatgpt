@@ -1,0 +1,55 @@
+﻿@page "/prompts/testdatagenerator"
+
+@inject IChatGPTClient ChatClient
+@inject ILogger<TableGenerator> Logger
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Heading Size="HeadingSize.Is1" Margin="Margin.Is3.FromBottom">Test Data Generator</Heading>
+    </Column>
+</Row>
+
+<Row>
+<Column ColumnSize="ColumnSize.Is10">
+   <!--
+    <Row>
+        <EditForm Model="@completionRequest" OnValidSubmit="@(async() => await HandleSubmitAsync())">
+            <DataAnnotationsValidator />
+            <Blazorise.ValidationSummary />
+            <Field>
+            <FieldLabel>Prompt</FieldLabel>
+                <MemoEdit @bind-Text="completionRequest.Prompt" @bind-Placeholder="@placeholderText" TabSize="4" AutoSize Rows="5" />
+            <ValidationMessage For="@(() => completionRequest.Prompt)" />
+            </Field>
+            <Button Type="ButtonType.Submit" class="btn btn-primary float-end" Loading="@isLoading" Disabled="@isLoading">Submit</Button>
+        </EditForm>
+    </Row>
+    
+    <Row>
+        <ErrorNotification Exception="@exception" />
+    </Row>
+    
+    @if(completionUsage is not null)
+    {
+        <Row>
+            <Card>
+                <CardBody>
+                    <CardTitle Size="2">
+                        Prompt Response
+                    </CardTitle>
+                    <CardText>@PromptResponse</CardText>
+                    <CardFooter>
+                        <br/>
+                            <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" CompletionResponse="gptCompletionResponse" />
+                    </CardFooter>
+                </CardBody>
+            </Card>
+        </Row>
+    }
+        -->
+</Column>
+<Column ColumnSize="ColumnSize.Is2">
+        <ChatOptionsSelector @ref="optionsSelector" OnException=@ProcessOptionsException></ChatOptionsSelector>
+</Column>
+</Row>
+
