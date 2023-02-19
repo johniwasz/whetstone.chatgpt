@@ -4,7 +4,7 @@
 @inject ILogger<TableGenerator> Logger
 
 <CompletionPrompt Title="Test Data Generator"
-                  Prompt="Generate 5 lines of fake data with the optional formats in parenthesis: id (UUIDv4), name, email, company. The format must be a JSON string representing a two-dimensional array. Include a headers row. Use names of popular super heroes."
+                  Prompt="Generate 5 lines of fake data with the optional formats in parenthesis: id (random GUID), name, email, company. The format must be a JSON string representing a two-dimensional array. Include a headers row. Use names of popular super heroes."
                   FormatPromptResponse="@FormatResponse"
                   DefaultMaxTokens="1000">
 </CompletionPrompt>
