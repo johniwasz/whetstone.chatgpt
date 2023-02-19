@@ -4,23 +4,19 @@ using System.Net.NetworkInformation;
 using System;
 using Whetstone.ChatGPT.Blazor.App.Models;
 using Whetstone.ChatGPT.Models;
+using System.Runtime.CompilerServices;
 
 namespace Whetstone.ChatGPT.Blazor.App.Components
 {
     public partial class CompletionPromptForm : IDisposable
     {
-        [Parameter]
-        public string Prompt { 
-            
-            get
-            {
-                return completionRequest.Prompt;
-            }
-            set
-            {
-                completionRequest.Prompt = value;
-            }
-        }
+
+        [CascadingParameter]
+        public string Prompt
+        {
+            get;
+            set;
+        } = default!;
 
         [Parameter]
         public EventCallback<Exception> OnException { get; set; } = default!;
@@ -36,16 +32,22 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         private CompletionPromptRequest completionRequest = new();
 
-        private ChatGPTCompletionRequest gptCompletionRequest = new();
-
-        private ChatGPTCompletionResponse gptCompletionResponse = new();
-
         private readonly CancellationTokenSource cancelTokenSource = new();
 
         private string placeholderText { get; set; } = "Write a tagline for an ice cream shop.";
 
         private bool isDisposed = false;
-        private bool isLoading = false; 
+        private bool isLoading = false;
+
+
+        protected override Task OnInitializedAsync()
+        {
+            if (!string.IsNullOrWhiteSpace(Prompt))
+            {
+                completionRequest.Prompt = Prompt;
+            }
+            return base.OnInitializedAsync();
+        }
 
         private async Task HandleSubmitAsync()
         {
@@ -84,11 +86,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             {
                 isLoading = false;
             }
-        }
-        protected override void OnParametersSet()
-        {
-            completionRequest.Prompt = Prompt;
-            base.OnParametersSet();
         }
 
         private void CancelRequest()

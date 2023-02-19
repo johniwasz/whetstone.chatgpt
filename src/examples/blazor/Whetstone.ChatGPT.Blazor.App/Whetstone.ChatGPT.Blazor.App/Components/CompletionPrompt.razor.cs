@@ -21,6 +21,15 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         [CascadingParameter]
         public ApplicationState AppState { get; set; } = default!;
 
+        [Parameter]
+        public EventCallback<ChatGPTCompletionResponse> OnCompletionResponseAsync { get; set; } = default!;
+
+        [Parameter]
+        public Func<string, MarkupString> FormatPromptResponse { get; set; } = FormatResponse;
+
+        [Parameter]
+        public int DefaultMaxTokens { get; set; } = 200;
+
         private MarkupString? PromptResponse { get; set; } = default!;
 
         private ChatGPTUsage? completionUsage { get; set; } = default!;
@@ -47,8 +56,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
             if (rawResponse is not null)
             {
-                PromptResponse = (MarkupString)rawResponse.Replace(Environment.NewLine, "<br/>");
+                PromptResponse = FormatPromptResponse(rawResponse);
             }
+
             completionUsage = gptCompletionResponse.Usage;
 
             if (completionUsage is not null)
@@ -56,7 +66,15 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
                 AppState.UpdateTokenUsage(completionUsage);
             }
 
+            OnCompletionResponseAsync.InvokeAsync(completionResponse);
+
             return Task.CompletedTask;
+        }
+
+        private static MarkupString FormatResponse(string response)
+        {
+
+            return (MarkupString)response.Replace(Environment.NewLine, "<br/>");
         }
 
         private void ProcessException(Exception ex)

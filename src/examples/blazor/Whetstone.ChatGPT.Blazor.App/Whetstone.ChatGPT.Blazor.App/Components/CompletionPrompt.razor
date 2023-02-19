@@ -7,11 +7,13 @@
     </Column>
 </Row>
 <Row>
+     
 <Column ColumnSize="ColumnSize.Is10">
+    <CascadingValue Value="@Prompt">
     <Row>
-            <CompletionPromptForm Prompt="@Prompt" OnException="@ProcessException" OnCompletionRequestedAsync="@CompletionRequestedAsync" OnCompletionResponseAsync="@ProcessCompletionResponseAsync" CompletionOptionsRetriever="GetCompletionOptions"></CompletionPromptForm>
+            <CompletionPromptForm OnException="@ProcessException" OnCompletionRequestedAsync="@CompletionRequestedAsync" OnCompletionResponseAsync="@ProcessCompletionResponseAsync" CompletionOptionsRetriever="GetCompletionOptions"></CompletionPromptForm>
     </Row>
-    
+    </CascadingValue>
     <Row>
         <ErrorNotification Exception="@exception" />
     </Row>
@@ -35,6 +37,8 @@
     }
     </Column>
     <Column ColumnSize="ColumnSize.Is2">
-        <ChatOptionsSelector @ref="optionsSelector" OnException="@ProcessException"></ChatOptionsSelector>
+        <CascadingValue Value="@DefaultMaxTokens">
+            <ChatOptionsSelector @ref="optionsSelector" OnException="@ProcessException"></ChatOptionsSelector>
+        </CascadingValue>
     </Column>
 </Row>

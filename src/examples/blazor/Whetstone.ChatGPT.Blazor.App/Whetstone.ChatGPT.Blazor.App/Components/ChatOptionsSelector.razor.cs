@@ -25,6 +25,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         [Parameter]
         public int MaxTokens { get; set; } = 200;
 
+        [CascadingParameter]
+        public int? DefaultMaxTokens { get; set; } = null;
+
         private IEnumerable<ChatGPTModel>? models = default!;
 
 
@@ -41,6 +44,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
                 SelectedModel = ChatGPTCompletionModels.Davinci;
                 
+                if (DefaultMaxTokens is not null)
+                {
+                    MaxTokens = DefaultMaxTokens.Value;
+                }
             }
             catch (Exception ex)
             {
