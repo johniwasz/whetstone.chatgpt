@@ -80,14 +80,6 @@ function hasParentInTree(element, parentElementId) {
     return hasParentInTree(element.parentElement, parentElementId);
 }
 
-function hasScroll(element) {
-    return element.scrollHeight > element.clientHeight;
-}
-
-function scrollClick(event) {
-    return hasScroll(event.target) && event.target.clientWidth < event.clientX;
-}
-
 export function registerClosableComponent(dotnetAdapter, element) {
     if (element) {
         if (isClosableComponent(element.id) !== true) {
@@ -133,14 +125,11 @@ document.addEventListener('mouseup', function handler(evt) {
 
     if (evt.button === 0 && evt.target === lastClickedDocumentElement && closableComponents && closableComponents.length > 0) {
         const lastClosable = closableComponents[closableComponents.length - 1];
-        const scrollClicked = scrollClick(evt);
-        if (lastClosable && !scrollClicked) {
+        if (lastClosable) {
             tryClose(lastClosable, evt.target.id, false, hasParentInTree(evt.target, lastClosable.elementId));
         }
     }
 });
-
-
 
 document.addEventListener('keyup', function handler(evt) {
     if (isClosableLightComponent(evt.target.id))
