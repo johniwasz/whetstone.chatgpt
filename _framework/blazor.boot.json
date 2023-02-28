@@ -12,7 +12,7 @@
       "Blazorise.Components.dll": "sha256-LVD++WOmGRdAKLvdw0X\/glmsHoj0vr\/K+a5eNKMxQuk=",
       "Blazorise.DataGrid.dll": "sha256-g2Csmcpq+jOY+SDROMbGaQBMw5+ij1XwBwcpb5R5j78=",
       "Blazorise.dll": "sha256-gn6CPd3XSlvvLM3w+7TdSd47+MvdBgzZWbjFJUs7Kwk=",
-      "Blazorise.Icons.FontAwesome.dll": "sha256-gTDwgzwWWMMrCuP6nS23UigBbj1CWmTnTeYJTKesxzY=",
+      "Blazorise.Icons.FontAwesome.dll": "sha256-gSDrZ9CY7ISXAAiGL60MT46N7RVBQTcDXHTIdmTuKlA=",
       "Blazorise.Licensing.dll": "sha256-HCvMfGG13thv3GWvUEN2Ca7avc0Bjw5kpc9h9Kk+LS0=",
       "Blazorise.LoadingIndicator.dll": "sha256-OVamZMlZch4m+HN\/1F\/dxtgvVPUoIoDiSG1fRkti+g8=",
       "Blazorise.Snackbar.dll": "sha256-YRNBkDno5rU7EAQkRGEJp8yFrLO\/iYpU1UEL9QXxGQ8=",
@@ -100,7 +100,7 @@
       "System.Xml.ReaderWriter.dll": "sha256-UMrk8MxJCe4efKSUdjd\/vrJy87aoaet2L8x6xLB5vzk=",
       "System.Xml.XDocument.dll": "sha256-VdIFwoYDxS\/EPhEw5sE\/6P\/sBw4E9M+yKhZzWKFq2Rc=",
       "System.Xml.XPath.XDocument.dll": "sha256-yTrMXDL7rDF0AqiBeW5Ftrp1i29jhS5lBBQQsscy5BA=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-qd9moJYvmKPcGJjmSdVK1hCneGY+17OdH8JZsZIfRSc=",
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-TcAwVK3mQFu8bQYt30WyB7AkeACz0HJxrd9IOBH1Fws=",
       "Whetstone.ChatGPT.dll": "sha256-qgOJOD22rYWipqSh4SxYMeg6DicUNTVXhkgbBUCJ0ro="
     },
     "extensions": null,
