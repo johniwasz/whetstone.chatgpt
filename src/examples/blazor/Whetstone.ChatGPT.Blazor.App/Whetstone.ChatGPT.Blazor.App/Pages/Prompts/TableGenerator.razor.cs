@@ -59,9 +59,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             gptCompletionRequest = new()
             {
                 Prompt = promptBuilder.ToString(),
-                Model = optionsSelector.SelectedModel,
-                MaxTokens = optionsSelector.MaxTokens,
-                Temperature = optionsSelector.Temperature,
+                Model = optionsSelector!.SelectedModel,
+                MaxTokens = optionsSelector!.MaxTokens,
+                Temperature = optionsSelector!.Temperature,
             };
 
             // Remove any quotes from the lables that will be used in the table display
