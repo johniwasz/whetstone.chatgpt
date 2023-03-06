@@ -9,7 +9,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
     {
 
         [Parameter]
+#pragma warning disable BL0007 // Component parameters should be auto properties
         public Exception? Exception
+#pragma warning restore BL0007 // Component parameters should be auto properties
         {
             get
             {
