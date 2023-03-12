@@ -24,6 +24,8 @@ namespace Whetstone.ChatGPT.Blazor.Test
 
         public LoginTests()
         {
+            
+
             BlazoriseConfig.AddBootstrapProviders(Services);
             BlazoriseConfig.JSInterop.AddButton(this.JSInterop);
             BlazoriseConfig.JSInterop.AddClosable(this.JSInterop);
