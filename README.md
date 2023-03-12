@@ -21,6 +21,8 @@ Supported features include:
 - [Azure Function Twitter Webhook](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/twitter-webhook) that responds to DMs
 - [GPT-3 UI](https://johniwasz.github.io/whetstone.chatgpt/) - a Blazor WebAssembly UI hosted on Github Pages. Example project is at [Whetstone.ChatGPT.Blazor.App](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App)
 
+https://user-images.githubusercontent.com/44126651/224557966-cbbb6b67-0f6c-4bf7-9416-b8114cd06de8.mp4
+
 ## Dependency Injection Quickstart
 
 ```C#
