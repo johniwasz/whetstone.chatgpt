@@ -45,7 +45,7 @@ namespace Whetstone.ChatGPT.Blazor.Test
                 .Add(p => p.AppState, appState));
             
             // Assert that content of the paragraph shows counter at zero
-            IRefreshableElementCollection<IElement> foundButtons = cut.FindAll("button");
+            // IRefreshableElementCollection<IElement> foundButtons = cut.FindAll("button");
                 
                 //.MarkupMatches("<p>Current count: 0</p>");
         }

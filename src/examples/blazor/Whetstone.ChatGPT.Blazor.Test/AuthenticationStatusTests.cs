@@ -30,8 +30,6 @@ namespace Whetstone.ChatGPT.Blazor.Test
         [Fact(Skip = "Blazorise mocks not working")]
         public void RenderAuthenticationContext()
         {
-            ApplicationState appState = new ApplicationState();
-
             Mock<IOpenAICredentialValidator> validatorMoq = new();
 
             // Register services
@@ -41,11 +39,8 @@ namespace Whetstone.ChatGPT.Blazor.Test
             var authStatus = RenderComponent<AuthenticationStatus>(parameters => parameters
                 .Add(p => p.AppState, new ApplicationState()));
 
-
             // Assert that content of the paragraph shows counter at zero
-            IRefreshableElementCollection <IElement> foundButtons = authStatus.FindAll("button");
-
-
+            // IRefreshableElementCollection <IElement> foundButtons = authStatus.FindAll("button");
         }
     }
 }

@@ -12,7 +12,7 @@ internal class ComponentDisposer : IComponentDisposer
 {
     #region Members
 
-    private bool active;
+    private readonly bool active;
 
     private bool disposePossible;
 
@@ -40,10 +40,7 @@ internal class ComponentDisposer : IComponentDisposer
 
         active = ServiceProvider.GetType().Name.Equals(DEFAULT_DOTNET_SERVICEPROVIDER, StringComparison.InvariantCultureIgnoreCase);
 
-        if (active)
-            disposables = LoadServiceProviderDisposableList();
-        else
-            disposables = new List<object>();
+        disposables = active ? LoadServiceProviderDisposableList() : new List<object>();
     }
 
     #endregion
@@ -65,10 +62,9 @@ internal class ComponentDisposer : IComponentDisposer
             return;
 
         //if (component is BaseAfterRenderComponent afterRenderComponent && (afterRenderComponent.Disposed || afterRenderComponent.AsyncDisposed))
-        if (component is BaseAfterRenderComponent)
+        if (component is BaseAfterRenderComponent && disposables.Contains(component))
         {
-            if (disposables.Contains(component))
-                disposables.Remove(component);
+            disposables.Remove(component);
         }
     }
 
@@ -81,11 +77,11 @@ internal class ComponentDisposer : IComponentDisposer
         if (disposablesGetter is null)
             disposablesGetter = ExpressionCompiler.CreateFieldGetter<IList<object>>(ServiceProvider, FIELD_DISPOSABLES);
 
-        var disposables = disposablesGetter(ServiceProvider);
+        var disposablesFromGetter = disposablesGetter(ServiceProvider);
 
-        disposePossible = !disposables.IsNullOrEmpty();
+        disposePossible = !disposablesFromGetter.IsNullOrEmpty();
 
-        return disposables;
+        return disposablesFromGetter;
     }
 
     #endregion
