@@ -266,6 +266,7 @@ namespace Whetstone.ChatGPT
         /// Creates a streamed completion for the provided prompt and parameters.
         /// </summary>
         /// <remarks>
+        /// Usage data is not returned in a streamed response.
         /// <para>Use the IAsyncEnumerable to process the response.</para>
         /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/completions/create">Create completion</seealso>.</para>
         /// </remarks>
@@ -275,7 +276,7 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
-        IAsyncEnumerable<ChatGPTCompletionResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
+        IAsyncEnumerable<ChatGPTCompletionStreamResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
 
 
         /// <summary>

@@ -20,8 +20,6 @@ builder.Services.AddScoped<IChatGPTClient, ChatGPTClient>();
 
 builder.Services.AddScoped<IOpenAICredentialValidator, OpenAICredentialValidator>();
 
-builder.Services.AddBlazoredLocalStorage();
-
 AddBlazorise(builder.Services);
 
 await builder.Build().RunAsync();
@@ -30,6 +28,9 @@ void AddBlazorise(IServiceCollection services)
 {
     services
         .AddBlazorise();
+
+    services.AddBlazoredLocalStorage();
+    
     services
         .AddBootstrap5Providers()
         .AddFontAwesomeIcons();

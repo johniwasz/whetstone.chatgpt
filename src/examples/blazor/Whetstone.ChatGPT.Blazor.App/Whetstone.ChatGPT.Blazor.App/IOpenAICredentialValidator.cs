@@ -4,14 +4,14 @@ using Whetstone.ChatGPT.Models;
 
 namespace Whetstone.ChatGPT.Blazor.App
 {
-    internal interface IOpenAICredentialValidator
+    public interface IOpenAICredentialValidator
     {   
         Task<bool> ValidateCredentialsAsync(ChatGPTCredentials? credentials, ApplicationState? appState, bool storeLocal);
 
         Task<bool> ValidateStoredCredentialsAsync(ApplicationState? appState);
 
         Task PurgeCredentialsAsync(ApplicationState? appState);
-
+        
         Task<bool> GetStoreCredentialsLocalOption();
 
         Task<ChatGPTCredentials> GetCredentialsAsync();
