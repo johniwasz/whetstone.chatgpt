@@ -26,6 +26,8 @@ This is deployed to github pages and available at: [GPT-3 UI](https://johniwasz.
 - [Command line bot](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/Whetstone.ChatGPT.SimpleCommandlineBot)
 - [Azure Function Twitter Webhook](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/twitter-webhook) that responds to DMs
 
+https://user-images.githubusercontent.com/44126651/224557966-cbbb6b67-0f6c-4bf7-9416-b8114cd06de8.mp4
+
 ## Dependency Injection Quickstart
 
 ```C#

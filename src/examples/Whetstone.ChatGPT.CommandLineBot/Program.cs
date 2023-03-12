@@ -72,16 +72,11 @@ using (ChatGPTClient chatGPTClient = new(credentials))
 
             int totalTokens = 0;
 
-            await foreach (ChatGPTCompletionResponse? completionResponse in chatGPTClient.StreamCompletionAsync(completionRequest))
+            await foreach (ChatGPTCompletionStreamResponse? completionResponse in chatGPTClient.StreamCompletionAsync(completionRequest))
             {
                 if (completionResponse is not null)
                 {
                     Console.Write(completionResponse.GetCompletionText());
-
-                    if (completionResponse.Usage is not null)
-                    {
-                        totalTokens += completionResponse.Usage.TotalTokens;
-                    }
                 }
             }
             

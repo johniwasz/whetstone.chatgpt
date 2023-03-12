@@ -173,7 +173,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
     /// <inheritdoc cref="IChatGPTClient.StreamCompletionAsync"/>
-    public async IAsyncEnumerable<ChatGPTCompletionResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
+    public async IAsyncEnumerable<ChatGPTCompletionStreamResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
     {
 
         if (completionRequest is null)
@@ -224,7 +224,7 @@ public class ChatGPTClient : IChatGPTClient
 
                 if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
                 {
-                    ChatGPTCompletionResponse? streamedResponse = JsonSerializer.Deserialize<ChatGPTCompletionResponse>(line.Trim());
+                    ChatGPTCompletionStreamResponse? streamedResponse = JsonSerializer.Deserialize<ChatGPTCompletionStreamResponse>(line.Trim());
                     yield return streamedResponse;
                 }
             }

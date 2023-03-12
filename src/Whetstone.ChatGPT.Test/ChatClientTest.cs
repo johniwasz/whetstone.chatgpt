@@ -148,11 +148,13 @@ namespace Whetstone.ChatGPT.Test
                     Temperature = 0.9f,
                     MaxTokens = 10
                 };
-
+                
                 await foreach(var completion in  client.StreamCompletionAsync(gptRequest).ConfigureAwait(false))
                 {
-                    if(completion is not null)
+                    if (completion is not null)
+                    {
                         Assert.NotNull(completion.GetCompletionText());
+                    }
                 }
             }
         }

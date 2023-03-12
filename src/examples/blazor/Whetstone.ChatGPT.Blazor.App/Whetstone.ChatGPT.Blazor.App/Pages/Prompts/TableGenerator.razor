@@ -94,7 +94,7 @@
         <Column ColumnSize="ColumnSize.Is10">
         @if(Fields is not null)
         {
-           <CSVExporter CSVRetriever="@GetCSV" OnException="@ProcessExceptionAsync"></CSVExporter>
+            <CSVExporter CSVRetriever="@GetCSV" OnException="@ProcessExceptionAsync"/>
         }
         </Column>
 

@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "blazor", "blazor", "{FC6A47
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.ChatGPT.Blazor.App", "examples\blazor\Whetstone.ChatGPT.Blazor.App\Whetstone.ChatGPT.Blazor.App\Whetstone.ChatGPT.Blazor.App.csproj", "{D6126997-07B8-40AF-AC0D-44AD5DCE99D9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whetstone.ChatGPT.Blazor.Test", "examples\blazor\Whetstone.ChatGPT.Blazor.Test\Whetstone.ChatGPT.Blazor.Test.csproj", "{413B2AF8-4A25-47FF-87F7-ECCE37B4CEEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{D6126997-07B8-40AF-AC0D-44AD5DCE99D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6126997-07B8-40AF-AC0D-44AD5DCE99D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6126997-07B8-40AF-AC0D-44AD5DCE99D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{413B2AF8-4A25-47FF-87F7-ECCE37B4CEEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{413B2AF8-4A25-47FF-87F7-ECCE37B4CEEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{413B2AF8-4A25-47FF-87F7-ECCE37B4CEEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{413B2AF8-4A25-47FF-87F7-ECCE37B4CEEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{C9A56EE8-1A8C-4C84-AAC1-EA1863D9D890} = {4C926884-5370-4997-BA8D-9A52C7FEE1C7}
 		{FC6A47D8-BB5F-41C7-B618-8DFF73A0F692} = {F931A1C0-3807-4C06-8957-DB604C6544CD}
 		{D6126997-07B8-40AF-AC0D-44AD5DCE99D9} = {FC6A47D8-BB5F-41C7-B618-8DFF73A0F692}
+		{413B2AF8-4A25-47FF-87F7-ECCE37B4CEEA} = {FC6A47D8-BB5F-41C7-B618-8DFF73A0F692}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0770FC85-633A-4988-B2E1-EC344D55FD44}

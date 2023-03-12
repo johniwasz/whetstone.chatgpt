@@ -4,15 +4,27 @@ using System.Text.Json.Serialization;
 
 namespace Whetstone.ChatGPT.Models
 {
+    /// <summary>
+    /// OpenAI generated response to a <c>ChatGPTCompletionRequest</c>.
+    /// </summary>
     public class ChatGPTCompletionResponse
     {
+        /// <summary>
+        /// Server generated ID for the completion response.
+        /// </summary>
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 
+        /// <summary>
+        /// The OpenAI object used to serialize the response. For completion responese, this should be <c>text_completion</c>.
+        /// </summary>
         [JsonPropertyName("object")]
         [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "This is the name of the property returned by the API.")]
         public string? @Object { get; set; }
 
+        /// <summary>
+        /// Date and time the completion response was generated.
+        /// </summary>
         [JsonConverter(typeof(UnixEpochTimeJsonConverter))]
         [JsonPropertyName("created")]
         public DateTime Created { get; set; }
@@ -44,12 +56,22 @@ namespace Whetstone.ChatGPT.Models
     /// </summary>
     public class ChatGPTUsage
     {
+
+        /// <summary>
+        /// Total number of tokens used to process the prompt.
+        /// </summary>
         [JsonPropertyName("prompt_tokens")]
         public int PromptTokens { get; set; }
 
+        /// <summary>
+        /// Total tokens used to produce the completion response.
+        /// </summary>
         [JsonPropertyName("completion_tokens")]
         public int CompletionTokens { get; set; }
-        
+
+        /// <summary>
+        /// Sum of PromptTokens and CompletionTokens.
+        /// </summary>
         [JsonPropertyName("total_tokens")]
         public int TotalTokens { get; set; }
     }
