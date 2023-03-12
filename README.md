@@ -15,11 +15,16 @@ Supported features include:
 - Moderations
 - Response streaming
 
+For a video walkthrough of a Blazor web app built on this library, please click the image below:
+
+[![You Tube Walkthrough](https://img.youtube.com/vi/ifs98S9ktJU/0.jpg)](https://www.youtube.com/watch?v=ifs98S9ktJU)
+
+This is deployed to github pages and available at: [GPT-3 UI](https://johniwasz.github.io/whetstone.chatgpt/). Source for the Blazor web app is at [Whetstone.ChatGPT.Blazor.App](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App).
+
 [Examples](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples) include:
 
 - [Command line bot](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/Whetstone.ChatGPT.SimpleCommandlineBot)
 - [Azure Function Twitter Webhook](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/twitter-webhook) that responds to DMs
-- [GPT-3 UI](https://johniwasz.github.io/whetstone.chatgpt/) - a Blazor WebAssembly UI hosted on Github Pages. Example project is at [Whetstone.ChatGPT.Blazor.App](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App)
 
 https://user-images.githubusercontent.com/44126651/224557966-cbbb6b67-0f6c-4bf7-9416-b8114cd06de8.mp4
 
