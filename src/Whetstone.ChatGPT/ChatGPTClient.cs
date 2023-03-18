@@ -929,7 +929,7 @@ public class ChatGPTClient : IChatGPTClient
     #endregion
 
     /// <inheritdoc cref="IChatGPTClient.CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest, bool, CancellationToken?)"/>
-    public async Task<ChatGPTAudioResponse> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, bool verbose = false, CancellationToken? cancellationToken = null)
+    public async Task<ChatGPTAudioResponse?> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, bool verbose = false, CancellationToken? cancellationToken = null)
     {
         MultipartFormDataContent formContent = BuildTranscriptionRequest(transcriptionRequest);
 
@@ -948,7 +948,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
     /// <inheritdoc cref="IChatGPTClient.CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest, AudioResponseFormatText, CancellationToken?)"/>
-    public async Task<string> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null)
+    public async Task<string?> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null)
     {
         MultipartFormDataContent formContent = BuildTranscriptionRequest(transcriptionRequest);
 
@@ -997,7 +997,7 @@ public class ChatGPTClient : IChatGPTClient
         {
             { new StringContent(transcriptionRequest.Model), "model" },
             { new ByteArrayContent(transcriptionRequest.File.Content), "file", transcriptionRequest.File.FileName },
-            { new StringContent(transcriptionRequest.Temperature.ToString()), "temperature" }
+            { new StringContent(transcriptionRequest.Temperature.ToString("0.0", CultureInfo.InvariantCulture)), "temperature" }
         };
 
         if (!string.IsNullOrEmpty(transcriptionRequest.Language))
@@ -1014,7 +1014,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
     /// <inheritdoc cref="IChatGPTClient.CreateTranslationAsync(ChatGPTAudioTranslationRequest, bool, CancellationToken?)"/>
-    public async Task<ChatGPTAudioResponse> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, bool verbose = false, CancellationToken? cancellationToken = null)
+    public async Task<ChatGPTAudioResponse?> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, bool verbose = false, CancellationToken? cancellationToken = null)
     {
         MultipartFormDataContent formContent = BuildTranslationRequest(translationRequest);
 
@@ -1033,7 +1033,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
     /// <inheritdoc cref="IChatGPTClient.CreateTranslationAsync(ChatGPTAudioTranslationRequest, AudioResponseFormatText, CancellationToken?)"/>
-    public async Task<string> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null)
+    public async Task<string?> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null)
     {
         MultipartFormDataContent formContent = BuildTranslationRequest(translationRequest);
 
@@ -1082,7 +1082,7 @@ public class ChatGPTClient : IChatGPTClient
         {
             { new StringContent(translationRequest.Model), "model" },
             { new ByteArrayContent(translationRequest.File.Content), "file", translationRequest.File.FileName },
-            { new StringContent(translationRequest.Temperature.ToString()), "temperature" }
+            { new StringContent(translationRequest.Temperature.ToString("0.0", CultureInfo.InvariantCulture)), "temperature" }
         };
 
         if (!string.IsNullOrEmpty(translationRequest.Prompt))

@@ -340,7 +340,7 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">transcriptionRequest must include a file.</exception>
         /// <exception cref="ArgumentException">Requires transcriptionRequest</exception>
         /// <exception cref="ChatGPTException">Exception generated while transcription request.</exception> 
-        Task<ChatGPTAudioResponse> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, bool verbose = false, CancellationToken? cancellationToken = null);
+        Task<ChatGPTAudioResponse?> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, bool verbose = false, CancellationToken? cancellationToken = null);
 
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">transcriptionRequest must include a file.</exception>
         /// <exception cref="ArgumentException">Requires transcriptionRequest</exception>
         /// <exception cref="ChatGPTException">Exception generated while transcription request.</exception> 
-        Task<string> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null);
+        Task<string?> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null);
 
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">transcriptionRequest must include a file.</exception>
         /// <exception cref="ArgumentException">Requires transcriptionRequest</exception>
         /// <exception cref="ChatGPTException">Exception generated while transcription request.</exception> 
-        Task<ChatGPTAudioResponse> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, bool verbose = false, CancellationToken? cancellationToken = null);
+        Task<ChatGPTAudioResponse?> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, bool verbose = false, CancellationToken? cancellationToken = null);
 
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">transcriptionRequest must include a file.</exception>
         /// <exception cref="ArgumentException">Requires transcriptionRequest</exception>
         /// <exception cref="ChatGPTException">Exception generated while transcription request.</exception> 
-        Task<string> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null);
+        Task<string?> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Apply new credentails.

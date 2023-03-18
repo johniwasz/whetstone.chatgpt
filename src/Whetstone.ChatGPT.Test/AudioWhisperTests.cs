@@ -35,7 +35,7 @@ namespace Whetstone.ChatGPT.Test
             };
             using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
 
-            string textReponse = await client.CreateTranscriptionAsync(uploadRequest, AudioResponseFormatText.WebVtt);
+            string? textReponse = await client.CreateTranscriptionAsync(uploadRequest, AudioResponseFormatText.WebVtt);
 
             Assert.NotNull(textReponse);
         }
@@ -65,7 +65,7 @@ namespace Whetstone.ChatGPT.Test
             };
             using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
 
-            string textReponse = await client.CreateTranslationAsync(uploadRequest, AudioResponseFormatText.WebVtt);
+            string? textReponse = await client.CreateTranslationAsync(uploadRequest, AudioResponseFormatText.WebVtt);
 
             Assert.NotNull(textReponse);
         }
