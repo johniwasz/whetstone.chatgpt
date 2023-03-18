@@ -23,16 +23,18 @@ public sealed class ChatGPTException : Exception
         this.StatusCode = statusCode;
     }
 
-    internal ChatGPTException(string? message) : base(message)
+    internal ChatGPTException(string message, Exception innerEx) : base(message, innerEx)
     {
-        
+    }
+
+    internal ChatGPTException(string message) : base(message)
+    {
     }
 
     /// <summary>
     /// The error returned by the GPT-3 API. Null if exception was not generated from the API.
     /// </summary>
     public ChatGPTError? ChatGPTError { get; private set; }
-
 
     /// <summary>
     /// HTTP status code returned by the GPT-3 API. Null if exception was not generated from the API.

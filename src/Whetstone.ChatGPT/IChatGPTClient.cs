@@ -4,10 +4,25 @@ namespace Whetstone.ChatGPT
 {
 
     /// <summary>
-    /// A client for the OpenAI GPT-3 API.
+    /// A client for the OpenAI API.
     /// </summary>
     public interface IChatGPTClient : IDisposable
     {
+
+        /// <summary>
+        /// Creates a completion for the chat message.
+        /// </summary>
+        /// <remarks>
+        /// <para>See <seealso cref="https://platform.openai.com/docs/api-reference/chat/create">Create chat completion</seealso>.</para>
+        /// </remarks>
+        /// <param name="completionRequest">Includes one or more messages.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>A completion populated by the OpenAI API.</returns>
+        /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
+        /// <exception cref="ArgumentException">Model is required.</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTChatCompletionResponse?> CreateChatCompletionAsync(ChatGPTChatCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
+
         /// <summary>
         /// Creates a completion for the provided prompt and parameters
         /// </summary>
@@ -16,7 +31,7 @@ namespace Whetstone.ChatGPT
         /// </remarks>
         /// <param name="completionRequest">A well-defined prompt for requesting a completion.</param>
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-        /// <returns>A completion populated by the GPT-3 API.</returns>
+        /// <returns>A completion populated by the OpenAI API.</returns>
         /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
@@ -73,8 +88,6 @@ namespace Whetstone.ChatGPT
         /// <returns><see cref="ChatGPTModel">A list of available models.</see></returns>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
         Task<ChatGPTListResponse<ChatGPTModel>?> ListModelsAsync(CancellationToken? cancellationToken = null);
-
-
 
         /// <summary>
         /// Returns information about a specific file.
@@ -280,6 +293,22 @@ namespace Whetstone.ChatGPT
 
 
         /// <summary>
+        /// Creates a streamed completion for the provided chat messages.
+        /// </summary>
+        /// <remarks>
+        /// Usage data is not returned in a streamed response.
+        /// <para>Use the IAsyncEnumerable to process the response.</para>
+        /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/completions/create">Create completion</seealso>.</para>
+        /// </remarks>
+        /// <param name="completionRequest">Must include a minimum of one message.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>An IAsyncEnumerable that streams the chat completion responses.</returns>
+        /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
+        /// <exception cref="ArgumentException">Model is required.</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
+        IAsyncEnumerable<ChatGPTChatCompletionStreamResponse?> StreamChatCompletionAsync(ChatGPTChatCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
+
+        /// <summary>
         /// Streams the fine tune events for a given fine tune job.
         /// </summary>
         /// <param name="fineTuneId">Id of a submitted fine tune job.</param>
@@ -290,7 +319,7 @@ namespace Whetstone.ChatGPT
         IAsyncEnumerable<ChatGPTEvent?> StreamFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
 
         /// <summary>
-        /// Retrieves a byt[] of a generated image.
+        /// Retrieves a byte[] of a generated image.
         /// </summary>
         /// <param name="generatedImage">Generated image returned from image create, edit, and variation calls.</param>
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
@@ -299,6 +328,58 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentException">Requires generatedImage</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
         Task<byte[]?> DownloadImageAsync(GeneratedImage generatedImage, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// Transcribes audio into the input language and returns a JSON response.
+        /// </summary>
+        /// <param name="transcriptionRequest">Audio file to transcribe along with additonal metadata.</param>
+        /// <param name="verbose">Return verbose json or not.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>Transcribed text in a JSON response.</returns>
+        /// <exception cref="ArgumentNullException">transcriptionRequest must include a file.</exception>
+        /// <exception cref="ArgumentException">Requires transcriptionRequest</exception>
+        /// <exception cref="ChatGPTException">Exception generated while transcription request.</exception> 
+        Task<ChatGPTAudioResponse?> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, bool verbose = false, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// Transcribes audio into the input language and returns a text response.
+        /// </summary>
+        /// <param name="transcriptionRequest">Audio file to transcribe along with additonal metadata.</param>
+        /// <param name="textFormat"></param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>Transcribe text in the requested format.</returns>
+        /// <exception cref="ArgumentNullException">transcriptionRequest must include a file.</exception>
+        /// <exception cref="ArgumentException">Requires transcriptionRequest</exception>
+        /// <exception cref="ChatGPTException">Exception generated while transcription request.</exception> 
+        Task<string?> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// Translates audio into English and returns a JSON response.
+        /// </summary>
+        /// <param name="translationRequest">Audio file to transcribe along with additonal metadata.</param>
+        /// <param name="verbose">Return verbose json or not.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>Transcribed text in a JSON response.</returns>
+        /// <exception cref="ArgumentNullException">transcriptionRequest must include a file.</exception>
+        /// <exception cref="ArgumentException">Requires transcriptionRequest</exception>
+        /// <exception cref="ChatGPTException">Exception generated while transcription request.</exception> 
+        Task<ChatGPTAudioResponse?> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, bool verbose = false, CancellationToken? cancellationToken = null);
+
+
+        /// <summary>
+        /// Translates audio into English and returns a text response.
+        /// </summary>
+        /// <param name="translationRequest">Audio file to translate along with additonal metadata.</param>
+        /// <param name="textFormat"></param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>Transcribe text in the requested format.</returns>
+        /// <exception cref="ArgumentNullException">transcriptionRequest must include a file.</exception>
+        /// <exception cref="ArgumentException">Requires transcriptionRequest</exception>
+        /// <exception cref="ChatGPTException">Exception generated while transcription request.</exception> 
+        Task<string?> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Apply new credentails.

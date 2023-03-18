@@ -11,12 +11,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="audiofiles\transcriptiontest.mp3" />
     <None Remove="ImageFiles\full-alpha.png" />
     <None Remove="ImageFiles\sailboat-alpha.png" />
     <None Remove="ImageFiles\sailboat.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="audiofiles\transcriptiontest.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="ImageFiles\full-alpha.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

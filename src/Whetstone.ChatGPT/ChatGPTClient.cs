@@ -79,8 +79,6 @@ public class ChatGPTClient : IChatGPTClient
     {
     }
 
-
-
     /// <summary>
     /// Creates a new instance of the <see cref="ChatGPTClient"/> class.
     /// </summary>
@@ -104,8 +102,6 @@ public class ChatGPTClient : IChatGPTClient
 
         InitializeClient(_client);
     }
-
-
     private void InitializeClient(HttpClient client)
     {
 
@@ -119,8 +115,119 @@ public class ChatGPTClient : IChatGPTClient
 
     #endregion
 
-    #region Completions
+    #region Chat Completions
+    public async Task<ChatGPTChatCompletionResponse?> CreateChatCompletionAsync(ChatGPTChatCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
+    {
+        if (completionRequest is null)
+        {
+            throw new ArgumentNullException(nameof(completionRequest));
+        }
 
+        if (string.IsNullOrWhiteSpace(completionRequest.Model))
+        {
+            throw new ArgumentException("Model is required", nameof(completionRequest));
+        }
+
+        if (completionRequest.Messages is null || completionRequest.Messages.Count == 0)
+        {
+            throw new ArgumentException("Message is required", nameof(completionRequest));
+        }
+
+        completionRequest.Stream = false;
+
+        return await SendRequestAsync<ChatGPTChatCompletionRequest, ChatGPTChatCompletionResponse>(HttpMethod.Post, "chat/completions", completionRequest, cancellationToken);
+    }
+
+    /// <inheritdoc cref="IChatGPTClient.StreamChatCompletionAsync"/>
+    public async IAsyncEnumerable<ChatGPTChatCompletionStreamResponse?> StreamChatCompletionAsync(ChatGPTChatCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
+    {
+
+        if (completionRequest is null)
+        {
+            throw new ArgumentNullException(nameof(completionRequest));
+        }
+
+        if (string.IsNullOrWhiteSpace(completionRequest.Model))
+        {
+            throw new ArgumentException("Model is required", nameof(completionRequest));
+        }
+
+        if (completionRequest.Messages is null || completionRequest.Messages.Count == 0)
+        {
+            throw new ArgumentException("Message is required", nameof(completionRequest));
+        }
+
+        completionRequest.Stream = true;
+
+        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "chat/completions");
+
+        CancellationToken cancelToken = cancellationToken ?? CancellationToken.None;
+
+        string requestString = JsonSerializer.Serialize(completionRequest);
+
+        httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
+
+        HttpResponseMessage responseMessage = await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).ConfigureAwait(false);
+
+
+        if (responseMessage.IsSuccessStatusCode)
+        {
+
+#if NETSTANDARD2_1 || NETSTANDARD2_0
+            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+#else
+            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync(cancelToken).ConfigureAwait(false);
+#endif
+            using StreamReader reader = new(responseStream);
+            string? line = null;
+
+            while ((line = await reader.ReadLineAsync()) is not null)
+            {
+
+                if (line.StartsWith(ResponseLinePrefix, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    line = line.Substring(ResponseLinePrefix.Length).Trim();
+
+                    if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
+                    {
+                        ChatGPTChatCompletionStreamResponse? streamedResponse = null;
+                        try
+                        {
+                            streamedResponse = JsonSerializer.Deserialize<ChatGPTChatCompletionStreamResponse?>(line);
+                        }
+                        catch (JsonException jsonEx)
+                        {
+                            throw new ChatGPTException($"Error deserializing ChatGPT streamed chat response: {line}", jsonEx);
+                        }
+
+                        ChatGPTStreamedChatChoice? foundChoice = streamedResponse?.GetChoice();
+
+                        if (foundChoice is not null)
+                        {
+                            if (!(string.Equals(foundChoice.FinishReason, "stop", StringComparison.OrdinalIgnoreCase) || foundChoice.Delta is null || foundChoice.Delta.Content is null))
+                            {
+                                yield return streamedResponse;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+#if NETSTANDARD2_1 || NETSTANDARD2_0
+            string? responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+#else
+            string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
+#endif
+            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
+            throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
+        }
+    }
+
+    #endregion
+
+    #region Completions
 
     /// <inheritdoc cref="IChatGPTClient.CreateCompletionAsync"/>
     public async Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
@@ -139,6 +246,8 @@ public class ChatGPTClient : IChatGPTClient
         {
             throw new ArgumentException("Prompt is required", nameof(completionRequest));
         }
+
+        completionRequest.Stream = false;
 
         return await SendRequestAsync<ChatGPTCompletionRequest, ChatGPTCompletionResponse>(HttpMethod.Post, "completions", completionRequest, cancellationToken);
     }
@@ -503,8 +612,6 @@ public class ChatGPTClient : IChatGPTClient
         }
 
     }
-
-
     #endregion
 
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>
@@ -819,7 +926,173 @@ public class ChatGPTClient : IChatGPTClient
         return retVal;
     }
 
-    #endregion 
+    #endregion
+
+    /// <inheritdoc cref="IChatGPTClient.CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest, bool, CancellationToken?)"/>
+    public async Task<ChatGPTAudioResponse?> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, bool verbose = false, CancellationToken? cancellationToken = null)
+    {
+        MultipartFormDataContent formContent = BuildTranscriptionRequest(transcriptionRequest);
+
+        formContent.Add(new StringContent(verbose ? "verbose_json" : "json"), "response_format");
+
+        using (HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "audio/transcriptions"))
+        {
+            httpReq.Content = formContent;
+
+            using HttpResponseMessage? httpResponse = cancellationToken is null ?
+                await _client.SendAsync(httpReq).ConfigureAwait(false) :
+                await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false);
+
+            return await ProcessResponseAsync<ChatGPTAudioResponse>(httpResponse, cancellationToken);
+        }
+    }
+
+    /// <inheritdoc cref="IChatGPTClient.CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest, AudioResponseFormatText, CancellationToken?)"/>
+    public async Task<string?> CreateTranscriptionAsync(ChatGPTAudioTranscriptionRequest transcriptionRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null)
+    {
+        MultipartFormDataContent formContent = BuildTranscriptionRequest(transcriptionRequest);
+
+        formContent.Add(new StringContent(textFormat.GetDescriptionFromEnumValue()), "response_format");
+
+        using (HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "audio/transcriptions"))
+        {
+            httpReq.Content = formContent;
+
+            using HttpResponseMessage? httpResponse = cancellationToken is null ?
+                await _client.SendAsync(httpReq).ConfigureAwait(false) :
+                await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false);
+
+            return await GetResponseStringAsync(httpResponse, cancellationToken);
+        }
+    }
+
+    private static MultipartFormDataContent BuildTranscriptionRequest(ChatGPTAudioTranscriptionRequest transcriptionRequest)
+    {
+        if (transcriptionRequest is null)
+        {
+            throw new ArgumentNullException(nameof(transcriptionRequest));
+        }
+
+        if (transcriptionRequest.File is null)
+        {
+            throw new ArgumentNullException(nameof(transcriptionRequest), "File is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(transcriptionRequest.File.FileName))
+        {
+            throw new ArgumentException("File.FileName is required", nameof(transcriptionRequest));
+        }
+
+        if (transcriptionRequest.File.Content is null)
+        {
+            throw new ArgumentException("File.Content is required", nameof(transcriptionRequest));
+        }
+
+        if (string.IsNullOrWhiteSpace(transcriptionRequest.Model))
+        {
+            throw new ArgumentException("Model is required", nameof(transcriptionRequest));
+        }
+
+        MultipartFormDataContent formContent = new()
+        {
+            { new StringContent(transcriptionRequest.Model), "model" },
+            { new ByteArrayContent(transcriptionRequest.File.Content), "file", transcriptionRequest.File.FileName },
+            { new StringContent(transcriptionRequest.Temperature.ToString("0.0", CultureInfo.InvariantCulture)), "temperature" }
+        };
+
+        if (!string.IsNullOrEmpty(transcriptionRequest.Language))
+        {
+            formContent.Add(new StringContent(transcriptionRequest.Language), "language");
+        }
+
+        if (!string.IsNullOrEmpty(transcriptionRequest.Prompt))
+        {
+            formContent.Add(new StringContent(transcriptionRequest.Prompt), "prompt");
+        }
+
+        return formContent;
+    }
+
+    /// <inheritdoc cref="IChatGPTClient.CreateTranslationAsync(ChatGPTAudioTranslationRequest, bool, CancellationToken?)"/>
+    public async Task<ChatGPTAudioResponse?> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, bool verbose = false, CancellationToken? cancellationToken = null)
+    {
+        MultipartFormDataContent formContent = BuildTranslationRequest(translationRequest);
+
+        formContent.Add(new StringContent(verbose ? "verbose_json" : "json"), "response_format");
+
+        using (HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "audio/translations"))
+        {
+            httpReq.Content = formContent;
+
+            using HttpResponseMessage? httpResponse = cancellationToken is null ?
+                await _client.SendAsync(httpReq).ConfigureAwait(false) :
+                await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false);
+
+            return await ProcessResponseAsync<ChatGPTAudioResponse>(httpResponse, cancellationToken);
+        }
+    }
+
+    /// <inheritdoc cref="IChatGPTClient.CreateTranslationAsync(ChatGPTAudioTranslationRequest, AudioResponseFormatText, CancellationToken?)"/>
+    public async Task<string?> CreateTranslationAsync(ChatGPTAudioTranslationRequest translationRequest, AudioResponseFormatText textFormat = AudioResponseFormatText.Text, CancellationToken? cancellationToken = null)
+    {
+        MultipartFormDataContent formContent = BuildTranslationRequest(translationRequest);
+
+        formContent.Add(new StringContent(textFormat.GetDescriptionFromEnumValue()), "response_format");
+
+        using (HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "audio/translations"))
+        {
+            httpReq.Content = formContent;
+
+            using HttpResponseMessage? httpResponse = cancellationToken is null ?
+                await _client.SendAsync(httpReq).ConfigureAwait(false) :
+                await _client.SendAsync(httpReq, cancellationToken.Value).ConfigureAwait(false);
+
+            return await GetResponseStringAsync(httpResponse, cancellationToken);
+        }
+    }
+
+    private static MultipartFormDataContent BuildTranslationRequest(ChatGPTAudioTranslationRequest translationRequest)
+    {
+        if (translationRequest is null)
+        {
+            throw new ArgumentNullException(nameof(translationRequest));
+        }
+
+        if (translationRequest.File is null)
+        {
+            throw new ArgumentNullException(nameof(translationRequest), "File is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(translationRequest.File.FileName))
+        {
+            throw new ArgumentException("File.FileName is required", nameof(translationRequest));
+        }
+
+        if (translationRequest.File.Content is null)
+        {
+            throw new ArgumentException("File.Content is required", nameof(translationRequest));
+        }
+
+        if (string.IsNullOrWhiteSpace(translationRequest.Model))
+        {
+            throw new ArgumentException("Model is required", nameof(translationRequest));
+        }
+
+        MultipartFormDataContent formContent = new()
+        {
+            { new StringContent(translationRequest.Model), "model" },
+            { new ByteArrayContent(translationRequest.File.Content), "file", translationRequest.File.FileName },
+            { new StringContent(translationRequest.Temperature.ToString("0.0", CultureInfo.InvariantCulture)), "temperature" }
+        };
+
+        if (!string.IsNullOrEmpty(translationRequest.Prompt))
+        {
+            formContent.Add(new StringContent(translationRequest.Prompt), "prompt");
+        }
+
+        return formContent;
+    }
+
 
     #region Generic Request and Response Processors
     private async Task<TR?> SendRequestAsync<T, TR>(HttpMethod method, string url, T requestMessage, CancellationToken? cancellationToken)

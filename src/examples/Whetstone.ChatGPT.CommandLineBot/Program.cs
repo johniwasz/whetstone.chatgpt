@@ -34,7 +34,7 @@ string baselinePrompt = promptBuilder.ToString();
 
 ChatGPTCompletionRequest completionRequest = new ChatGPTCompletionRequest
 {
-    Model = ChatGPTCompletionModels.Davinci,
+    Model = ChatGPT35Models.Davinci003,
     Temperature = 1.0f,
     MaxTokens = 500,
     TopP = 0.3f,
