@@ -41,7 +41,7 @@
     </PackageReleaseNotes>
 
     <RepositoryType>git</RepositoryType>
-    <PackageTags>chatgpt; api; openapi; gpt; gpt-3</PackageTags>
+    <PackageTags>chatgpt; api; openapi; gpt; gpt-3; gpt-35; gpt-35-turbo; whisper; whisper-ai</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2023</Copyright>
     <Version>1.6.0</Version>
