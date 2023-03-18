@@ -6,6 +6,8 @@ A simple light-weight library that wraps the GPT-3 API with support for dependen
 
 Supported features include:
 
+- GPT 3.5 Turbo and Chat Completions
+- Audio Transcription and Translation (Whisper API)
 - Completions
 - Edits
 - Files
@@ -49,13 +51,13 @@ Configure `IChatGPTClient` service:
 services.AddScoped<IChatGPTClient, ChatGPTClient>();
 ```
 
-## Completion
+## Chat Completions
 
-GPT-3 Completions use [models](https://beta.openai.com/docs/models) to answer a wide variety of tasks, including but not limited to classification, sentiment analysis, answering questions, etc. 
+Chat completions are a special type of completion that are optimized for chat. They are designed to be used in a conversational context.
 
-### Completion Quickstart
+### Chat Completion Quickstart
 
-This shows a direct useage of the __text-davinci-003__ model without any prompts.
+This shows a usage of the GPT-3.5 Turbo model.
 
 ``` C#
 using Whetstone.ChatGPT;
@@ -67,16 +69,78 @@ IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 var gptRequest = new ChatGPTCompletionRequest
 {
-    Model = ChatGPTCompletionModels.Davinci,
+    Model = ChatGPT35Models.Davinci003,
     Prompt = "How is the weather?"
 };
+
+var gptRequest = new ChatGPTChatCompletionRequest
+{
+    Model = ChatGPT35Models.Turbo,
+    Messages = new List<ChatGPTChatCompletionMessage>()
+        {
+            new ChatGPTChatCompletionMessage()
+            {
+                Role = MessageRole.System,
+                Content = "You are a helpful assistant."
+            },
+            new ChatGPTChatCompletionMessage()
+            {
+                Role = MessageRole.User,
+                Content = "Who won the world series in 2020?"
+            },
+            new ChatGPTChatCompletionMessage()
+            {
+                Role = MessageRole.Assistant,
+                Content = "The Los Angeles Dodgers won the World Series in 2020."
+            },
+            new ChatGPTChatCompletionMessage()
+            {
+                Role = MessageRole.User,
+                Content = "Where was it played?"
+            }
+        },
+    Temperature = 0.9f,
+    MaxTokens = 100
+};
+
+using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
+
+var response = await client.CreateChatCompletionAsync(gptRequest);
+
+Console.WriteLine(response.GetCompletionText());
+
+```
+
+GPT-4 models can also be used provided your account has been granted access to the [limited beta](https://openai.com/waitlist/gpt-4).
+
+## Completion
+
+Completions use [models](https://beta.openai.com/docs/models) to answer a wide variety of tasks, including but not limited to classification, sentiment analysis, answering questions, etc. 
+
+### Completion Quickstart
+
+This shows a direct useage of the __text-davinci-003__ model without any prompts.
+
+``` C#
+using Whetstone.ChatGPT;
+using Whetstone.ChatGPT.Models;
+
+. . .
+
+var gptRequest = new ChatGPTCompletionRequest
+{
+    Model = ChatGPT35Models.Davinci003,
+    Prompt = "How is the weather?"
+};
+
+using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 var response = await client.CreateCompletionAsync(gptRequest);
 
 Console.WriteLine(response.GetCompletionText());
 ```
 
-GPT-3 is not deterministic. One of the test runs of the sample above returned:
+GPT-3.5 is not deterministic. One of the test runs of the sample above returned:
 
 > The weather can vary greatly depending on location. In general, you can expect temperatures to be moderate and climate to be comfortable, but it is always best to check the forecast for your specific area.
 
@@ -102,7 +166,7 @@ using Whetstone.ChatGPT.Models;
 
 . . .
 
-IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
+using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 var gptEditRequest = new ChatGPTCreateEditRequest
 {             
@@ -146,10 +210,11 @@ ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
 };
 
 ChatGPTFileInfo? uploadedFileInfo;
-using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
-{
-    uploadedFileInfo = await client.UploadFileAsync(uploadRequest);
-}
+
+IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
+
+uploadedFileInfo = await client.UploadFileAsync(uploadRequest);
+
 ```
 
 ## Fine Tuning Quickstart
@@ -157,43 +222,40 @@ using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
 Once the file has been created, get the fileId, and reference it when creating a new fine tuning.
 
 ```C#
-using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
+IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
+
+var fileList = await client.ListFilesAsync();
+var foundFile =  fileList.Data.First(x => x.Filename.Equals("finetuningsample.jsonl"));
+
+ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
 {
-  var fileList = await client.ListFilesAsync();
-  var foundFile =  fileList.Data.First(x => x.Filename.Equals("finetuningsample.jsonl"));
+    TrainingFileId = foundFile.Id
+};
 
-  ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
-  {
-     TrainingFileId = foundFile.Id
-  };
+ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
 
-  ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
-
-  string fineTuneId = tuneResponse.Id;
-
-}
+string fineTuneId = tuneResponse.Id;
 
 ```
 
 Processing the fine tuning request will take some time. Once it finishes, the __Status__ will report "succeeded" and it's ready to be used in a completion request.
 
 ```C#
-using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
-{
-  ChatGPTFineTuneJob? tuneResponse = await client.RetrieveFineTuneAsync("FINETUNEID");
+using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
-  if(tuneResponse.Status.Equals("succeeded"))
-  {
+ChatGPTFineTuneJob? tuneResponse = await client.RetrieveFineTuneAsync("FINETUNEID");
+
+if(tuneResponse.Status.Equals("succeeded"))
+{
     var gptRequest = new ChatGPTCompletionRequest
     {
-      Model = ChatGPTCompletionModels.Davinci,
-      Prompt = "How is the weather?"
+        Model = ChatGPTCompletionModels.Davinci,
+        Prompt = "How is the weather?"
     };
 
     var response = await client.CreateCompletionAsync(gptRequest);
 
     Console.WriteLine(response.GetCompletionText());
-  }
 }
 
 ```
@@ -210,15 +272,41 @@ ChatGPTCreateImageRequest imageRequest = new()
     ResponseFormat = CreatedImageFormat.Base64
 };
 
-using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
+using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
+
+ChatGPTImageResponse? imageResponse = await client.CreateImageAsync(imageRequest);
+
+var imageData = imageResponse?.Data[0];
+
+if (imageData != null)
 {
-    ChatGPTImageResponse? imageResponse = await client.CreateImageAsync(imageRequest);
-
-    var imageData = imageResponse?.Data[0];
-
-    if (imageData != null)
-    {
-        byte[] imageBytes = await client.DownloadImageAsync(imageData);
-    }
+    byte[] imageBytes = await client.DownloadImageAsync(imageData);
 }
+```
+
+## Audio Transcription Quickstart
+
+Her's an example that transcribes an audio file using the Whisper.
+
+```C#
+
+string audioFile = @"audiofiles\transcriptiontest.mp3";
+
+byte[] fileContents = File.ReadAllBytes(audioFile);
+ChatGPTFileContent gptFile = new ChatGPTFileContent
+{
+    FileName = audioFile,
+    Content = fileContents
+};
+
+ChatGPTAudioTranscriptionRequest? transcriptionRequest = new ChatGPTAudioTranscriptionRequest
+{
+    File = gptFile
+};
+
+using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
+
+ChatGPTAudioResponse? audioResponse = await client.CreateTranscriptionAsync(transcriptionRequest, true);
+
+Console.WriteLine(response?.Text);
 ```

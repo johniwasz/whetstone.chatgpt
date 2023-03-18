@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Whetstone.ChatGPT.Models;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -22,19 +17,19 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task TestGPTClientCompletion()
         {
+
+            // Using Ada in this test to keep costs down.
+
+            var gptRequest = new ChatGPTCompletionRequest
+            {
+                Model = ChatGPTCompletionModels.Ada,
+                Prompt = "How is the weather?",
+                Temperature = 0.9f,
+                MaxTokens = 10
+            };
             
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-
-                // Using Ada in this test to keep costs down.
-
-                var gptRequest = new ChatGPTCompletionRequest
-                {
-                    Model = ChatGPTCompletionModels.Ada,
-                    Prompt = "How is the weather?",
-                    Temperature = 0.9f,
-                    MaxTokens = 10
-                };
 
                 var response = await client.CreateCompletionAsync(gptRequest);
 
@@ -47,17 +42,15 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task TestGPTClientEdit()
         {
+            var gptEditRequest = new ChatGPTCreateEditRequest
+            {
+                Input = "What day of the wek is it?",
+                Instruction = "Fix spelling mistakes",
+                Temperature = 0
+            };
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-
-                var gptEditRequest = new ChatGPTCreateEditRequest
-                {
-                    Input = "What day of the wek is it?",
-                    Instruction = "Fix spelling mistakes",
-                    Temperature = 0
-                };
-
                 var response = await client.CreateEditAsync(gptEditRequest);
 
                 Assert.NotNull(response);
@@ -135,20 +128,18 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task TestGPTClientStreamCompletion()
         {
+            var gptRequest = new ChatGPTCompletionRequest
+            {
+                Model = ChatGPTCompletionModels.Ada,
+                Prompt = "How is the weather?",
+                Temperature = 0.9f,
+                MaxTokens = 10
+            };
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
                 // Using Ada in this test to keep costs down.
-
-                var gptRequest = new ChatGPTCompletionRequest
-                {
-                    Model = ChatGPTCompletionModels.Ada,
-                    Prompt = "How is the weather?",
-                    Temperature = 0.9f,
-                    MaxTokens = 10
-                };
-                
                 await foreach(var completion in  client.StreamCompletionAsync(gptRequest).ConfigureAwait(false))
                 {
                     if (completion is not null)
@@ -158,7 +149,6 @@ namespace Whetstone.ChatGPT.Test
                 }
             }
         }
-
 
         [Fact]
         public async Task GPTModel()
@@ -171,8 +161,6 @@ namespace Whetstone.ChatGPT.Test
             Assert.NotNull(model);
 
         }
-
-
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable CS8604 // Possible null reference argument.

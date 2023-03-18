@@ -8,33 +8,27 @@ namespace Whetstone.ChatGPT
     public class EnumConverter<TEnum> : JsonConverter<TEnum>
         where TEnum : struct, Enum
     {
-        
-
         public override TEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             string? stringValue = reader.GetString();
 
             if (stringValue != null)
             {
-
                 return GetEnumValue(stringValue);
             }
 
             return default;
         }
 
-
         public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
         {
             writer.WriteStringValue(value.GetDescriptionFromEnumValue<TEnum>());
         }
 
-
         private static IEnumerable<TEnum> GetEnumValues()
         {
             return Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
         }
-
 
         private static TEnum GetEnumValue(string enumMemberText)
         {
@@ -42,7 +36,6 @@ namespace Whetstone.ChatGPT
 
             if (Enum.TryParse(enumMemberText, true, out TEnum parsedVal))
                 return parsedVal;
-
 
             var enumVals = GetEnumValues();
 
@@ -65,7 +58,6 @@ namespace Whetstone.ChatGPT
 
             return retVal;
         }
-
     }
 
     internal static class EnumExtensions

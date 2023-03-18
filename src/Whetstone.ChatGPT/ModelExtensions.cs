@@ -10,6 +10,47 @@ namespace Whetstone.ChatGPT
 {
     public static class ModelExtensions
     {
+
+        /// <summary>
+        /// Returns the text of the first message returned from a chat completion request.
+        /// </summary>
+        /// <param name="response">String or null.</param>
+        /// <returns>Text from the first choice returned.</returns>
+        public static string? GetCompletionText(this ChatGPTChatCompletionResponse response)
+        {
+            return response?.Choices?[0]?.Message?.Content;
+        }
+
+        /// <summary>
+        /// Returns the first message in a chat completion response.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns>First message in the response.</returns>
+        public static ChatGPTChatCompletionMessage? GetMessage(this ChatGPTChatCompletionResponse response)
+        {
+            return response?.Choices?[0]?.Message;
+        }
+
+        /// <summary
+        /// Returns the first delta in a streamed chat completion response.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns>First message in the response.</returns>
+        public static string? GetCompletionText(this ChatGPTChatCompletionStreamResponse response)
+        {
+            return response?.Choices?[0]?.Delta?.Content;
+        }
+
+        /// <summary>
+        /// Returns the first choice in a streamed chat completion response.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns>First choice in the streamed response.</returns>
+        public static ChatGPTStreamedChatChoice? GetChoice(this ChatGPTChatCompletionStreamResponse response)
+        {
+            return response?.Choices?[0];
+        }
+
         /// <summary>
         /// Returns the text of the first choice returned from an edit request.
         /// </summary>

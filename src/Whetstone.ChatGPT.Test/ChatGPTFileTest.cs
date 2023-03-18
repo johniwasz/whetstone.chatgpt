@@ -131,32 +131,26 @@ namespace Whetstone.ChatGPT.Test
         public async Task FileUploadBadFile()
         {
             // Build a fine tine file to upload.
-
-
             string fileName = "badfile.jsonl";
 
             ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
             {
                 File = new ChatGPTFileContent
                 {
-
                     FileName = fileName,
                     Content = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())
                 }
             };
 
-            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
-            {
-                ChatGPTException badFileException = await Assert.ThrowsAsync<ChatGPTException>(async () => await client.UploadFileAsync(uploadRequest));
+            using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
 
-                Assert.NotNull(badFileException.ChatGPTError);
+            ChatGPTException badFileException = await Assert.ThrowsAsync<ChatGPTException>(async () => await client.UploadFileAsync(uploadRequest));
 
-                Assert.NotNull(badFileException.StatusCode);
+            Assert.NotNull(badFileException.ChatGPTError);
 
-                Assert.Equal(HttpStatusCode.BadRequest, badFileException.StatusCode);
+            Assert.NotNull(badFileException.StatusCode);
 
-            }
-
+            Assert.Equal(HttpStatusCode.BadRequest, badFileException.StatusCode);
         }
 
         private async Task InitializeTestFileAsync()

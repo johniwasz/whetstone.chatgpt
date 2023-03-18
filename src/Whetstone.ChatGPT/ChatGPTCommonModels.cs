@@ -16,7 +16,7 @@
 
         public const string Davinci = "davinci";
     }
-    
+
     /// <summary>
     /// Currently, the only text edit model supported is Davinci.
     /// </summary>
@@ -26,8 +26,131 @@
         /// Currently, the only edit model supported is Davinci.
         /// </summary>
         public readonly static string Davinci = "text-davinci-edit-001";
+
+        public readonly static string DavinciCode = "code-davinci-edit-001";
     }
 
+#pragma warning disable CA1707 // Identifiers should not contain underscores
+    /// <summary>
+    /// GPT-4 is a large multimodal model (accepting text inputs and emitting text outputs today, with image inputs coming in the future) that can solve difficult problems with greater accuracy than any of our previous models, thanks to its broader general knowledge and advanced reasoning capabilities. Like <c>gpt-3.5-turbo</c>, GPT-4 is optimized for chat but works well for traditional completions tasks.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// GPT-4 is currently in a limited beta and only accessible to those who have been granted access. Please <see href="https://openai.com/waitlist/gpt-4"?>join the waitlist</see> to get access when capacity is available.
+    /// </para>
+    /// <para>
+    /// For many basic tasks, the difference between GPT-4 and GPT-3.5 models is not significant. However, in more complex reasoning situations, GPT-4 is much more capable than any of our previous models.
+    /// </para>
+    /// <para><see href="https://platform.openai.com/docs/models/gpt-4">GPT-4</see></para>
+    /// </remarks>
+    public static class ChatGPT4Models
+    {
+        /// <summary>
+        /// More capable than any GPT-3.5 model, able to do more complex tasks, and optimized for chat. Will be updated with our latest model iteration.
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 8,192</para>
+        /// <para>Training Data: Up to Sep 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-4">GPT-4</see></para>
+        /// </remarks>
+        public readonly static string GPT4 = "gpt-4";
+
+        /// <summary>
+        /// Snapshot of gpt-4 from March 14th 2023. Unlike <c>gpt-4</c>, this model will not receive updates, and will only be supported for a three month period ending on June 14th 2023.
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 8,192</para>
+        /// <para>Training Data: Up to Sep 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-4">GPT-4</see></para>
+        /// </remarks>
+        public readonly static string GPT4_0314 = "gpt-4-0314";
+
+        /// <summary>
+        /// Same capabilities as the base <c>gpt-4</c> mode but with 4x the context length. Will be updated with our latest model iteration.
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 32,768</para>
+        /// <para>Training Data: Up to Sep 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-4">GPT-4</see></para>
+        /// </remarks>
+        public readonly static string GPT4_32K = "gpt-4-32k";
+
+        /// <summary>
+        /// Snapshot of <c>gpt-4-32</c> from March 14th 2023. Unlike <c>gpt-4-32</c>, this model will not receive updates, and will only be supported for a three month period ending on June 14th 2023.
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 32,768</para>
+        /// <para>Training Data: Up to Sep 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-4">GPT-4</see></para>
+        /// </remarks>
+        public readonly static string GPT4_32K_0314 = "gpt-4-32k-0314";
+    }
+#pragma warning restore CA1707 // Identifiers should not contain underscores
+
+    /// <summary>
+    /// GPT-3.5 models can understand and generate natural language or code. Our most capable and cost effective model in the GPT-3.5 family is <c>gpt-3.5-turbo</c> which has been optimized for chat but works well for traditional completions tasks as well.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// We recommend using gpt-3.5-turbo over the other GPT-3.5 models because of its lower cost.
+    /// </para>
+    /// <para>
+    /// OpenAI models are non-deterministic, meaning that identical inputs can yield different outputs. Setting <see href="https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature">temperature</see> to 0 will make the outputs mostly deterministic, but a small amount of variability may remain.
+    /// </para>
+    /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
+    /// </remarks>
+    public static class ChatGPT35Models
+    {
+        /// <summary>
+        /// Most capable GPT-3.5 model and optimized for chat at 1/10th the cost of <c>text-davinci-003</c>. Will be updated with our latest model iteration.
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 4,097</para>
+        /// <para>Training Data: Up to June 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
+        /// </remarks>
+        public readonly static string Turbo = "gpt-3.5-turbo";
+
+        /// <summary>
+        /// Snapshot of <c>gpt-3.5-turbo</c> from March 1st 2023. Unlike <c>gpt-3.5-turbo</c>, this model will not receive updates, and will only be supported for a three month period ending on June 1st 2023
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 4,097</para>
+        /// <para>Training Data: Up to June 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
+        /// </remarks>
+        public readonly static string Turbo0301 = "gpt-3.5-turbo-0301";
+
+        /// <summary>
+        /// Can do any language task with better quality, longer output, and consistent instruction-following than the curie, babbage, or ada models. Also supports inserting completions within text.
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 4,097</para>
+        /// <para>Training Data: Up to June 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
+        /// </remarks>
+        public readonly static string Davinci003 = "text-davinci-003";
+
+        /// <summary>
+        /// Similar capabilities to <c><text-davinci-003</c> but trained with supervised fine-tuning instead of reinforcement learning
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 4,097</para>
+        /// <para>Training Data: Up to June 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
+        /// </remarks>
+        public readonly static string Davinci002 = "text-davinci-002";
+
+        /// <summary>
+        /// Optimized for code-completion tasks
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 8,001</para>
+        /// <para>Training Data: Up to June 2021</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
+        /// </remarks>
+        public readonly static string CodeDavinci002 = "code-davinci-002";
+    }
 
     /// <summary>
     /// Provides a set of avaialbe completion models. 
@@ -37,18 +160,6 @@
     /// </remarks>
     public static class ChatGPTCompletionModels
     {
-
-        /// <summary>
-        /// Most capable GPT-3 model. Can do any task the other models can do, often with higher quality, longer output and better instruction-following. Also supports <see href="https://beta.openai.com/docs/guides/completion/inserting-text">inserting</see> completions within text.
-        /// </summary>
-        /// <remarks>
-        /// <para>Davinci is the most capable model family and can perform any task the other models can perform and often with less instruction. For applications requiring a lot of understanding of the content, like summarization for a specific audience and creative content generation, Davinci is going to produce the best results. These increased capabilities require more compute resources, so Davinci costs more per API call and is not as fast as the other models.</para>
-        /// <para>Another area where Davinci shines is in understanding the intent of text. Davinci is quite good at solving many kinds of logic problems and explaining the motives of characters. Davinci has been able to solve some of the most challenging AI problems involving cause and effect.</para>
-        /// <para>Good at: Complex intent, cause and effect, summarization for audience</para>
-        /// <para><see href="https://beta.openai.com/docs/models/overview">Models Overview</see></para>
-        /// </remarks>
-        public readonly static string Davinci = "text-davinci-003";
-
         /// <summary>
         /// Very capable, but faster and lower cost than Davinci.
         /// </summary>
@@ -83,8 +194,9 @@
 
     public static class ChatGPTEmbeddingModels
     {
-
         public readonly static string Ada = "text-embedding-ada-002";
+
+        public readonly static string AdaSearch = "text-search-ada-doc-001";
     }
     
 

@@ -42,7 +42,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
                     models = listResponse.Data.OrderBy(x => x.Id);
                 }
 
-                SelectedModel = ChatGPTCompletionModels.Davinci;
+                SelectedModel = ChatGPT35Models.Davinci003;
                 
                 if (DefaultMaxTokens is not null)
                 {
