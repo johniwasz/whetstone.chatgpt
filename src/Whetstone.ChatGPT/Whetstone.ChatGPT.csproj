@@ -41,10 +41,10 @@
     </PackageReleaseNotes>
 
     <RepositoryType>git</RepositoryType>
-    <PackageTags>chatgpt; api; openapi; gpt; gpt-3; gpt-35; gpt-35-turbo; whisper; whisper-ai; gpt-4</PackageTags>
+    <PackageTags>chatgpt; api; openai; gpt; gpt-3; gpt-35; gpt-35-turbo; whisper; whisper-ai; gpt-4</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2023</Copyright>
-    <Version>1.6.0</Version>
+    <Version>1.7.0</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps the ChatGPT API. Includes support for dependency injection.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
