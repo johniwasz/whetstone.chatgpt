@@ -2,7 +2,7 @@
 
 # Whetstone.ChatGPT
 
-A simple light-weight library that wraps the GPT-3 API with support for dependency injection.
+A simple light-weight library that wraps the Open AI API with support for dependency injection.
 
 Supported features include:
 
@@ -21,7 +21,7 @@ For a video walkthrough of a Blazor web app built on this library, please see:
 
 https://user-images.githubusercontent.com/44126651/224557966-cbbb6b67-0f6c-4bf7-9416-b8114cd06de8.mp4
 
-This is deployed to github pages and available at: [GPT-3 UI](https://johniwasz.github.io/whetstone.chatgpt/). Source for the Blazor web app is at [Whetstone.ChatGPT.Blazor.App](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App).
+This is deployed to github pages and available at: [Open AI UI](https://johniwasz.github.io/whetstone.chatgpt/). Source for the Blazor web app is at [Whetstone.ChatGPT.Blazor.App](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/blazor/Whetstone.ChatGPT.Blazor.App/Whetstone.ChatGPT.Blazor.App).
 
 [Examples](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples) include:
 
