@@ -8,14 +8,14 @@
   "resources": {
     "assembly": {
       "Blazored.LocalStorage.dll": "sha256-eXVgTw72kEn74FZgDQbLtvAmXbiZDSj5gzUnxVmwowQ=",
-      "Blazorise.Bootstrap5.dll": "sha256-tIrZucpDRcXW4yGl9zRgOmJs+L4mg83MFCCoRTOWcZo=",
-      "Blazorise.Components.dll": "sha256-S48gVVjGh4BsF+6hQUwjU1EDy3dFTJXZ5azGHZUUrgc=",
-      "Blazorise.DataGrid.dll": "sha256-+h\/\/NID7ZS3NMNr+XTI+kadIJvoMWrBGCcOs6jpQfbc=",
-      "Blazorise.dll": "sha256-gn6CPd3XSlvvLM3w+7TdSd47+MvdBgzZWbjFJUs7Kwk=",
-      "Blazorise.Icons.FontAwesome.dll": "sha256-gTDwgzwWWMMrCuP6nS23UigBbj1CWmTnTeYJTKesxzY=",
+      "Blazorise.Bootstrap5.dll": "sha256-QduWDXaDXnzhkiE8jmYnu+agQ6EHyXWemEenxFMfeGA=",
+      "Blazorise.Components.dll": "sha256-CRuPeioKnaoLRpSXHJ335x38ooh3DtPTo+TiHBM1XOQ=",
+      "Blazorise.DataGrid.dll": "sha256-uw7M0BtuOqjHqQUffVyWuWbmPlGuXR5pvVMaRwPvmDk=",
+      "Blazorise.dll": "sha256-WlWSTypjn2dDeA\/PLD3dKCmhDg+mKHv8Lhk2CuurQ0I=",
+      "Blazorise.Icons.FontAwesome.dll": "sha256-gjoQcPfcEpuUUCV9uXaOwjiCTmQYkCGrW3cykhF2HcU=",
       "Blazorise.Licensing.dll": "sha256-HCvMfGG13thv3GWvUEN2Ca7avc0Bjw5kpc9h9Kk+LS0=",
-      "Blazorise.LoadingIndicator.dll": "sha256-1BKCni2S9JH49dinKhVBcY3GKFv0MX0nCYosa4Z9bJY=",
-      "Blazorise.Snackbar.dll": "sha256-u\/ogSNn+oVda\/pEChcNxDLfcdysY9Nr6kPk02mfLeyA=",
+      "Blazorise.LoadingIndicator.dll": "sha256-OTlStINQ9\/SJQ5KpSwHp+xIsToZ00hOS72f7ls0UsgM=",
+      "Blazorise.Snackbar.dll": "sha256-AGVAWfxCDvsa4y0DF5FcflSmdryY4ZgHslu9kAG3ZCs=",
       "Markdig.Signed.dll": "sha256-T\/fdxMgw2ra3lnPL9egUDwhE\/tmBpFOPGXjymcPdlx8=",
       "Microsoft.AspNetCore.Components.dll": "sha256-E8z4wYbDzQPDja5kcjYdpoB+2ru38ZeuK260MZC7uv0=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-cfpVa3XIbyi5EUipQCuWfR7MHYAkSDrpH7aeNtrUkjg=",
@@ -100,8 +100,8 @@
       "System.Xml.ReaderWriter.dll": "sha256-RKroTSJ3W2Fa00opS7XLqLf5z3dtpaIMsXkufOG0WUE=",
       "System.Xml.XDocument.dll": "sha256-YmuKX6CefRnm8henCTKyFM9V\/7J8+jZ1tb1v4fdaYJ0=",
       "System.Xml.XPath.XDocument.dll": "sha256-Fi\/ZRsPF3tZ4MeUdMTyaCUeWjcT7nqQh1QmkvC9eMNA=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-hhBPu0S5W2ixe7ZiEcHO6iIE0hJURt+LKFcGEE4isfw=",
-      "Whetstone.ChatGPT.dll": "sha256-RrH3pbwThRncTXzNEK+7A0YEQDPFqPiHHtn6lVEzHvk="
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-Izd8lz3O9qHPG9e2vgtj6rZsEF0ahHm3b5rsC7FThxo=",
+      "Whetstone.ChatGPT.dll": "sha256-LFmMBRGJdGtP3B7WXQzlrkUV664GVvJa01we97Wn8kk="
     },
     "extensions": null,
     "lazyAssembly": null,
