@@ -10,7 +10,7 @@ namespace Whetstone.TweetGPT.WebhookManager.Test
     public class TwitterClientTest
     {
 
-        [Fact]
+        [Fact(Skip = "Need to reconfigure Twitter API Hook")]
         public async Task TwitterClientConnect()
         {
 
