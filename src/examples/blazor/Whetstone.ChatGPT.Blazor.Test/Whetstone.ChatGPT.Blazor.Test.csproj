@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -16,7 +16,7 @@
 	<ItemGroup>
 		<PackageReference Include="Blazorise.Bootstrap" Version="1.2.2" />
 		<PackageReference Include="Blazorise.Bootstrap5" Version="1.2.2" />
-		<PackageReference Include="bunit" Version="1.18.4" />
+		<PackageReference Include="bunit" Version="1.19.14" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
 		<PackageReference Include="coverlet.collector" Version="3.2.0">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
