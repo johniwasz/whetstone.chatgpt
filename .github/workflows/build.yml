@@ -25,7 +25,7 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'windows-latest'
     permissions:
       actions: read
       contents: read
@@ -62,9 +62,8 @@ jobs:
 
       - name: Generate SBOM
         run: |
-          curl -Lo $RUNNER_TEMP/sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64
-          chmod +x $RUNNER_TEMP/sbom-tool
-          $RUNNER_TEMP/sbom-tool generate -b ./buildOutput -bc . -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+          curl -L https://github.com/microsoft/sbom-tool/releases/download/v1.1.0/sbom-tool-win-x64.exe --output sbom-tool-win-x64.exe
+          sbom-tool-win-x64.exe generate -b ./buildOutput -bc . -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
