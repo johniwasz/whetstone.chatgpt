@@ -77,8 +77,8 @@ jobs:
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@preview
         id: msdo
-        with:
-          tools: binskim, trivy, template-analyzer
+       # with:
+       #   tools: binskim, trivy, template-analyzer
         
       # Upload alerts to the Security tab
       - name: Upload alerts to Security tab
