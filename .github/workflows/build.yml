@@ -25,7 +25,7 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: 'windows-latest'
+    runs-on: 'ubuntu-latest'
     permissions:
       actions: read
       contents: read
@@ -60,6 +60,17 @@ jobs:
       - name: Test
         run: dotnet test ./src --no-build --verbosity normal --configuration Release
 
+      - name: Generate SBOM
+        run: |
+          curl -Lo $RUNNER_TEMP/sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64
+          chmod +x $RUNNER_TEMP/sbom-tool
+          $RUNNER_TEMP/sbom-tool generate -b ./buildOutput -bc . -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          path: buildOutput
+
       # Run analyzers
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@preview
@@ -73,7 +84,7 @@ jobs:
 
   deploy-pages:
     needs: build-and-test
-    runs-on: 'ubuntu-latest'    
+    runs-on: 'ubuntu-latest'
     permissions:
       contents: write
     steps:
