@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿// SPDX-License-Identifier: MIT
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using System.Net.NetworkInformation;
 using System;

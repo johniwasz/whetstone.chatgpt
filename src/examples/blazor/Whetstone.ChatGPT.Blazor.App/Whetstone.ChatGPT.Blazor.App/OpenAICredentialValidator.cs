@@ -1,4 +1,5 @@
-﻿using Blazored.LocalStorage;
+﻿// SPDX-License-Identifier: MIT
+using Blazored.LocalStorage;
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;

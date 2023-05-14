@@ -1,4 +1,5 @@
-﻿using AngleSharp.Dom;
+﻿// SPDX-License-Identifier: MIT
+using AngleSharp.Dom;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;

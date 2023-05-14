@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿// SPDX-License-Identifier: MIT
+using System.Text.Json.Serialization;
 
 #if NET6_0_OR_GREATER
 using System.ComponentModel.DataAnnotations;

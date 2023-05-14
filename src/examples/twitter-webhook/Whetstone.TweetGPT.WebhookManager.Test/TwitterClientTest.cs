@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 using Microsoft.Extensions.Configuration;
 using Tweetinvi;
 using Tweetinvi.Models;

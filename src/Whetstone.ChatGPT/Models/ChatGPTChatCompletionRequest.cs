@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿// SPDX-License-Identifier: MIT
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace Whetstone.ChatGPT.Models

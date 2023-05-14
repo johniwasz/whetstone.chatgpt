@@ -44,19 +44,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: setup-dotnet
+      - name: setup-dotnet 7.0
         uses: xt0rted/setup-dotnet@v1.5.0
         with:
           dotnet-version: '7.0'
 
-      - name: setup-dotnet
+      - name: setup-dotnet 6.0
         uses: xt0rted/setup-dotnet@v1.5.0
         with:
           dotnet-version: '6.0'
 
+      - name: Install SBOM Tool
+        run: dotnet tool install --global Microsoft.Sbom.DotNetTool
+
       - name: Build with dotnet
         run: dotnet build ./src --configuration Release
-        
+
+      - name: Generate SBOM
+        run: |
+          md sbomOutput
+          sbom-tool generate -b sbomOutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          path: ./sbomOutput
+
       - name: Test
         run: dotnet test ./src --no-build --verbosity normal --configuration Release
 
@@ -64,6 +77,8 @@ jobs:
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@preview
         id: msdo
+       # with:
+       #   tools: binskim, trivy, template-analyzer
         
       # Upload alerts to the Security tab
       - name: Upload alerts to Security tab
@@ -73,7 +88,7 @@ jobs:
 
   deploy-pages:
     needs: build-and-test
-    runs-on: 'ubuntu-latest'    
+    runs-on: 'ubuntu-latest'
     permissions:
       contents: write
     steps:

@@ -1,0 +1,13 @@
+﻿extensions: designer.cs generated.cs
+extensions: .cs .cpp .h
+// SPDX-License-Identifier: MIT
+extensions: .aspx .ascx
+<%-- 
+SPDX-License-Identifier: MIT
+--%>
+extensions: .vb
+'SPDX-License-Identifier: MIT
+extensions:  .xml .config .xsd
+<!--
+SPDX-License-Identifier: MIT
+-->

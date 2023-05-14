@@ -1,4 +1,5 @@
-﻿using AngleSharp.Dom;
+﻿// SPDX-License-Identifier: MIT
+using AngleSharp.Dom;
 using Blazorise.Bootstrap5;
 using Blazorise;
 using Moq;

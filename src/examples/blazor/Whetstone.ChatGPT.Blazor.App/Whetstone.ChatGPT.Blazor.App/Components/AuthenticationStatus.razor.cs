@@ -1,4 +1,5 @@
-﻿
+﻿// SPDX-License-Identifier: MIT
+
 using Microsoft.AspNetCore.Components;
 using Whetstone.ChatGPT.Blazor.App.State;
 
