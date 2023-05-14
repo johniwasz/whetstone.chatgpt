@@ -19,9 +19,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-		<PackageReference Include="Blazorise.Components" Version="1.2.2" />
-		<PackageReference Include="Blazorise.DataGrid" Version="1.2.2" />
-		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.2" />
+		<PackageReference Include="Blazorise.Components" Version="1.2.3" />
+		<PackageReference Include="Blazorise.DataGrid" Version="1.2.3" />
+		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.3" />
 		<PackageReference Include="Markdig.Signed" Version="0.31.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.5" PrivateAssets="all" />
@@ -29,7 +29,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Blazorise" Version="1.2.3" />
-		<PackageReference Include="Blazorise.Bootstrap5" Version="1.2.2" />
+		<PackageReference Include="Blazorise.Bootstrap5" Version="1.2.3" />
 		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.3" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
