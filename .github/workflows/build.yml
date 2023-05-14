@@ -54,8 +54,7 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      - name: Build with dotnet
-        run: dotnet build ./src --configuration Release
+
         
       #- name: Test
       #  run: dotnet test ./src --no-build --verbosity normal --configuration Release
@@ -76,13 +75,15 @@ jobs:
 
       - name: Generate SBOM
         run: |
-          md ./sbomOutput
           sbom-tool generate -b sbomOutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
           path: ./sbomOutput
+
+      - name: Build with dotnet
+        run: dotnet build ./src --configuration Release
 
       # Run analyzers
       - name: Run Microsoft Security DevOps Analysis
