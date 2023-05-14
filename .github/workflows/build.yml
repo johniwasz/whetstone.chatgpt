@@ -75,12 +75,12 @@ jobs:
 
       - name: Generate SBOM
         run: |
-          sbom-tool generate -b ./buildOutput -bc . -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+          sbom-tool generate -b ./buildOutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
-          path: buildOutput
+          path: ./buildOutput
 
       # Run analyzers
       - name: Run Microsoft Security DevOps Analysis
