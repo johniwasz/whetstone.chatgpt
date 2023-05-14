@@ -54,27 +54,15 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-
-        
-      #- name: Test
-      #  run: dotnet test ./src --no-build --verbosity normal --configuration Release
-
-      - name: List Directory
-        run: |
-          md sbomOutput
-          dir
-
       - name: Install SBOM Tool
         run: dotnet tool install --global Microsoft.Sbom.DotNetTool
 
-      #- name: Generate SBOM
-      #  run: |
-      #    curl -L https://github.com/microsoft/sbom-tool/releases/download/v1.1.0/sbom-tool-win-x64.exe --output ./sbom-tool-win-x64.exe
-      #    dir
-      #    sbom-tool-win-x64.exe generate -b ./buildOutput -bc . -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+      - name: Build with dotnet
+        run: dotnet build ./src --configuration Release
 
       - name: Generate SBOM
         run: |
+          md sbomOutput
           sbom-tool generate -b sbomOutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
       - name: Upload a Build Artifact
@@ -82,15 +70,15 @@ jobs:
         with:
           path: ./sbomOutput
 
-      - name: Build with dotnet
-        run: dotnet build ./src --configuration Release
+      - name: Test
+        run: dotnet test ./src --no-build --verbosity normal --configuration Release
 
       # Run analyzers
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@preview
         id: msdo
         with:
-          tools: binskim, trivy
+          tools: binskim, trivy, template-analyzer
         
       # Upload alerts to the Security tab
       - name: Upload alerts to Security tab
