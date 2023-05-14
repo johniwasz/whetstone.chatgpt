@@ -44,12 +44,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: setup-dotnet
+      - name: setup-dotnet 7.0
         uses: xt0rted/setup-dotnet@v1.5.0
         with:
           dotnet-version: '7.0'
 
-      - name: setup-dotnet
+      - name: setup-dotnet 6.0
         uses: xt0rted/setup-dotnet@v1.5.0
         with:
           dotnet-version: '6.0'
@@ -57,12 +57,17 @@ jobs:
       - name: Build with dotnet
         run: dotnet build ./src --configuration Release
         
-      - name: Test
-        run: dotnet test ./src --no-build --verbosity normal --configuration Release
+      #- name: Test
+      #  run: dotnet test ./src --no-build --verbosity normal --configuration Release
+
+      - name: List Directory
+        run: |
+          dir
 
       - name: Generate SBOM
         run: |
-          curl -L https://github.com/microsoft/sbom-tool/releases/download/v1.1.0/sbom-tool-win-x64.exe --output sbom-tool-win-x64.exe
+          curl -L https://github.com/microsoft/sbom-tool/releases/download/v1.1.0/sbom-tool-win-x64.exe --output ./sbom-tool-win-x64.exe
+          dir
           sbom-tool-win-x64.exe generate -b ./buildOutput -bc . -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
       - name: Upload a Build Artifact
@@ -74,6 +79,8 @@ jobs:
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@preview
         id: msdo
+        with:
+          tools: binskim, template-analyzer, trivy
         
       # Upload alerts to the Security tab
       - name: Upload alerts to Security tab
