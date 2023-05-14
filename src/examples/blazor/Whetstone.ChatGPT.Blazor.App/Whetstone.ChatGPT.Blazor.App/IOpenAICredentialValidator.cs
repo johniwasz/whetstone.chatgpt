@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿// SPDX-License-Identifier: MIT
+using System.Diagnostics.CodeAnalysis;
 using Whetstone.ChatGPT.Blazor.App.State;
 using Whetstone.ChatGPT.Models;
 

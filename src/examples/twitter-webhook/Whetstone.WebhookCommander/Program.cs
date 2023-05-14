@@ -1,4 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿// SPDX-License-Identifier: MIT
+
+// See https://aka.ms/new-console-template for more information
 
 
 using Microsoft.Extensions.Configuration;

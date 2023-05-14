@@ -1,4 +1,5 @@
-﻿using Blazorise;
+﻿// SPDX-License-Identifier: MIT
+using Blazorise;
 using Blazorise.Localization;
 using Microsoft.AspNetCore.Components;
 using System.Net;

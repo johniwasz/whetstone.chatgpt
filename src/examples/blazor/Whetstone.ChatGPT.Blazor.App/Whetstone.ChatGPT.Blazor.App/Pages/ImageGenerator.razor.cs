@@ -1,4 +1,5 @@
-﻿
+﻿// SPDX-License-Identifier: MIT
+
 using Blazorise.LoadingIndicator;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;

@@ -75,19 +75,20 @@ jobs:
 
       - name: Generate SBOM
         run: |
-          sbom-tool generate -b ./buildOutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+          md ./sbomOutput
+          sbom-tool generate -b ./sbomOutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
-          path: ./buildOutput
+          path: ./sbomOutput
 
       # Run analyzers
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@preview
         id: msdo
         with:
-          tools: binskim, template-analyzer, trivy
+          tools: binskim, trivy
         
       # Upload alerts to the Security tab
       - name: Upload alerts to Security tab

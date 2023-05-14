@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿// SPDX-License-Identifier: MIT
+using Microsoft.Extensions.Options;
 using Whetstone.ChatGPT.Models;
 using Xunit.Abstractions;
 

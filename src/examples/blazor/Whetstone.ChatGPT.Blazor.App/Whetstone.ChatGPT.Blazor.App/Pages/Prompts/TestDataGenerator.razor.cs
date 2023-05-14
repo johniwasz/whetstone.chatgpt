@@ -1,4 +1,5 @@
-﻿using Markdig;
+﻿// SPDX-License-Identifier: MIT
+using Markdig;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Diagnostics;

@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+﻿// SPDX-License-Identifier: MIT
+using System.Net.NetworkInformation;
 using System.Net;
 using System;
 using Blazorise;

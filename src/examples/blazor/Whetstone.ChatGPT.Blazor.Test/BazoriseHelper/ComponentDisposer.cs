@@ -1,4 +1,5 @@
-﻿#region Using directives
+﻿// SPDX-License-Identifier: MIT
+#region Using directives
 using System;
 using System.Collections.Generic;
 using Blazorise;

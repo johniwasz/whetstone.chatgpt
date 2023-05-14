@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿// SPDX-License-Identifier: MIT
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Text.Json;

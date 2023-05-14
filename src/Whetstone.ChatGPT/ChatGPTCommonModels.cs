@@ -1,4 +1,5 @@
-﻿namespace Whetstone.ChatGPT
+﻿// SPDX-License-Identifier: MIT
+namespace Whetstone.ChatGPT
 {
     /// <summary>
     /// The name of the base model to fine-tune. You can select one of "ada", "babbage", "curie", "davinci", or a fine-tuned model created after 2022-04-21.

@@ -1,4 +1,5 @@
-﻿using Blazored.LocalStorage;
+﻿// SPDX-License-Identifier: MIT
+using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;

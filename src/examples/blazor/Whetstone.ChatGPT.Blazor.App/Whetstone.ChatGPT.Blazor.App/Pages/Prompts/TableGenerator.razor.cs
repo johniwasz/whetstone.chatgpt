@@ -1,4 +1,5 @@
-﻿using Blazorise;
+﻿// SPDX-License-Identifier: MIT
+using Blazorise;
 using Microsoft.AspNetCore.Components;
 using Microsoft.VisualBasic.FileIO;
 using System.Runtime.Versioning;

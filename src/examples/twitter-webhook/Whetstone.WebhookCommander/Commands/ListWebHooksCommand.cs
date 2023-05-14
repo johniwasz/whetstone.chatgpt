@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿// SPDX-License-Identifier: MIT
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Tweetinvi.Core.Models;
 using Whetstone.TweetGPT.WebHookManager;

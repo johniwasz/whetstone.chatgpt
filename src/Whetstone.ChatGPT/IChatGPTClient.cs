@@ -1,4 +1,5 @@
-﻿using Whetstone.ChatGPT.Models;
+﻿// SPDX-License-Identifier: MIT
+using Whetstone.ChatGPT.Models;
 
 namespace Whetstone.ChatGPT
 {

@@ -11,6 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="JsonListHelper\**" />
+    <EmbeddedResource Remove="JsonListHelper\**" />
+    <None Remove="JsonListHelper\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="audiofiles\transcriptiontest.mp3" />
     <None Remove="ImageFiles\full-alpha.png" />
     <None Remove="ImageFiles\sailboat-alpha.png" />
@@ -49,10 +55,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Whetstone.ChatGPT\Whetstone.ChatGPT.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="JsonListHelper\" />
   </ItemGroup>
 
 </Project>

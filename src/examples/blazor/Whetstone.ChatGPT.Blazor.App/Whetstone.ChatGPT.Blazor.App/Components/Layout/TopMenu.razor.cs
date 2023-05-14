@@ -1,4 +1,5 @@
-﻿using Blazorise.Localization;
+﻿// SPDX-License-Identifier: MIT
+using Blazorise.Localization;
 using Microsoft.AspNetCore.Components;
 
 namespace Whetstone.ChatGPT.Blazor.App.Components.Layout

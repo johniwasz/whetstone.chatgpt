@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 using System.Diagnostics;
 using System.Net;
 using Microsoft.Azure.Functions.Worker;

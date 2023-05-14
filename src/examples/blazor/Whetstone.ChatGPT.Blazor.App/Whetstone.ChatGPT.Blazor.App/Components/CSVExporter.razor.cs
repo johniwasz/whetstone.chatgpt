@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿// SPDX-License-Identifier: MIT
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;

@@ -1,4 +1,5 @@
-﻿namespace Whetstone.ChatGPT.Blazor.App.Models
+﻿// SPDX-License-Identifier: MIT
+namespace Whetstone.ChatGPT.Blazor.App.Models
 {
     public class CompletionOptions
     {

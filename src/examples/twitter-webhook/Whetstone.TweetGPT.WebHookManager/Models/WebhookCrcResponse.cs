@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿// SPDX-License-Identifier: MIT
+using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 

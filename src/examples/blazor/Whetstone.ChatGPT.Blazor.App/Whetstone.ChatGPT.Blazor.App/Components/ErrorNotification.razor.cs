@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿// SPDX-License-Identifier: MIT
+using Microsoft.AspNetCore.Components;
 using System.Net;
 using Whetstone.ChatGPT.Models;
 using Blazorise;

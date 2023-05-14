@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿// SPDX-License-Identifier: MIT
+using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Net.Http.Headers;
 #if NET6_0_OR_GREATER
