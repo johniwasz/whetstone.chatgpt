@@ -54,21 +54,33 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      - name: Install SBOM Tool
-        run: dotnet tool install --global Microsoft.Sbom.DotNetTool
+      - name: Install SBOM Tools
+        run: |
+          dotnet tool install --global Microsoft.Sbom.DotNetTool
+          dotnet tool install --global CycloneDX
 
       - name: Build with dotnet
         run: dotnet build ./src --configuration Release
 
-      - name: Generate SBOM
+      - name: Generate SPDX SBOM
         run: |
-          md sbomOutput
-          sbom-tool generate -b sbomOutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+          md spdxoutput
+          sbom-tool generate -b spdxoutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
-          path: ./sbomOutput
+          path: ./spdxoutput
+
+      - name: Generate CycloneDX SBOM
+        run: |
+          md cyclonedxoutput
+          dotnet CycloneDX ./src/Whetstone.ChatGPT.sln -o ./cyclonedxoutput -j -sv 1.17.0 -st library
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          path: ./cyclonedxoutput
 
       - name: Test
         run: dotnet test ./src --no-build --verbosity normal --configuration Release
