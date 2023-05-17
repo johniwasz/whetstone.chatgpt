@@ -1,4 +1,4 @@
-name: Validate dotnet
+name: Build, Test, Deploy
 
 on:
   pull_request:
@@ -54,21 +54,43 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      - name: Install SBOM Tool
-        run: dotnet tool install --global Microsoft.Sbom.DotNetTool
+      - name: Install SBOM Tools
+        run: |
+          dotnet tool install --global Microsoft.Sbom.DotNetTool
+          dotnet tool install --global CycloneDX
 
       - name: Build with dotnet
         run: dotnet build ./src --configuration Release
 
-      - name: Generate SBOM
+      - name: Generate SPDX SBOM
         run: |
-          md sbomOutput
-          sbom-tool generate -b sbomOutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+          md spdxoutput
+          sbom-tool generate -b spdxoutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
-      - name: Upload a Build Artifact
+      - name: Upload SPDX SBOM Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
-          path: ./sbomOutput
+          path: ./spdxoutput
+
+      - name: Generate Full CycloneDX SBOM
+        run: |
+          md cyclonedx-full-output
+          dotnet CycloneDX ./src/Whetstone.ChatGPT.sln -o ./cyclonedx-full-output -j -sv 1.17.0 -st library -dpr -f whetstone.chatgpt.full.bom
+
+      - name: Upload Full CycloneDX SBOM Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          path: ./cyclonedx-full-output
+
+      - name: Generate Production CycloneDX SBOM
+        run: |
+          md cyclonedx-prod-output
+          dotnet CycloneDX ./src/Whetstone.ChatGPT/Whetstone.ChatGPT.csproj -o ./cyclonedx-prod-output -j -sv 1.17.0 -st library -dpr -r -f whetstone.chatgpt.prod.bom
+
+      - name: Upload Production CycloneDX SBOM Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          path: ./cyclonedx-prod-output
 
       - name: Test
         run: dotnet test ./src --no-build --verbosity normal --configuration Release
