@@ -67,20 +67,30 @@ jobs:
           md spdxoutput
           sbom-tool generate -b spdxoutput -bc ./src -pn Whetstone.ChatGPT -pv 1.17.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
-      - name: Upload a Build Artifact
+      - name: Upload SPDX SBOM Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           path: ./spdxoutput
 
-      - name: Generate CycloneDX SBOM
+      - name: Generate Full CycloneDX SBOM
         run: |
-          md cyclonedxoutput
-          dotnet CycloneDX ./src/Whetstone.ChatGPT.sln -o ./cyclonedxoutput -j -sv 1.17.0 -st library
+          md cyclonedx-full-output
+          dotnet CycloneDX ./src/Whetstone.ChatGPT.sln -o ./cyclonedx-full-output -j -sv 1.17.0 -st library -dpr -f whetstone.chatgpt.full.bom
 
-      - name: Upload a Build Artifact
+      - name: Upload Full CycloneDX SBOM Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
-          path: ./cyclonedxoutput
+          path: ./cyclonedx-full-output
+
+      - name: Generate Production CycloneDX SBOM
+        run: |
+          md cyclonedx-prod-output
+          dotnet CycloneDX ./src/Whetstone.ChatGPT/Whetstone.ChatGPT.csproj -o ./cyclonedx-prod-output -j -sv 1.17.0 -st library -dpr -r -f whetstone.chatgpt.prod.bom
+
+      - name: Upload Production CycloneDX SBOM Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          path: ./cyclonedx-prod-output
 
       - name: Test
         run: dotnet test ./src --no-build --verbosity normal --configuration Release
