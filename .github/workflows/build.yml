@@ -1,4 +1,4 @@
-name: Validate dotnet
+name: Build, Test, Deploy
 
 on:
   pull_request:
