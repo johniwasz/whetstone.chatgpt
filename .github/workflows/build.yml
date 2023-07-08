@@ -65,7 +65,7 @@ jobs:
         uses: microsoft/security-devops-action@v1
         id: msdo
         with:
-          tools: binskim, trivy, template-analyzer, antimalware
+          tools: binskim, trivy, antimalware
         
       # Upload alerts to the Security tab
       - name: Upload alerts to Security tab
