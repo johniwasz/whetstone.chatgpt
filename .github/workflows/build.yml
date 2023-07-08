@@ -54,10 +54,59 @@ jobs:
         with:
           dotnet-version: '6.0'
 
+      - name: Build with dotnet
+        run: dotnet build ./src --configuration Release
+
+      - name: Test
+        run: dotnet test ./src --no-build --verbosity normal --configuration Release
+
+      # Run analyzers
+      - name: Run Microsoft Security DevOps Analysis
+        uses: microsoft/security-devops-action@v1
+        id: msdo
+        with:
+          tools: binskim, trivy, antimalware
+        
+      # Upload alerts to the Security tab
+      - name: Upload alerts to Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.msdo.outputs.sarifFile }}
+
+  sbom-generation:
+    runs-on: 'windows-latest'
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+
+      - name: List Environment Variables
+        run: env
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: setup-dotnet 7.0
+        uses: xt0rted/setup-dotnet@v1.5.0
+        with:
+          dotnet-version: '7.0'
+
+      - name: setup-dotnet 6.0
+        uses: xt0rted/setup-dotnet@v1.5.0
+        with:
+          dotnet-version: '6.0'
+
       - name: Install SBOM Tools
         run: |
           dotnet tool install --global Microsoft.Sbom.DotNetTool
-          dotnet tool install --global CycloneDX
+          dotnet tool install --global CycloneDX --version 2.7.0
 
       - name: Build with dotnet
         run: dotnet build ./src --configuration Release
@@ -75,7 +124,7 @@ jobs:
       - name: Generate Full CycloneDX SBOM
         run: |
           md cyclonedx-full-output
-          dotnet CycloneDX ./src/Whetstone.ChatGPT.sln -o ./cyclonedx-full-output -j -sv 1.17.0 -st library -dpr -f whetstone.chatgpt.full.bom
+          dotnet CycloneDX ./src/Whetstone.ChatGPT.sln -o ./cyclonedx-full-output -j -sv 1.16.1 -st library -dpr -f whetstone.chatgpt.full.bom
 
       - name: Upload Full CycloneDX SBOM Build Artifact
         uses: actions/upload-artifact@v3.1.2
@@ -85,31 +134,15 @@ jobs:
       - name: Generate Production CycloneDX SBOM
         run: |
           md cyclonedx-prod-output
-          dotnet CycloneDX ./src/Whetstone.ChatGPT/Whetstone.ChatGPT.csproj -o ./cyclonedx-prod-output -j -sv 1.17.0 -st library -dpr -r -f whetstone.chatgpt.prod.bom
+          dotnet CycloneDX ./src/Whetstone.ChatGPT/Whetstone.ChatGPT.csproj -o ./cyclonedx-prod-output -j -sv 1.16.1 -st library -dpr -r -f whetstone.chatgpt.prod.bom
 
       - name: Upload Production CycloneDX SBOM Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           path: ./cyclonedx-prod-output
 
-      - name: Test
-        run: dotnet test ./src --no-build --verbosity normal --configuration Release
-
-      # Run analyzers
-      - name: Run Microsoft Security DevOps Analysis
-        uses: microsoft/security-devops-action@preview
-        id: msdo
-       # with:
-       #   tools: binskim, trivy, template-analyzer
-        
-      # Upload alerts to the Security tab
-      - name: Upload alerts to Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: ${{ steps.msdo.outputs.sarifFile }}
-
   deploy-pages:
-    needs: build-and-test
+    needs: [build-and-test, sbom-generation]
     runs-on: 'ubuntu-latest'
     permissions:
       contents: write

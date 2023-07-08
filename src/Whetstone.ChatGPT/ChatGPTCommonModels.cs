@@ -64,6 +64,7 @@ namespace Whetstone.ChatGPT
         /// <para>Training Data: Up to Sep 2021</para>
         /// <para><see href="https://platform.openai.com/docs/models/gpt-4">GPT-4</see></para>
         /// </remarks>
+        [Obsolete("This model is not longer supported.")]
         public readonly static string GPT4_0314 = "gpt-4-0314";
 
         /// <summary>
@@ -81,10 +82,27 @@ namespace Whetstone.ChatGPT
         /// </summary>
         /// <remarks>
         /// <para>Max Tokens: 32,768</para>
-        /// <para>Training Data: Up to Sep 2021</para>
+        /// <para>Training Data: Up to March 2023</para>
         /// <para><see href="https://platform.openai.com/docs/models/gpt-4">GPT-4</see></para>
         /// </remarks>
+        [Obsolete("This model is not supported as of 2023-06-14.")]
         public readonly static string GPT4_32K_0314 = "gpt-4-32k-0314";
+
+
+        /// <summary>
+        /// Snapshot of <c>gpt-4-32</c> from June 13th 2023. Unlike <c>gpt-4-32</c>, this model will not receive updates, and will only be supported for a three month period ending.
+        /// </summary>
+        /// <remarks>
+        /// <para>Max Tokens: 32,768</para>
+        /// <para>Training Data: Up to June 2023</para>
+        /// <para><see href="https://platform.openai.com/docs/models/gpt-4">GPT-4</see></para>
+        /// </remarks>
+        public readonly static string GPT4_32K_0613 = "gpt-4-32k-0613";
+
+        /// <summary>
+        /// Includes an updated and improved model with function calling.
+        /// </summary>
+        public readonly static string GPT4_0613 = "gpt-4-0613";
     }
 #pragma warning restore CA1707 // Identifiers should not contain underscores
 
@@ -120,6 +138,7 @@ namespace Whetstone.ChatGPT
         /// <para>Training Data: Up to June 2021</para>
         /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
         /// </remarks>
+        [Obsolete("This model will not be supported as of 2023-09-13. Please use gpt4 instead.")]
         public readonly static string Turbo0301 = "gpt-3.5-turbo-0301";
 
         /// <summary>
@@ -150,7 +169,18 @@ namespace Whetstone.ChatGPT
         /// <para>Training Data: Up to June 2021</para>
         /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
         /// </remarks>
+        [Obsolete("This model is no longer supported as of 2023-03-23. Please use gpt4 instead.")]
         public readonly static string CodeDavinci002 = "code-davinci-002";
+
+        /// <summary>
+        /// Same function calling as GPT-4 as well as more reliable steerability via the system message, two features that allow developers to guide the model's responses more effectively.
+        /// </summary>
+        public readonly static string Turbo0613 = "gpt-3.5-turbo-0613";
+
+        /// <summary>
+        /// Offers 4 times the context length of gpt-3.5-turbo at twice the price: $0.003 per 1K input tokens and $0.004 per 1K output tokens. 16k context means the model can now support ~20 pages of text in a single request.
+        /// </summary>
+        public readonly static string Turbo16k = "gpt-3.5-turbo-16k";
     }
 
     /// <summary>
@@ -197,6 +227,7 @@ namespace Whetstone.ChatGPT
     {
         public readonly static string Ada = "text-embedding-ada-002";
 
+        [Obsolete("This model will not be supported as of 2024-01-04. Please use text-embedding-ada-002 instead.")]
         public readonly static string AdaSearch = "text-search-ada-doc-001";
     }
     

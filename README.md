@@ -6,7 +6,7 @@ A simple light-weight library that wraps the Open AI API with support for depend
 
 Supported features include:
 
-- GPT 3.5 Turbo and Chat Completions
+- GPT 4, GPT 3.5 Turbo and Chat Completions
 - Audio Transcription and Translation (Whisper API)
 - Completions
 - Edits
@@ -26,7 +26,6 @@ This is deployed to github pages and available at: [Open AI UI](https://johniwas
 [Examples](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples) include:
 
 - [Command line bot](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/Whetstone.ChatGPT.SimpleCommandlineBot)
-- [Azure Function Twitter Webhook](https://github.com/johniwasz/whetstone.chatgpt/tree/main/src/examples/twitter-webhook) that responds to DMs
 
 ## Dependency Injection Quickstart
 
