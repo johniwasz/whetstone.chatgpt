@@ -57,7 +57,7 @@ jobs:
       - name: Install SBOM Tools
         run: |
           dotnet tool install --global Microsoft.Sbom.DotNetTool
-          dotnet tool install --global CycloneDX
+          dotnet tool install --global CycloneDX --version 2.7.0
 
       - name: Build with dotnet
         run: dotnet build ./src --configuration Release
@@ -98,7 +98,7 @@ jobs:
       # Run analyzers
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@preview
-        id: msdo
+        id: msdo, antimalware
        # with:
        #   tools: binskim, trivy, template-analyzer
         
