@@ -54,6 +54,55 @@ jobs:
         with:
           dotnet-version: '6.0'
 
+      - name: Build with dotnet
+        run: dotnet build ./src --configuration Release
+
+      - name: Test
+        run: dotnet test ./src --no-build --verbosity normal --configuration Release
+
+      # Run analyzers
+      - name: Run Microsoft Security DevOps Analysis
+        uses: microsoft/security-devops-action@v1
+        id: msdo
+        with:
+          tools: binskim, trivy, template-analyzer, antimalware
+        
+      # Upload alerts to the Security tab
+      - name: Upload alerts to Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ steps.msdo.outputs.sarifFile }}
+
+  sbom-generation:
+    runs-on: 'windows-latest'
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+
+      - name: List Environment Variables
+        run: env
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: setup-dotnet 7.0
+        uses: xt0rted/setup-dotnet@v1.5.0
+        with:
+          dotnet-version: '7.0'
+
+      - name: setup-dotnet 6.0
+        uses: xt0rted/setup-dotnet@v1.5.0
+        with:
+          dotnet-version: '6.0'
+
       - name: Install SBOM Tools
         run: |
           dotnet tool install --global Microsoft.Sbom.DotNetTool
@@ -92,24 +141,8 @@ jobs:
         with:
           path: ./cyclonedx-prod-output
 
-      - name: Test
-        run: dotnet test ./src --no-build --verbosity normal --configuration Release
-
-      # Run analyzers
-      - name: Run Microsoft Security DevOps Analysis
-        uses: microsoft/security-devops-action@v1
-        id: msdo
-        with:
-          tools: binskim, trivy, template-analyzer, antimalware
-        
-      # Upload alerts to the Security tab
-      - name: Upload alerts to Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: ${{ steps.msdo.outputs.sarifFile }}
-
   deploy-pages:
-    needs: build-and-test
+    needs: [build-and-test, sbom-generation]
     runs-on: 'ubuntu-latest'
     permissions:
       contents: write
