@@ -16,7 +16,7 @@
       "Blazorise.Licensing.dll": "sha256-HCvMfGG13thv3GWvUEN2Ca7avc0Bjw5kpc9h9Kk+LS0=",
       "Blazorise.LoadingIndicator.dll": "sha256-vWsehFl5XQreQ\/Ym+HkRFtn\/gg3oz7mYsdWY3KG1SAk=",
       "Blazorise.Snackbar.dll": "sha256-o+BFBXNTqly+xTO+uvs6uR9\/4jC+WclOaho1FO5vkcI=",
-      "Markdig.Signed.dll": "sha256-qfmFbA3FyLrQXNL2rfj+ZyNemY3QHlBnyJ5Sv9p7lQg=",
+      "Markdig.Signed.dll": "sha256-T\/fdxMgw2ra3lnPL9egUDwhE\/tmBpFOPGXjymcPdlx8=",
       "Microsoft.AspNetCore.Components.dll": "sha256-ErG1EpvJcFduJm0CpIPD7xcALjcyKCvZ0ZzRl\/hfdck=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-r46hetYbQ223shpRni\/Jzf2q413zPSAB4FdvGdIp0mk=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-UU+NNVBHKnGbXOIZGRCORbZmu7SXhK9ekPAYafLozJA=",
@@ -95,7 +95,7 @@
       "System.Xml.ReaderWriter.dll": "sha256-owcD72KEDvbQjzdhTfr+Hyqd1W47JMRpyJzuFuvZlqA=",
       "System.Xml.XDocument.dll": "sha256-1lY4+RJ1BfLY\/jW42x5xb3lOsp7Xwui7CKZ\/FObvJNk=",
       "System.Xml.XPath.XDocument.dll": "sha256-71alkEuzOS7PHIUF0iKQvp2j0mtfjrj2t01IfPyzrNY=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-fHwewb9l4xEkKj0epUjDfut70FlxxLPMt4SqZ7ehmRk=",
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-eNzzlIXykIsZeP+dg\/rsVuU65mg7W\/ljoFYAgIw+T9k=",
       "Whetstone.ChatGPT.dll": "sha256-mQXCLNVpyeZLh9AOyRMzl\/GCRvXMGT1VYafBihDyTxk="
     },
     "extensions": null,
