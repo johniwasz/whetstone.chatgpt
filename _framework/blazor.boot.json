@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "Blazored.LocalStorage.dll": "sha256-eXVgTw72kEn74FZgDQbLtvAmXbiZDSj5gzUnxVmwowQ=",
+      "Blazored.LocalStorage.dll": "sha256-5V8ovY1srbIIz7lzzMhLd3nNJ9LJ6bHoBOnLJahv8Go=",
       "Blazorise.Bootstrap5.dll": "sha256-pavUQ3lPaiT0zSgtU72bRDjPEASYVgx6ewinvSMAilY=",
       "Blazorise.Components.dll": "sha256-pEqySNXwVXrPBhZ6M7ppvfnbEuGPhHKWBG3NY3kILbI=",
       "Blazorise.DataGrid.dll": "sha256-LExUvvrK0W9ck78\/ijzU7z+i1L5kmXQAcrz3quJ\/+Qs=",
@@ -95,7 +95,7 @@
       "System.Xml.ReaderWriter.dll": "sha256-KYHwrwxsIkCjBBloiMokng+WS7EB941A3ioPVZMQ5UE=",
       "System.Xml.XDocument.dll": "sha256-kp96dhcQ9TZLIz4TTioHDx0ipfuMa02KuC5hRaDdFKE=",
       "System.Xml.XPath.XDocument.dll": "sha256-sqahFT\/ZLYPCyrbm7+i40dyJgUHcnFBXWj+CFc60MgQ=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-MwW7J6HAn4YV\/TDcQrNwutqGPRnh\/cd\/1m+wJcidtNI=",
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-YwcP4FRR6M4pANAmxVUPry5t9xhN\/fwV+5lf0jXZtSg=",
       "Whetstone.ChatGPT.dll": "sha256-PGHQFJ4zOwvfA8yF1ze0AlACnyjOxt8GEXFUK3UrGDI="
     },
     "extensions": null,
