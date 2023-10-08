@@ -7,6 +7,11 @@
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+# 1.6.2
+
+- Updated dependencies
+- Updated roles for GPT-3.5 and GPT-4.0 messages to accept strings instead of an enumeration.
+
 # 1.6.1
 
 - Updated package dependencies to latest versions
@@ -49,7 +54,7 @@
     <PackageTags>chatgpt; api; openai; gpt; gpt-3; gpt-35; gpt-35-turbo; whisper; whisper-ai; gpt-4</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2023</Copyright>
-    <Version>1.6.1</Version>
+    <Version>1.6.2</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps the ChatGPT API. Includes support for dependency injection.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
@@ -87,16 +92,15 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='netstandard2.1'">
     <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="System.Text.Json" Version="6.0.0" />
+  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0' and '$(TargetFramework)'!='netstandard2.1'">
+    <PackageReference Include="System.Text.Json" Version="7.0.3" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup>    
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
-  
 </Project>

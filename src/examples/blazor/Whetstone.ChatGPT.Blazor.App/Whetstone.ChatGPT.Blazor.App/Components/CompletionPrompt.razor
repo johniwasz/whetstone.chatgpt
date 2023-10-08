@@ -11,7 +11,13 @@
 <Column ColumnSize="ColumnSize.Is10">
     <CascadingValue Value="@Prompt">
     <Row>
-            <CompletionPromptForm OnException="@ProcessException" OnCompletionRequestedAsync="@CompletionRequestedAsync" OnCompletionResponseAsync="@ProcessCompletionResponseAsync" CompletionOptionsRetriever="GetCompletionOptions"></CompletionPromptForm>
+            <CompletionPromptForm OnException="@ProcessException" 
+                OnCompletionRequestedAsync="@CompletionRequestedAsync" 
+                OnCompletionResponseAsync="@ProcessCompletionResponseAsync"
+                OnChatCompletionRequestedAsync="@ChatCompletionRequestedAsync"
+                OnChatCompletionResponseAsync="@ProcessChatCompletionResponseAsync"
+                CompletionOptionsRetriever="GetCompletionOptions">
+            </CompletionPromptForm>
     </Row>
     </CascadingValue>
     <Row>
@@ -29,7 +35,7 @@
                     <CardText>@PromptResponse</CardText>
                     <CardFooter>
                         <br/>
-                            <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" CompletionResponse="gptCompletionResponse" />
+                            <CompletionResponseDetails CompletionUsage="@completionUsage" CompletionRequest="@gptCompletionRequest" CompletionResponse="@gptCompletionResponse" CompletionChatResponse="@gptChatCompletionResponse" CompletionChatRequest="@gptChatCompletionRequest"/>
                     </CardFooter>
                 </CardBody>
             </Card>

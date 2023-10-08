@@ -10,22 +10,12 @@ using System.Threading.Tasks;
 
 namespace Whetstone.ChatGPT.Models
 {
-    public enum MessageRole
-    {
-        [EnumMember(Value = "system")]
-        System,
-        [EnumMember(Value = "user")]
-        User,
-        [EnumMember(Value = "assistant")]
-        Assistant
-    }
+
 
     public class ChatGPTChatCompletionMessage
-    {        
-        [DefaultValue(MessageRole.User)]
-        [JsonConverter(typeof(EnumConverter<MessageRole>))]
+    {
         [JsonPropertyName("role")]
-        public MessageRole Role { get; set; } = MessageRole.User;
+        public string Role { get; set; } = "system";
 
         [JsonPropertyName("content")]
         public string? Content { get; set; }

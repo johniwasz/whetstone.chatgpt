@@ -27,7 +27,14 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         [Parameter]
         public EventCallback<ChatGPTCompletionResponse> OnCompletionResponseAsync { get; set; } = default!;
-        
+
+
+        [Parameter]
+        public EventCallback<ChatGPTChatCompletionRequest> OnChatCompletionRequestedAsync { get; set; } = default!;
+
+        [Parameter]
+        public EventCallback<ChatGPTChatCompletionResponse> OnChatCompletionResponseAsync { get; set; } = default!;
+
         [Parameter]
         public Func<CompletionOptions> CompletionOptionsRetriever { get; set; } = default!;
 
@@ -54,25 +61,52 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         {
             CompletionOptions compOptions = CompletionOptionsRetriever();
 
-            ChatGPTCompletionRequest gptCompletionRequest = new()
-            {
-                Prompt = completionRequest.Prompt,
-                Model = compOptions.SelectedModel,
-                MaxTokens = compOptions.MaxTokens,
-                Temperature = compOptions.Temperature,
-            };
-
-            await OnCompletionRequestedAsync.InvokeAsync(gptCompletionRequest);
-
             try
             {
                 isLoading = true;
 
                 if (cancelTokenSource.TryReset())
                 {
-                    ChatGPTCompletionResponse gptCompletionResponse = (await ChatClient.CreateCompletionAsync(gptCompletionRequest))!;
+                    if(compOptions.SelectedModel!.StartsWith("gpt-4") || compOptions.SelectedModel.StartsWith("gpt-3.5"))
+                    {
+                        ChatGPTChatCompletionRequest gptChatCompletionRequest = new()
+                        {
+                            Messages = new List<ChatGPTChatCompletionMessage>()
+                            {
+                                new ChatGPTChatCompletionMessage()
+                                {
+                                    Content = completionRequest.Prompt,
+                                    Role = ChatGPTMessageRoles.System
+                                }
+                            },
+                            Model = compOptions.SelectedModel,
+                            MaxTokens = compOptions.MaxTokens,
+                            Temperature = compOptions.Temperature,
+                        };
 
-                    await OnCompletionResponseAsync.InvokeAsync(gptCompletionResponse);
+                        await OnChatCompletionRequestedAsync.InvokeAsync(gptChatCompletionRequest);
+
+                        ChatGPTChatCompletionResponse gptChatCompletionResponse = (await ChatClient.CreateChatCompletionAsync(gptChatCompletionRequest))!;
+
+                        await OnChatCompletionResponseAsync.InvokeAsync(gptChatCompletionResponse);
+                    }
+                    else
+                    {
+                        ChatGPTCompletionRequest gptCompletionRequest = new()
+                        {
+                            Prompt = completionRequest.Prompt,
+                            Model = compOptions.SelectedModel,
+                            MaxTokens = compOptions.MaxTokens,
+                            Temperature = compOptions.Temperature,
+                        };
+
+                        await OnCompletionRequestedAsync.InvokeAsync(gptCompletionRequest);
+
+                        ChatGPTCompletionResponse gptCompletionResponse = (await ChatClient.CreateCompletionAsync(gptCompletionRequest))!;
+
+                        await OnCompletionResponseAsync.InvokeAsync(gptCompletionResponse);
+                    }
+
                 }
             }
             catch (ThreadAbortException)

@@ -231,5 +231,14 @@ namespace Whetstone.ChatGPT
         public readonly static string AdaSearch = "text-search-ada-doc-001";
     }
     
+    public static class ChatGPTMessageRoles
+    {
+        public readonly static string User = "user";
+
+        public readonly static string System = "system";
+
+        public readonly static string Assistant = "assistant";
+
+    }
 
 }

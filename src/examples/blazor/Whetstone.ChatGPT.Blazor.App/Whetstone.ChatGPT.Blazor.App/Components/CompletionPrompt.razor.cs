@@ -26,6 +26,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         public EventCallback<ChatGPTCompletionResponse> OnCompletionResponseAsync { get; set; } = default!;
 
         [Parameter]
+        public EventCallback<ChatGPTChatCompletionResponse> OnChatCompletionResponseAsync { get; set; } = default!;
+
+        [Parameter]
         public Func<string, MarkupString> FormatPromptResponse { get; set; } = FormatResponse;
 
         [Parameter]
@@ -35,9 +38,13 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         private ChatGPTUsage? completionUsage { get; set; } = default!;
 
-        private ChatGPTCompletionRequest gptCompletionRequest = default!;
+        private ChatGPTCompletionRequest? gptCompletionRequest = default!;
+
+        private ChatGPTChatCompletionRequest? gptChatCompletionRequest = default!;
 
         private ChatGPTCompletionResponse gptCompletionResponse = default!;
+
+        private ChatGPTChatCompletionResponse gptChatCompletionResponse = default!;
 
         private Exception? exception { get; set; } = default!;
 
@@ -45,7 +52,15 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         public Task CompletionRequestedAsync(ChatGPTCompletionRequest completionRequest)
         {
+            gptChatCompletionRequest = null;
             gptCompletionRequest = completionRequest;
+            return Task.CompletedTask;
+        }
+
+        public Task ChatCompletionRequestedAsync(ChatGPTChatCompletionRequest completionRequest)
+        {
+            gptCompletionRequest = null;
+            gptChatCompletionRequest = completionRequest;
             return Task.CompletedTask;
         }
 
@@ -67,7 +82,30 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
                 AppState.UpdateTokenUsage(completionUsage);
             }
 
-            OnCompletionResponseAsync.InvokeAsync(completionResponse);
+            OnCompletionResponseAsync.InvokeAsync(gptCompletionResponse);
+
+            return Task.CompletedTask;
+        }
+
+        public Task ProcessChatCompletionResponseAsync(ChatGPTChatCompletionResponse completionResponse)
+        {
+            gptChatCompletionResponse = completionResponse;
+
+            string? rawResponse = gptChatCompletionResponse.GetCompletionText();
+
+            if (rawResponse is not null)
+            {
+                PromptResponse = FormatPromptResponse(rawResponse);
+            }
+
+            completionUsage = gptChatCompletionResponse.Usage;
+
+            if (completionUsage is not null)
+            {
+                AppState.UpdateTokenUsage(completionUsage);
+            }
+
+            OnChatCompletionResponseAsync.InvokeAsync(gptChatCompletionResponse);
 
             return Task.CompletedTask;
         }

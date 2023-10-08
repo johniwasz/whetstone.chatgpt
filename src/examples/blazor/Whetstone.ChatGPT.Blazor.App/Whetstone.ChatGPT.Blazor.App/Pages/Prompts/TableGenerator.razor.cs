@@ -34,6 +34,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         private ChatGPTCompletionResponse gptCompletionResponse = new();
 
+        private ChatGPTChatCompletionRequest? gptChatCompletionRequest = default!;
+
+        private ChatGPTChatCompletionResponse gptChatCompletionResponse = default!;
+
         private ChatGPTUsage completionUsage = new();
 
         private Visibility completionDetailsVisibility = Visibility.Invisible;
@@ -57,14 +61,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             promptBuilder.Append(string.Join(",", fieldList));
             promptBuilder.Append('.');
 
-            gptCompletionRequest = new()
-            {
-                Prompt = promptBuilder.ToString(),
-                Model = optionsSelector!.SelectedModel,
-                MaxTokens = optionsSelector!.MaxTokens,
-                Temperature = optionsSelector!.Temperature,
-            };
-
             // Remove any quotes from the lables that will be used in the table display
             fieldList = fieldList.Select(x => x.Trim('"')).ToList();
 
@@ -75,21 +71,12 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             {
                 if (cancelTokenSource.TryReset())
                 {
-                    ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptCompletionRequest, cancelTokenSource.Token);
+                    TableResponse tableResponse = await BuildTablesAsync(promptBuilder.ToString(), optionsSelector!, cancelTokenSource.Token);
                     
-                    if (completionResponse is not null)
+                    if (tableResponse.Content is not null)
                     {
-                        gptCompletionResponse = completionResponse;
-                        
-                        rawResponse = gptCompletionResponse.GetCompletionText();
-                        rawResponse = rawResponse!.Trim();
-                        
-                        if (gptCompletionResponse.Usage is not null)
-                        {
-                            AppState.UpdateTokenUsage(gptCompletionResponse.Usage);
-                            completionUsage = gptCompletionResponse.Usage;
-                        }
-
+                        rawResponse = tableResponse.Content;
+                        AppState.UpdateTokenUsage(tableResponse.Usage);
                         completionDetailsVisibility = Visibility.Visible;
                     }
                 }
@@ -166,6 +153,76 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
             {
                 isLoading = false;
             }
+        }
+
+        private async Task<TableResponse> BuildTablesAsync(string prompt, ChatOptionsSelector compOptions, CancellationToken cancelToken)
+        {
+            TableResponse tableResponse = new();
+            
+
+            if (compOptions.SelectedModel!.StartsWith("gpt-4") || compOptions.SelectedModel.StartsWith("gpt-3.5"))
+            {
+
+                gptCompletionRequest = new();
+                gptCompletionResponse = new();
+
+                gptChatCompletionRequest = new()
+                {
+                    Messages = new List<ChatGPTChatCompletionMessage>()
+                            {
+                                new ChatGPTChatCompletionMessage()
+                                {
+                                    Content = prompt,
+                                    Role = ChatGPTMessageRoles.System
+                                }
+                            },
+                    Model = compOptions.SelectedModel,
+                    MaxTokens = compOptions.MaxTokens,
+                    Temperature = compOptions.Temperature,
+                };
+
+                ChatGPTChatCompletionResponse chatCompletionResponse = (await ChatClient.CreateChatCompletionAsync(gptChatCompletionRequest))!;
+
+                if (chatCompletionResponse is not null)
+                {
+                    gptChatCompletionResponse = chatCompletionResponse;
+
+                    tableResponse.Content = chatCompletionResponse.GetCompletionText()!.Trim();
+
+                    if (gptChatCompletionResponse.Usage is not null)
+                    {
+                        tableResponse.Usage = gptChatCompletionResponse.Usage;
+                    }
+                }
+            }
+            else
+            {
+                gptChatCompletionRequest = new();
+                gptChatCompletionResponse = new();
+
+                gptCompletionRequest = new()
+                {
+                    Prompt = prompt,
+                    Model = optionsSelector!.SelectedModel,
+                    MaxTokens = optionsSelector!.MaxTokens,
+                    Temperature = optionsSelector!.Temperature,
+                };
+
+                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptCompletionRequest, cancelToken);
+
+                if (completionResponse is not null)
+                {
+                    gptCompletionResponse = completionResponse;
+
+                    tableResponse.Content = gptCompletionResponse.GetCompletionText()!.Trim();
+
+                    if (gptCompletionResponse.Usage is not null)
+                    {
+                        tableResponse.Usage = gptCompletionResponse.Usage;
+                    }
+                }
+            }
+            return tableResponse;
         }
 
         private void AddAttribute()

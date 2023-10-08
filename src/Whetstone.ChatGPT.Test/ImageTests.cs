@@ -6,7 +6,7 @@ namespace Whetstone.ChatGPT.Test
 {
     public class ImageTests
     {
-        [Fact]
+        [Fact(Skip = "Skipping due to cost.")]
         public async Task GenerateImageAsync()
         {
 
@@ -43,7 +43,7 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Skipping due to cost.")]
         public async Task GenerateImageVariation()
         {
             ChatGPTCreateImageVariationRequest imageRequest = new()
@@ -77,7 +77,7 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Skipping due to cost.")]
         public async Task CreateImageEdit()
         {
 
