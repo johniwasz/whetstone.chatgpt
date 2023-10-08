@@ -21,22 +21,22 @@ namespace Whetstone.ChatGPT.Test
                     {
                         new ChatGPTChatCompletionMessage()
                         {
-                            Role = MessageRole.System,
+                            Role = ChatGPTMessageRoles.System,
                             Content = "You are a helpful assistant."
                         },
                         new ChatGPTChatCompletionMessage()
                         {
-                            Role = MessageRole.User,
+                            Role = ChatGPTMessageRoles.User,
                             Content = "Who won the world series in 2020?"
                         },
                         new ChatGPTChatCompletionMessage()
                         {
-                            Role = MessageRole.Assistant,
+                            Role = ChatGPTMessageRoles.Assistant,
                             Content = "The Los Angeles Dodgers won the World Series in 2020."
                         },
                         new ChatGPTChatCompletionMessage()
                         {
-                            Role = MessageRole.User,
+                            Role = ChatGPTMessageRoles.User,
                             Content = "Where was it played?"
                         }
                     },
@@ -54,7 +54,7 @@ namespace Whetstone.ChatGPT.Test
 
             Assert.NotNull(message);
 
-            Assert.Equal(MessageRole.Assistant, message.Role);
+            Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
 
             Assert.NotNull(response.Choices);
 
@@ -75,22 +75,22 @@ namespace Whetstone.ChatGPT.Test
                     {
                         new ChatGPTChatCompletionMessage()
                         {
-                            Role = MessageRole.System,
+                            Role = ChatGPTMessageRoles.System,
                             Content = "You are a helpful assistant."
                         },
                         new ChatGPTChatCompletionMessage()
                         {
-                            Role = MessageRole.User,
+                            Role = ChatGPTMessageRoles.User,
                             Content = "Who won the world series in 2020?"
                         },
                         new ChatGPTChatCompletionMessage()
                         {
-                            Role = MessageRole.Assistant,
+                            Role = ChatGPTMessageRoles.Assistant,
                             Content = "The Los Angeles Dodgers won the World Series in 2020."
                         },
                         new ChatGPTChatCompletionMessage()
                         {
-                            Role = MessageRole.User,
+                            Role = ChatGPTMessageRoles.User,
                             Content = "Where was it played?"
                         }
                     },
