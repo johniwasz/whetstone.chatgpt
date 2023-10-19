@@ -96,8 +96,8 @@
       "System.Xml.ReaderWriter.dll": "sha256-34hliX5VWELBXfkUH4xNq0wEHZ1r\/p1Sic9dC6ANmeQ=",
       "System.Xml.XDocument.dll": "sha256-3UpweaECRGXDZw+z9m0JBW9zZ929biZYDCTY7qPpk+M=",
       "System.Xml.XPath.XDocument.dll": "sha256-cPctEp4\/8+R3P+nYzXCnePA8CwhYrV0M\/snal9l6goM=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-Y9oHN4kCWSMYqCCV99Y3qI6x5\/WwZiODRjfYCGUkrcw=",
-      "Whetstone.ChatGPT.dll": "sha256-b5r8elXys4PjmKLemNaQK7jjz+4DsgRtqAO9PZxRI4c="
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-abbHvZDOJMIw2dFykYe1HCk+RdqA25Fyf1hO4ndfmkk=",
+      "Whetstone.ChatGPT.dll": "sha256-ZrGC7sx1z4HFtIRQBtstawcpfmV8TUrWkSMrRHTZKlw="
     },
     "extensions": null,
     "lazyAssembly": null,
