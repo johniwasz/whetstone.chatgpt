@@ -100,7 +100,7 @@ namespace Whetstone.ChatGPT.Test
 
             using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             await foreach (var completion in client.StreamChatCompletionAsync(gptRequest).ConfigureAwait(false))
             {

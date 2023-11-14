@@ -239,6 +239,8 @@ namespace Whetstone.ChatGPT
 
         public readonly static string Assistant = "assistant";
 
+        public readonly static string Tool = "tool";
+
     }
 
 }
