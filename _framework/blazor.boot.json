@@ -58,7 +58,7 @@
       "System.IO.Compression.dll": "sha256-I\/ajY\/uEVTPEL+ZMP\/3cI1s78y9V2PWvEGUJYdNISLI=",
       "System.IO.MemoryMappedFiles.dll": "sha256-+z6tp7E+Fq33\/blAntEbtyXMwtx1KpGhHIFtx62\/6ZA=",
       "System.Linq.dll": "sha256-5zEfqHKb7a1qKa9yapFHtkdd1+lY4STkR+R5HSNDGmg=",
-      "System.Linq.Expressions.dll": "sha256-ZptG6dnIdgatov6GrV+4DpZspYWxoUPYAN+XTrXjp2o=",
+      "System.Linq.Expressions.dll": "sha256-eJP3GK7CtfcSZffGEYf8LXuGm63Z2MEKcOViQ+Lb8Yo=",
       "System.Linq.Queryable.dll": "sha256-6dtAQ4VE4oreKOqFy+ZdDhEcAXVtKof7tzzU\/VJmFck=",
       "System.Memory.dll": "sha256-Svbq7\/uwcHQFVDSPky7JB6A+8w11NulGiJ4onpN\/CB4=",
       "System.Net.Http.dll": "sha256-CfTZG5y765LNVie1zZsyceeR7HCNkkWN0P7xxZnde\/Y=",
@@ -96,8 +96,8 @@
       "System.Xml.ReaderWriter.dll": "sha256-ycgBMwcmO0v90yruh2bikrRl0\/mWxeccd\/Pksw238p0=",
       "System.Xml.XDocument.dll": "sha256-+DM96I25gRBLSXxSGg+eYXd94JtoSckGY2ekK50XvqM=",
       "System.Xml.XPath.XDocument.dll": "sha256-XI88QIrDJAO2zGlEfokWLF+haIZWkzD0fh4AN2DV4wQ=",
-      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-qp4F5BiSo2n0xvY2v1eW5T0QRrVRr7T4HGEDGTQ8p2E=",
-      "Whetstone.ChatGPT.dll": "sha256-\/XWv0CJ07XPLI99J6vT+l7J2EqTt5nzJ2tpn1UB4BIY="
+      "Whetstone.ChatGPT.Blazor.App.dll": "sha256-30Ku4Od7yADtGO\/e37brYNdyPKKQ3Af4FD3VVWwKJf8=",
+      "Whetstone.ChatGPT.dll": "sha256-2XdTFGeG1duBxEHQTYyNkSyIv9M7tPVctPnS69bhDVE="
     },
     "extensions": null,
     "lazyAssembly": null,
