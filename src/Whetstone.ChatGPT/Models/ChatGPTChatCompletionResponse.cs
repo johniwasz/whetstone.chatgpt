@@ -49,6 +49,16 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("choices")]
         public List<ChatGPTChatChoice>? Choices { get; set; }
 
+
+        /// <summary>
+        /// This fingerprint represents the backend configuration that the model runs with.
+        /// </summary>
+        /// <remarks>
+        /// Can be used in conjunction with the seed request parameter to understand when backend changes have been made that might impact determinism.
+        /// </remarks>
+        [JsonPropertyName("system_fingerprint")]
+        public string? SystemFingerprint { get; set; }
+
         /// <summary>
         /// Details the number of tokens used to process the completion.
         /// </summary>

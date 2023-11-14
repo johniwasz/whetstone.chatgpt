@@ -1,5 +1,8 @@
 ﻿// SPDX-License-Identifier: MIT
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace Whetstone.ChatGPT.Models
@@ -173,5 +176,41 @@ namespace Whetstone.ChatGPT.Models
             get;
             set;
         }
+
+        /// <summary>
+        /// This feature is in Beta. If specified, our system will make a best effort to sample deterministically, 
+        /// such that repeated requests with the same seed and parameters should return the same result. 
+        /// Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to 
+        /// monitor changes in the backend.
+        /// </summary>
+        [DefaultValue(null)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("seed")]
+        public int? Seed
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// A list of tools the model may call.Currently, only functions are supported as a tool.Use this to provide a list of functions the model may generate JSON inputs for.
+        /// </summary>
+        [DefaultValue(null)]
+        [JsonPropertyName("tools")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public List<ChatGPTTool>? Tools { get; set; } = null;
+
+        /// <summary>
+        /// Controls which (if any) function is called by the model. 
+        /// none means the model will not call a function and instead generates a message. 
+        /// auto means the model can pick between generating a message or calling a function. 
+        /// Specifying a particular function via {"type: "function", "function": {"name": "my_function"}} 
+        /// forces the model to call that function.
+        /// </summary>
+        /// <remarks>`none` is the default when no functions are present. `auto` is the default if functions are present. Use <see cref="ChatGPTTool">ChatGPTTool</see> to invoke a function.</remarks>
+        [DefaultValue(null)]
+        [JsonPropertyName("tool_choice")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public dynamic? ToolChoice { get; set; } = null;
     }
 }
