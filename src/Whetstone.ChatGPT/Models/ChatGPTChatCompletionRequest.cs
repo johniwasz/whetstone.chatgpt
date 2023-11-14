@@ -183,6 +183,8 @@ namespace Whetstone.ChatGPT.Models
         /// Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to 
         /// monitor changes in the backend.
         /// </summary>
+        [DefaultValue(null)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("seed")]
         public int? Seed
         {
@@ -193,9 +195,10 @@ namespace Whetstone.ChatGPT.Models
         /// <summary>
         /// A list of tools the model may call.Currently, only functions are supported as a tool.Use this to provide a list of functions the model may generate JSON inputs for.
         /// </summary>
+        [DefaultValue(null)]
         [JsonPropertyName("tools")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public List<ChatGPTTool>? Tools { get; set; }
+        public List<ChatGPTTool>? Tools { get; set; } = null;
 
         /// <summary>
         /// Controls which (if any) function is called by the model. 
@@ -205,6 +208,7 @@ namespace Whetstone.ChatGPT.Models
         /// forces the model to call that function.
         /// </summary>
         /// <remarks>`none` is the default when no functions are present. `auto` is the default if functions are present. Use <see cref="ChatGPTTool">ChatGPTTool</see> to invoke a function.</remarks>
+        [DefaultValue(null)]
         [JsonPropertyName("tool_choice")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public dynamic? ToolChoice { get; set; } = null;
