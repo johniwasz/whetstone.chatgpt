@@ -1,6 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using System.Net;
 using System.Net.Http.Headers;
 #if NET6_0_OR_GREATER
 using System.Net.Http.Json;
@@ -10,7 +11,6 @@ using System.Text.Json;
 using Whetstone.ChatGPT.Models;
 
 namespace Whetstone.ChatGPT;
-
 
 /// <summary>
 /// A client for the OpenAI GPT-3 API.
@@ -198,7 +198,9 @@ public class ChatGPTClient : IChatGPTClient
                         }
                         catch (JsonException jsonEx)
                         {
-                            throw new ChatGPTException($"Error deserializing ChatGPT streamed chat response: {line}", jsonEx);
+                            throw new ChatGPTException($"Error deserializing ChatGPT streamed chat response: {line}",
+                                responseMessage.StatusCode,
+                                jsonEx);
                         }
 
                         ChatGPTStreamedChatChoice? foundChoice = streamedResponse?.GetChoice();
@@ -221,8 +223,7 @@ public class ChatGPTClient : IChatGPTClient
 #else
             string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
 #endif
-            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
-            throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
+            ProcessErrorResponse(responseMessage.StatusCode, responseString);
         }
     }
 
@@ -311,8 +312,9 @@ public class ChatGPTClient : IChatGPTClient
 
         httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
 
-        HttpResponseMessage responseMessage = await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).ConfigureAwait(false);
-
+        HttpResponseMessage responseMessage = await _client.
+            SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).
+            ConfigureAwait(false);
 
         if (responseMessage.IsSuccessStatusCode)
         {
@@ -334,7 +336,20 @@ public class ChatGPTClient : IChatGPTClient
 
                 if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
                 {
-                    ChatGPTCompletionStreamResponse? streamedResponse = JsonSerializer.Deserialize<ChatGPTCompletionStreamResponse>(line.Trim());
+                    ChatGPTCompletionStreamResponse? streamedResponse;
+
+                    string trimmedLine = line.Trim();
+                    try
+                    {
+                        streamedResponse = JsonSerializer.Deserialize<ChatGPTCompletionStreamResponse>(trimmedLine);
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        throw new ChatGPTException($"Error deserializing ChatGPT streamed chat response: {trimmedLine}",
+                            responseMessage.StatusCode,
+                            jsonEx);
+                    }
+
                     yield return streamedResponse;
                 }
             }
@@ -346,9 +361,7 @@ public class ChatGPTClient : IChatGPTClient
 #else
             string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
 #endif
-            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
-            throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
-
+            ProcessErrorResponse(responseMessage.StatusCode, responseString);
         }
     }
 
@@ -489,9 +502,8 @@ public class ChatGPTClient : IChatGPTClient
         else
         {
             string responseString = await GetResponseStringAsync(httpResponse, cancelToken).ConfigureAwait(false);
-
-            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
-            throw new ChatGPTException(errResponse?.Error, httpResponse.StatusCode);
+            ProcessErrorResponse(httpResponse.StatusCode, responseString);
+            return null;
         }
     }
 
@@ -596,7 +608,21 @@ public class ChatGPTClient : IChatGPTClient
 
                 if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
                 {
-                    ChatGPTEvent? streamedResponse = JsonSerializer.Deserialize<ChatGPTEvent>(line.Trim());
+                    ChatGPTEvent? streamedResponse;
+
+                    string trimmedLine = line.Trim();
+
+                    try
+                    {
+                        streamedResponse = JsonSerializer.Deserialize<ChatGPTEvent>(trimmedLine);
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        throw new ChatGPTException($"Error deserializing ChatGPT streamed chat response: {trimmedLine}",
+                            responseMessage.StatusCode,
+                            jsonEx);
+                    }
+
                     yield return streamedResponse;
                 }
             }
@@ -608,8 +634,7 @@ public class ChatGPTClient : IChatGPTClient
 #else
             string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
 #endif
-            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
-            throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
+            ProcessErrorResponse(responseMessage.StatusCode, responseString);
         }
 
     }
@@ -1133,11 +1158,22 @@ public class ChatGPTClient : IChatGPTClient
         {
             if (!string.IsNullOrWhiteSpace(responseString))
             {
-                T? response = JsonSerializer.Deserialize<T>(responseString);
+                T? response;
+                try
+                {
+                    response = JsonSerializer.Deserialize<T>(responseString);
+                }
+                catch(JsonException jsonEx)
+                {
+                    throw new ChatGPTException(
+                        $"Error deserializing response. Possible issues with connection. Response: {responseString}",
+                        responseMessage.StatusCode,
+                        jsonEx);
+                }
 
                 if (response is null)
                 {
-                    throw new ChatGPTException("Unable to deserialize response.");
+                    throw new ChatGPTException("Unable to deserialize response. Response is empty.", responseMessage.StatusCode);
                 }
                 else
                 {
@@ -1147,11 +1183,31 @@ public class ChatGPTClient : IChatGPTClient
         }
         else
         {
-            ChatGPTErrorResponse? errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(responseString);
-            throw new ChatGPTException(errResponse?.Error, responseMessage.StatusCode);
+            ProcessErrorResponse(responseMessage.StatusCode, responseString);
         }
 
         return default(T);
+    }
+
+
+    private static void ProcessErrorResponse(HttpStatusCode statusCode, string response)
+    {
+        ChatGPTErrorResponse? errResponse;
+
+        try
+        {
+            errResponse = JsonSerializer.Deserialize<ChatGPTErrorResponse>(response);
+        }
+        catch (JsonException jsonEx)
+        {
+            throw new ChatGPTException(
+                $"Error deserializing error response. Possible issues with connection. Response: {response}",
+                statusCode,
+                jsonEx);
+        }
+
+        throw new ChatGPTException(errResponse?.Error, statusCode);
+
     }
 
     private static async Task<string> GetResponseStringAsync(HttpResponseMessage responseMessage, CancellationToken? cancellationToken)
@@ -1173,12 +1229,12 @@ public class ChatGPTClient : IChatGPTClient
 
         if (_chatCredentials is null)
         {
-            throw new ChatGPTException("ChatGPTCredentials are null.");
+            throw new ChatGPTConfigurationException("ChatGPTCredentials are null.");
         }
 
         if (string.IsNullOrWhiteSpace(_chatCredentials.ApiKey))
         {
-            throw new ChatGPTException("ApiKey property cannot be null or whitespace.");
+            throw new ChatGPTConfigurationException("ApiKey property cannot be null or whitespace.");
         }
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _chatCredentials.ApiKey);

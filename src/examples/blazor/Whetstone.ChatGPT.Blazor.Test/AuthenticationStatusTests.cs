@@ -28,7 +28,7 @@ namespace Whetstone.ChatGPT.Blazor.Test
                 .AddBootstrap5Providers();
         }
 
-        [Fact(Skip = "Blazorise mocks not working")]
+       // [Fact(Skip = "Blazorise mocks not working")]
         public void RenderAuthenticationContext()
         {
             Mock<IOpenAICredentialValidator> validatorMoq = new();

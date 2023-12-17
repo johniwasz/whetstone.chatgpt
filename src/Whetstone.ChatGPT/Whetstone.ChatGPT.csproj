@@ -10,6 +10,7 @@
 # 1.7.0
 
 - Updated to target .NET 8.
+- Added deserialization error checks.
 
 # 1.6.2
 
@@ -66,7 +67,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
    <LangVersion>12</LangVersion>
    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-   <AnalysisLevel>6.0-recommended</AnalysisLevel>
+   <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">

@@ -33,7 +33,7 @@ namespace Whetstone.ChatGPT.Blazor.Test
         }
 
 
-        [Fact(Skip = "Blazorise mocks not working")]
+        // [Fact(Skip = "Blazorise mocks not working")]
         public void LoginButtonIsDisabledWhenNoUsername()
         {
 

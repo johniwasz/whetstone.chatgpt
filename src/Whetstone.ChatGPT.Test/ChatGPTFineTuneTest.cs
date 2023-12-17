@@ -108,7 +108,7 @@ namespace Whetstone.ChatGPT.Test
 
                 }
 
-                ChatGPTDeleteResponse? deleteResponse = await client.DeleteModelAsync(tuneResponse.FineTunedModel);
+                ChatGPTDeleteResponse? deleteResponse = await client.DeleteModelAsync(tuneResponse?.FineTunedModel);
 
                 Assert.NotNull(deleteResponse);
                 Assert.NotNull(deleteResponse.Object);
@@ -134,8 +134,6 @@ namespace Whetstone.ChatGPT.Test
                 ChatGPTException badFileException = await Assert.ThrowsAsync<ChatGPTException>(async () => await client.CreateFineTuneAsync(tuningRequest));
 
                 Assert.NotNull(badFileException.ChatGPTError);
-
-                Assert.NotNull(badFileException.StatusCode);
 
                 Assert.Equal(HttpStatusCode.BadRequest, badFileException.StatusCode);
 
