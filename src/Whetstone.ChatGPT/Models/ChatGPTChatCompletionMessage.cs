@@ -13,8 +13,6 @@ using System.Xml.Linq;
 
 namespace Whetstone.ChatGPT.Models
 {
-
-
     public class ChatGPTChatCompletionMessage : IChatCompletionMessage
     {
         /// <summary>
