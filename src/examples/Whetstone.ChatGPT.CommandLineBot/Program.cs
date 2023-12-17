@@ -102,8 +102,7 @@ using (ChatGPTClient chatGPTClient = new(credentials))
     {
         Console.WriteLine(chatEx.Message);
 
-        if(chatEx.StatusCode.HasValue)
-            Console.WriteLine($"Http status code: {chatEx.StatusCode.Value}");
+        Console.WriteLine($"Http status code: {chatEx.StatusCode}");
         
         Console.WriteLine();
     }

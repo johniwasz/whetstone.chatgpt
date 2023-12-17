@@ -149,8 +149,6 @@ namespace Whetstone.ChatGPT.Test
 
             Assert.NotNull(badFileException.ChatGPTError);
 
-            Assert.NotNull(badFileException.StatusCode);
-
             Assert.Equal(HttpStatusCode.BadRequest, badFileException.StatusCode);
         }
 

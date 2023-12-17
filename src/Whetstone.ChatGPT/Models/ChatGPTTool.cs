@@ -16,6 +16,6 @@ namespace Whetstone.ChatGPT.Models
         public string Type { get; set; } = "function";
 
         [JsonPropertyName("function")]
-        public ChatGPTFunction Function { get; set; }
+        public ChatGPTFunction? Function { get; set; }
     }
 }

@@ -76,7 +76,12 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                     if (tableResponse.Content is not null)
                     {
                         rawResponse = tableResponse.Content;
-                        AppState.UpdateTokenUsage(tableResponse.Usage);
+
+                        if (tableResponse.Usage is not null)
+                        {
+                            AppState.UpdateTokenUsage(tableResponse.Usage);
+                        }
+
                         completionDetailsVisibility = Visibility.Visible;
                     }
                 }

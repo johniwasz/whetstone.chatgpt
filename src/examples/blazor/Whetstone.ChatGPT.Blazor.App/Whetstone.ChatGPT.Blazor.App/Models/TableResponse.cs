@@ -7,6 +7,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Models
 
         public string? Content { get; set; }
         
-        public ChatGPTUsage Usage { get; set; }
+        public ChatGPTUsage? Usage { get; set; }
     }
 }
