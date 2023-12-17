@@ -44,10 +44,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: setup-dotnet 7.0
+      - name: setup-dotnet 8.0
         uses: xt0rted/setup-dotnet@v1.5.0
         with:
-          dotnet-version: '7.0'
+          dotnet-version: '8.0'
 
       - name: setup-dotnet 6.0
         uses: xt0rted/setup-dotnet@v1.5.0
@@ -93,10 +93,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: setup-dotnet 7.0
+      - name: setup-dotnet 8.0
         uses: xt0rted/setup-dotnet@v1.5.0
         with:
-          dotnet-version: '7.0'
+          dotnet-version: '8.0'
 
       - name: setup-dotnet 6.0
         uses: xt0rted/setup-dotnet@v1.5.0
@@ -157,7 +157,7 @@ jobs:
       - name: setup-dotnet
         uses: xt0rted/setup-dotnet@v1.5.0
         with:
-          dotnet-version: '7.0'
+          dotnet-version: '8.0'
 
       # Install dotnet wasm buildtools workload
       - name: Install .NET WASM Build Tools
