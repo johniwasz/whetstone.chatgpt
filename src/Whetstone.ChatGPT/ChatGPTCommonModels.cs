@@ -149,6 +149,7 @@ namespace Whetstone.ChatGPT
         /// <para>Training Data: Up to June 2021</para>
         /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
         /// </remarks>
+        [Obsolete("This model will not be supported as of 2024-01-04. Use Gpt35TurboInstruct")]
         public readonly static string Davinci003 = "text-davinci-003";
 
         /// <summary>
@@ -159,6 +160,7 @@ namespace Whetstone.ChatGPT
         /// <para>Training Data: Up to June 2021</para>
         /// <para><see href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5</see></para>
         /// </remarks>
+        [Obsolete("This model will not be supported as of 2024-01-04. Use Gpt35TurboInstruct")]
         public readonly static string Davinci002 = "text-davinci-002";
 
         /// <summary>
@@ -181,6 +183,8 @@ namespace Whetstone.ChatGPT
         /// Offers 4 times the context length of gpt-3.5-turbo at twice the price: $0.003 per 1K input tokens and $0.004 per 1K output tokens. 16k context means the model can now support ~20 pages of text in a single request.
         /// </summary>
         public readonly static string Turbo16k = "gpt-3.5-turbo-16k";
+
+        public readonly static string Gpt35TurboInstruct = "gpt-3.5-turbo-instruct";
     }
 
     /// <summary>
@@ -199,6 +203,7 @@ namespace Whetstone.ChatGPT
         /// <para>Good at: Language translation, complex classification, text sentiment, summarization</para>
         /// <para><see href="https://beta.openai.com/docs/models/overview">Models Overview</see></para>
         /// </remarks>
+        [Obsolete("This model will not be supported as of 2024-01-04. Use Gpt35TurboInstruct")]
         public readonly static string Curie = "text-curie-001";
 
         /// <summary>
@@ -209,6 +214,7 @@ namespace Whetstone.ChatGPT
         /// <para>Good at: Moderate classification, semantic search classification</para>
         /// </remarks>
         /// <para><see href="https://beta.openai.com/docs/models/overview">Models Overview</see></para>
+        [Obsolete("This model will not be supported as of 2024-01-04. Use Gpt35TurboInstruct")]
         public readonly static string Babbage = "text-babbage-001";
 
         /// <summary>
@@ -220,7 +226,10 @@ namespace Whetstone.ChatGPT
         /// <para>Note: Any task performed by a faster model like Ada can be performed by a more powerful model like Curie or Davinci.</para>
         /// <para><see href="https://beta.openai.com/docs/models/overview">Models Overview</see></para>
         /// </remarks>
+        [Obsolete("This model will not be supported as of 2024-01-04. Use Gpt35TurboInstruct")]
         public readonly static string Ada = "text-ada-001";
+
+        public readonly static string Gpt35TurboInstruct = "gpt-3.5-turbo-instruct";
     }
 
     public static class ChatGPTEmbeddingModels

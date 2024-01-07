@@ -129,7 +129,7 @@ namespace Whetstone.TweetGPT.DirectMessageFunction
                 ChatGPTCompletionRequest completionRequest = new()
                 {
                     Temperature = 1.0f,
-                    Model = ChatGPT35Models.Davinci003,
+                    Model = ChatGPT35Models.Gpt35TurboInstruct,
                     Prompt = userPrompt,
                     MaxTokens = 200,
                     User = senderId.ToString()

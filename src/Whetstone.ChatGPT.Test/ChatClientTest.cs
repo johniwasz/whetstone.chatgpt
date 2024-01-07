@@ -23,7 +23,7 @@ namespace Whetstone.ChatGPT.Test
 
             var gptRequest = new ChatGPTCompletionRequest
             {
-                Model = ChatGPTCompletionModels.Ada,
+                Model = ChatGPTCompletionModels.Gpt35TurboInstruct,
                 Prompt = "How is the weather?",
                 Temperature = 0.9f,
                 MaxTokens = 10
@@ -131,7 +131,7 @@ namespace Whetstone.ChatGPT.Test
         {
             var gptRequest = new ChatGPTCompletionRequest
             {
-                Model = ChatGPTCompletionModels.Ada,
+                Model = ChatGPTCompletionModels.Gpt35TurboInstruct,
                 Prompt = "How is the weather?",
                 Temperature = 0.9f,
                 MaxTokens = 10
@@ -157,7 +157,7 @@ namespace Whetstone.ChatGPT.Test
 
             IChatGPTClient client = ChatGPTTestUtilties.GetClient();
 
-            var model = await client.RetrieveModelAsync(ChatGPTCompletionModels.Ada);
+            var model = await client.RetrieveModelAsync(ChatGPTCompletionModels.Gpt35TurboInstruct);
 
             Assert.NotNull(model);
 
