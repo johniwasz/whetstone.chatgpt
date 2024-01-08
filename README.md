@@ -8,7 +8,8 @@ Supported features include:
 
 - GPT 4, GPT 3.5 Turbo and Chat Completions
 - Audio Transcription and Translation (Whisper API)
-- Completions
+- Chat Completions
+- Vision Completions
 - Edits
 - Files
 - Fine Tunes

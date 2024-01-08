@@ -116,5 +116,55 @@ namespace Whetstone.ChatGPT.Test
             string aggregateResponse = sb.ToString();
         }
 
+        [Fact(Skip="Processing image too expensive for an every day test.")]
+        public async Task TestGPTVisionRequest()
+        {
+            var gptRequest = new ChatGPTCompletionVisionRequest
+            {
+                Model = "gpt-4-vision-preview",
+                Messages = new List<ChatGPTCompletionVisionMessage>()
+                {
+                    new()
+                    {
+                        Content =
+                        [
+                            new ChatGPTVisionTextContent()
+                            {
+                                Text = "What’s in this image?"
+                            },
+                            new ChatGPTVisionImageUrlContent()
+                            {
+                                ImageUrl = new ChatGPTVisionImageUrl()
+                                {
+                                    Url = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
+                                }
+                            }
+                        ]
+                    },
+                },
+                MaxTokens = 300
+            };
+
+            using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
+
+            var response = await client.CreateVisionCompletionAsync(gptRequest);
+
+            Assert.NotNull(response);
+
+            ChatGPTChatCompletionMessage? message = response.GetMessage();
+
+            Assert.NotNull(message);
+
+            Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
+
+            Assert.NotNull(response.Choices);
+
+            Assert.Single(response.Choices);
+
+            Assert.Equal("stop", response.Choices[0].FinishReason);
+
+            Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+        }
+
     }
 }

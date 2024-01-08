@@ -139,6 +139,26 @@ public class ChatGPTClient : IChatGPTClient
         return await SendRequestAsync<ChatGPTChatCompletionRequest, ChatGPTChatCompletionResponse>(HttpMethod.Post, "chat/completions", completionRequest, cancellationToken);
     }
 
+    public async Task<ChatGPTChatCompletionResponse?> CreateVisionCompletionAsync(ChatGPTCompletionVisionRequest completionRequest, CancellationToken? cancellationToken = null)
+    {
+        if (completionRequest is null)
+        {
+            throw new ArgumentNullException(nameof(completionRequest));
+        }
+
+        if (string.IsNullOrWhiteSpace(completionRequest.Model))
+        {
+            throw new ArgumentException("Model is required", nameof(completionRequest));
+        }
+
+        if (completionRequest.Messages is null || !completionRequest.Messages.Any())
+        {
+            throw new ArgumentException("Message is required", nameof(completionRequest));
+        }
+
+        return await SendRequestAsync<ChatGPTCompletionVisionRequest, ChatGPTChatCompletionResponse>(HttpMethod.Post, "chat/completions", completionRequest, cancellationToken);
+    }
+
     /// <inheritdoc cref="IChatGPTClient.StreamChatCompletionAsync"/>
     public async IAsyncEnumerable<ChatGPTChatCompletionStreamResponse?> StreamChatCompletionAsync(ChatGPTChatCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
     {

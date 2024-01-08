@@ -9,6 +9,7 @@
     <PackageReleaseNotes>
 # 1.7.1
 - Replaced deprecated models with gpt-3.5-turbo-instruct
+- Added vision completion
 
 # 1.7.0
 

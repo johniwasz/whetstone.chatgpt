@@ -25,6 +25,20 @@ namespace Whetstone.ChatGPT
         Task<ChatGPTChatCompletionResponse?> CreateChatCompletionAsync(ChatGPTChatCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
 
         /// <summary>
+        /// Send a vision completion request.
+        /// </summary>
+        /// <remarks>
+        /// <para>See <seealso cref="https://platform.openai.com/docs/guides/vision">Create vision completion</seealso>.</para>
+        /// </remarks>
+        /// <param name="completionRequest">Includes one or more messages.</param>
+        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <returns>A completion populated by the OpenAI API.</returns>
+        /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
+        /// <exception cref="ArgumentException">Model is required.</exception>
+        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        Task<ChatGPTChatCompletionResponse?> CreateVisionCompletionAsync(ChatGPTCompletionVisionRequest completionRequest, CancellationToken? cancellationToken = null);
+
+        /// <summary>
         /// Creates a completion for the provided prompt and parameters
         /// </summary>
         /// <remarks>
