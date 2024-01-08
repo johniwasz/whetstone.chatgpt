@@ -9,7 +9,7 @@
 		<Description>
 			This is a sample GPT-3 API user interface in Blazor.
 		</Description>
-		<Copyright>Copyright 2023 John Iwasz</Copyright>
+		<Copyright>Copyright 2024 John Iwasz</Copyright>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 

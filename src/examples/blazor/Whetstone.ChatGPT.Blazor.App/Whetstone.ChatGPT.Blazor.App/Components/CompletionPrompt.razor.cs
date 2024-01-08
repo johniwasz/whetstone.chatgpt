@@ -125,7 +125,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         {
             CompletionOptions compOptions = new()
             {
-                SelectedModel = optionsSelector is null ? ChatGPT35Models.Davinci003 : optionsSelector.SelectedModel,
+                SelectedModel = optionsSelector is null ? ChatGPT35Models.Gpt35TurboInstruct : optionsSelector.SelectedModel,
                 MaxTokens = optionsSelector is null ? 200 : optionsSelector.MaxTokens,
                 Temperature = optionsSelector is null ? 0.1f : optionsSelector.Temperature
             };

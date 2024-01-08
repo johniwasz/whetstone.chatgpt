@@ -7,6 +7,10 @@
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+# 1.7.1
+- Replaced deprecated models with gpt-3.5-turbo-instruct
+- Added vision completion
+
 # 1.7.0
 
 - Updated to target .NET 8.
@@ -53,13 +57,13 @@
 - StreamFineTuneEventsAsync
 - DownloadImageAsync
 - Small updates from code analysis suggestions
-    </PackageReleaseNotes>
+	</PackageReleaseNotes>
 
     <RepositoryType>git</RepositoryType>
     <PackageTags>chatgpt; api; openai; gpt; gpt-3; gpt-35; gpt-35-turbo; whisper; whisper-ai; gpt-4</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
-    <Copyright>2023</Copyright>
-    <Version>1.7.0</Version>
+    <Copyright>2024</Copyright>
+    <Version>1.7.1</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps the ChatGPT API. Includes support for dependency injection.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
