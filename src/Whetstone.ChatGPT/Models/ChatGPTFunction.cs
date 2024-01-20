@@ -26,6 +26,6 @@ namespace Whetstone.ChatGPT.Models
         /// The parameters the functions accepts, described as a JSON Schema object. See the guide for examples, and the JSON Schema reference for documentation about the format.
         /// To describe a function that accepts no parameters, provide the value {"type": "object", "properties": {}}.
         /// </summary>
-        public dynamic Parameters { get; set; }
+        public dynamic? Parameters { get; set; }
     }
 }

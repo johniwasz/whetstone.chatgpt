@@ -387,30 +387,6 @@ public class ChatGPTClient : IChatGPTClient
 
     #endregion Completions
 
-    #region Edits
-    /// <inheritdoc cref="IChatGPTClient.CreateEditAsync"/>
-    public async Task<ChatGPTCreateEditResponse?> CreateEditAsync(ChatGPTCreateEditRequest createEditRequest, CancellationToken? cancellationToken = null)
-    {
-
-        if (createEditRequest is null)
-        {
-            throw new ArgumentNullException(nameof(createEditRequest));
-        }
-
-        if (string.IsNullOrWhiteSpace(createEditRequest.Model))
-        {
-            createEditRequest.Model = ChatGPTEditModels.Davinci;
-        }
-
-        if (string.IsNullOrWhiteSpace(createEditRequest.Instruction))
-        {
-            throw new ArgumentException("Instruction is required", nameof(createEditRequest));
-        }
-
-        return await SendRequestAsync<ChatGPTCreateEditRequest, ChatGPTCreateEditResponse>(HttpMethod.Post, "edits", createEditRequest, cancellationToken).ConfigureAwait(false);
-    }
-    #endregion
-
     #region File Operations
 
     /// <inheritdoc cref="IChatGPTClient.UploadFileAsync"/>

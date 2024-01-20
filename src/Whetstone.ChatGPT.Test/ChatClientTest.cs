@@ -41,45 +41,6 @@ namespace Whetstone.ChatGPT.Test
         }
 
         [Fact]
-        public async Task TestGPTClientEdit()
-        {
-            var gptEditRequest = new ChatGPTCreateEditRequest
-            {
-                Input = "What day of the wek is it?",
-                Instruction = "Fix spelling mistakes",
-                Temperature = 0
-            };
-
-            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
-            {
-                var response = await client.CreateEditAsync(gptEditRequest);
-
-                Assert.NotNull(response);
-
-                Assert.Equal("edit", response.Object);
-
-                string? editTextResponse = response.GetEditedText();
-
-                // This is a beta and has been known to return a completion response
-                // instead of an edit response. 
-                // It responded with "TIS MONDAY" on a failed test run.
-                // For now, mismatches will result in a warning message.
-                // rather than a failure.
-
-                Assert.NotNull(editTextResponse);
-
-                Assert.False(string.IsNullOrWhiteSpace(editTextResponse));
-
-                string expectedText = "What day of the week is it?";
-
-                if (!editTextResponse.Contains(expectedText))
-                {
-                    _testOutputHelper.WriteLine($"Expected '{expectedText}'. Returned: {editTextResponse}");
-                }
-            }
-        }
-
-        [Fact]
         public async Task GPTModelsList()
         {
             
@@ -95,10 +56,6 @@ namespace Whetstone.ChatGPT.Test
                 Assert.NotNull(modelResponse.Data);
 
                 Assert.NotEmpty(modelResponse.Data);
-
-                var textModels = modelResponse.Data.Where(x => x.Id is not null && x.Id.Contains("edit"));
-
-                Assert.NotEmpty(textModels);
             }
         }
 

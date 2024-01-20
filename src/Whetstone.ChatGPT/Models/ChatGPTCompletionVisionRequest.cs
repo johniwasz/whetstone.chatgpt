@@ -34,7 +34,7 @@ namespace Whetstone.ChatGPT.Models
         /// The contents of the message.
         /// </summary>
         [JsonPropertyName("content")]
-        public List<object> Content { get; set; }
+        public List<object>? Content { get; set; }
 
         /// <summary>
         /// An optional name for the participant. Provides the model information to differentiate between participants of the same role.

@@ -52,23 +52,6 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
         Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
 
-
-        /// <summary>
-        /// Given a prompt and an instruction, the model will return an edited version of the prompt.
-        /// </summary>
-        /// <remarks>
-        /// <para>If <c>Model</c> is not provided, the default of "text-davinci-edit-001" is used. <see cref="ChatGPTEditModels.Davinci">Davinci</see></para>
-        /// <para>An example of using this would be to fix any spelling mistakes in the prompt by setting <c>Instruction</c> to "Fix the spelling mistakes".</para>
-        /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/edits/create">Create Edits</seealso></para>
-        /// </remarks>
-        /// <param name="createEditRequest">Submit an instruction to edit a propmpt.</param>
-        /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
-        /// <returns>Response to the <c>CreateEditRequest</c> request.</returns>
-        /// <exception cref="ArgumentException"><c>CreateEditRequest</c> requires an <c>Instruction</c></exception>
-        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-        Task<ChatGPTCreateEditResponse?> CreateEditAsync(ChatGPTCreateEditRequest createEditRequest, CancellationToken? cancellationToken = null);
-
-
         /// <summary>
         /// Delete a file.
         /// </summary>

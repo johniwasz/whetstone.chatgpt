@@ -83,7 +83,7 @@ namespace Whetstone.ChatGPT.Models
         /// The function that the model called.
         /// </summary>
         [JsonPropertyName("function")]
-        public ToolFunction Function { get; set; }
+        public ToolFunction? Function { get; set; }
     }
     
     public class ToolFunction
