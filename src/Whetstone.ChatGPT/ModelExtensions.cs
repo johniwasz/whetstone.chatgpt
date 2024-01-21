@@ -94,5 +94,26 @@ namespace Whetstone.ChatGPT
             return Encoding.UTF8.GetBytes(tuningLines.ToJsonL());
         }
 
+
+        /// <summary>
+        /// Returns text formatted according to JsonL
+        /// </summary>
+        /// <param name="tuningLines">List of prompts and completions for fine tuning.</param>
+        /// <returns>JsonL string</returns>
+        public static string ToJsonL(this IEnumerable<ChatGPTTurboFineTuneLine> tuningLines)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var line in tuningLines)
+            {
+                builder.AppendLine(System.Text.Json.JsonSerializer.Serialize(line));
+            }
+
+            return builder.ToString();
+        }
+
+        public static byte[] ToJsonLBinary(this IEnumerable<ChatGPTTurboFineTuneLine> tuningLines)
+        {
+            return Encoding.UTF8.GetBytes(tuningLines.ToJsonL());
+        }
     }
 }

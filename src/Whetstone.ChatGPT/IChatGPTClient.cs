@@ -215,10 +215,12 @@ namespace Whetstone.ChatGPT
         /// </summary>
         /// <param name="fineTuneId">The ID of the fine-tune job to get events for.</param>
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <param name="limit">Number of events to retrieve.</param>
+        /// <param name="after">Identifier for the last event from the previous pagination request.</param>
         /// <returns>A list of events associated with the fineTuneId</returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-        Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
+        Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, int limit = 20, string? after = null, CancellationToken? cancellationToken = null);
 
 
         /// <summary>
@@ -316,16 +318,6 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
         IAsyncEnumerable<ChatGPTChatCompletionStreamResponse?> StreamChatCompletionAsync(ChatGPTChatCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Streams the fine tune events for a given fine tune job.
-        /// </summary>
-        /// <param name="fineTuneId">Id of a submitted fine tune job.</param>
-        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-        /// <returns>An async enumerable that returns fine tune events as they are reported.</returns>
-        /// <exception cref="ArgumentException">Requires finetuneid</exception>
-        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
-        IAsyncEnumerable<ChatGPTEvent?> StreamFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieves a byte[] of a generated image.

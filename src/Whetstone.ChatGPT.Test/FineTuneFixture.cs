@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.FineTuning;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -48,12 +49,17 @@ namespace Whetstone.ChatGPT.Test
                     // Enable these next two lines!
                     // Assert.NotEmpty(fineTuneList.Data);
 
-                    // Assert.Contains(fineTuneList.Data, (x) => { return !string.IsNullOrWhiteSpace(x.Id); });
+                    Assert.Contains(fineTuneList.Data, (x) => { return !string.IsNullOrWhiteSpace(x.Id); });
                     
-                    // ChatGPTFineTuneJob fineTuneJob = fineTuneList.Data.Last(x => !string.IsNullOrEmpty(x.Id) && !string.IsNullOrEmpty(x.Status) && x.Status.Equals("succeeded"));
+                    ChatGPTFineTuneJob fineTuneJob = fineTuneList.Data.Last(x => !string.IsNullOrEmpty(x.Id) && !string.IsNullOrEmpty(x.Status) && x.Status.Equals("succeeded"));
+                    Assert.NotNull(fineTuneJob);
 
-                    // ExistingFineTuneId = fineTuneJob.Id;
-                    // ExistingFineTunedModel = fineTuneJob.FineTunedModel;
+                    Assert.NotNull(fineTuneJob.Id);
+
+                    Assert.NotNull(fineTuneJob.FineTunedModel);
+                    ExistingFineTuneId = fineTuneJob.Id;
+                    ExistingFineTunedModel = fineTuneJob.FineTunedModel;
+                    
                     _isInitialized = true;
                 }
             }

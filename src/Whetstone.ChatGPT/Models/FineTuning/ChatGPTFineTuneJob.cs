@@ -42,12 +42,6 @@ namespace Whetstone.ChatGPT.Models.FineTuning
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// A list of events that fired to create this fine-tune job.
-        /// </summary>
-        [JsonPropertyName("events")]
-        public List<ChatGPTEvent>? Events { get; set; }
-
-        /// <summary>
         /// Name of the completed model that can be used for completion requests.
         /// </summary>
         /// <remarks>
@@ -56,14 +50,14 @@ namespace Whetstone.ChatGPT.Models.FineTuning
         [JsonPropertyName("fine_tuned_model")]
         public string? FineTunedModel { get; set; }
 
-        [JsonPropertyName("hyperparams")]
-        public Hyperparams? HyperParams { get; set; }
+        [JsonPropertyName("hyperparameters")]
+        public Hyperparameters? Hyperparameters { get; set; }
 
         [JsonPropertyName("organization_id")]
         public string? OrganizationId { get; set; }
 
         [JsonPropertyName("result_files")]
-        public List<ChatGPTFileInfo>? ResultFiles { get; set; }
+        public List<string>? ResultFiles { get; set; }
 
         /// <summary>
         /// Current status of the fine-tune job.
@@ -72,15 +66,15 @@ namespace Whetstone.ChatGPT.Models.FineTuning
         public string? Status { get; set; }
 
 
-        [JsonPropertyName("validation_files")]
-        public List<ChatGPTFileInfo>? ValidationFiles { get; set; }
+        [JsonPropertyName("validation_file")]
+        public string? ValidationFileId { get; set; }
 
-        [JsonPropertyName("training_files")]
-        public List<ChatGPTFileInfo>? TrainingFiles { get; set; }
+        [JsonPropertyName("training_file")]
+        public string? TrainingFileId { get; set; }
 
         [JsonConverter(typeof(UnixEpochTimeJsonConverter))]
-        [JsonPropertyName("updated_at")]
-        public DateTime UpdatedAt { get; set; }
+        [JsonPropertyName("finished_at")]
+        public DateTime? FinishedAt { get; set; }
     }
 
 

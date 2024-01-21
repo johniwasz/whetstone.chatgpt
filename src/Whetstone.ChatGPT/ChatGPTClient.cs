@@ -569,81 +569,20 @@ public class ChatGPTClient : IChatGPTClient
 
 
     /// <inheritdoc cref="IChatGPTClient.ListFineTuneEventsAsync"/>
-    public async Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
+    public async Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, int limit = 20, string? after=null, CancellationToken? cancellationToken = null)
     {
+        string route = string.IsNullOrEmpty(after) ?
+            $"fine_tuning/jobs/{fineTuneId}/events?limit={limit}" :
+            $"fine_tuning/jobs/{fineTuneId}/events?limit={limit}&after={after}";
+        
         if (string.IsNullOrWhiteSpace(fineTuneId))
         {
             throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
         }
 
-        return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, $"fine_tuning/jobs/{fineTuneId}/events", cancellationToken).ConfigureAwait(false);
+        return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, route, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="IChatGPTClient.ListFineTuneEventsAsync"/>
-    public async IAsyncEnumerable<ChatGPTEvent?> StreamFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null)
-    {
-
-
-        if (string.IsNullOrWhiteSpace(fineTuneId))
-        {
-            throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
-        }
-
-        CancellationToken cancelToken = cancellationToken ?? CancellationToken.None;
-
-        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Get, $"fine_tuning/jobs/{fineTuneId}/events?stream=true");
-
-        HttpResponseMessage responseMessage = await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).ConfigureAwait(false);
-
-        if (responseMessage.IsSuccessStatusCode)
-        {
-
-#if NETSTANDARD2_1 || NETSTANDARD2_0
-            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-#else
-            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync(cancelToken).ConfigureAwait(false);
-#endif
-            using StreamReader reader = new(responseStream);
-            string? line = null;
-
-            while ((line = await reader.ReadLineAsync()) is not null)
-            {
-
-                if (line.StartsWith(ResponseLinePrefix, System.StringComparison.OrdinalIgnoreCase))
-                    line = line.Substring(ResponseLinePrefix.Length);
-
-                if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
-                {
-                    ChatGPTEvent? streamedResponse;
-
-                    string trimmedLine = line.Trim();
-
-                    try
-                    {
-                        streamedResponse = JsonSerializer.Deserialize<ChatGPTEvent>(trimmedLine);
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        throw new ChatGPTException($"Error deserializing ChatGPT streamed chat response: {trimmedLine}",
-                            responseMessage.StatusCode,
-                            jsonEx);
-                    }
-
-                    yield return streamedResponse;
-                }
-            }
-        }
-        else
-        {
-#if NETSTANDARD2_1 || NETSTANDARD2_0
-                string? responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-#else
-            string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
-#endif
-            ProcessErrorResponse(responseMessage.StatusCode, responseString);
-        }
-
-    }
     #endregion
 
     /// <inheritdoc cref="IChatGPTClient.CreateFineTuneAsync"/>

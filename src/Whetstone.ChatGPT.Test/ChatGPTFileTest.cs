@@ -27,6 +27,8 @@ namespace Whetstone.ChatGPT.Test
             _fileTestFixture = fileTestFixture ?? throw new ArgumentNullException(nameof(fileTestFixture));
 
             _fileTestFixture.TestOutputHelper = _testOutputHelper;
+
+            _fileTestFixture.InitializeAsync().Wait();
         }
 
 
@@ -34,8 +36,6 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task ListFilesAsync()
         {
-
-            await InitializeExistingFileIdAsync();
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
@@ -51,7 +51,7 @@ namespace Whetstone.ChatGPT.Test
 
                 Assert.NotEmpty(fileList.Data);
 
-                Assert.Contains(fileList.Data, x => x.Id == _fileTestFixture.ExistingFileId);
+                Assert.Contains(fileList.Data, x => x.Id == _fileTestFixture.NewTurboTestFile?.Id);
 
             }
 
@@ -61,12 +61,10 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task RetrieveFileAsync()
         {
-            await InitializeExistingFileIdAsync();
-
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
-                ChatGPTFileInfo? retrieveResponse = await client.RetrieveFileAsync(_fileTestFixture.ExistingFileId);
+                ChatGPTFileInfo? retrieveResponse = await client.RetrieveFileAsync(_fileTestFixture.NewTurboTestFile?.Id);
 
                 Assert.NotNull(retrieveResponse);
 
@@ -74,7 +72,7 @@ namespace Whetstone.ChatGPT.Test
 
                 Assert.Equal("file", retrieveResponse.Object);
 
-                Assert.Equal(_fileTestFixture.ExistingFileId, retrieveResponse.Id);
+                Assert.Equal(_fileTestFixture.NewTurboTestFile?.Id, retrieveResponse.Id);
             }
         }
 
@@ -82,11 +80,9 @@ namespace Whetstone.ChatGPT.Test
         public async Task RetrieveExistingFileContents()
         {
 
-            await InitializeExistingFileIdAsync();
-
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-                ChatGPTFileContent? retrieveResponse = await client.RetrieveFileContentAsync(_fileTestFixture.ExistingFileId);
+                ChatGPTFileContent? retrieveResponse = await client.RetrieveFileContentAsync(_fileTestFixture.NewTurboTestFile?.Id);
 
                 Assert.NotNull(retrieveResponse);
                 Assert.NotNull(retrieveResponse.Content);
@@ -101,18 +97,17 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-        
-        [Fact(Skip = "Cannot delete a file right after creation.")]
-        public async Task DeleteFileAsync()
 
+        [Fact]
+        public async Task DeleteFileAsync()
         {
 
-            await InitializeTestFileAsync();
+            var createdFile = await _fileTestFixture.CreateTestFileAsync();
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
-                var deleteResponse = await client.DeleteFileAsync(_fileTestFixture.ExistingFileId);
+                var deleteResponse = await client.DeleteFileAsync(createdFile.Id);
 
                 Assert.NotNull(deleteResponse);
 
@@ -122,7 +117,7 @@ namespace Whetstone.ChatGPT.Test
 
                 Assert.True(deleteResponse.Deleted);
 
-                Assert.Equal(_fileTestFixture.NewTestFile?.Id, deleteResponse.Id);
+                Assert.Equal(createdFile?.Id, deleteResponse.Id);
             }
 
         }
@@ -152,20 +147,7 @@ namespace Whetstone.ChatGPT.Test
             Assert.Equal(HttpStatusCode.BadRequest, badFileException.StatusCode);
         }
 
-        private async Task InitializeTestFileAsync()
-        {
 
-            await _fileTestFixture.CreateTestFileAsync();
-
-            Assert.NotNull(_fileTestFixture.NewTestFile);
-            Assert.NotNull(_fileTestFixture.NewTestFile.Id);
-        }
-
-        private async Task InitializeExistingFileIdAsync()
-        {
-            await _fileTestFixture.InitializeFirstFromListAsync();
-            Assert.NotNull(_fileTestFixture.ExistingFileId);
-        }
 
     }
 }

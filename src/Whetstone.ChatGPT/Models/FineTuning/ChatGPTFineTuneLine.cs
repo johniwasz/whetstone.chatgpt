@@ -9,6 +9,7 @@ namespace Whetstone.ChatGPT.Models.FineTuning
     /// </summary>
     /// <remarks>
     /// <para>This is a single training prompt and completion.</para>
+    /// <para>For `babbage-002` and `davinci-002`. </para>
     /// <para>See <see href="https://beta.openai.com/docs/guides/fine-tuning">Fine Tuning</see></para>
     /// </remarks>
     public class ChatGPTFineTuneLine

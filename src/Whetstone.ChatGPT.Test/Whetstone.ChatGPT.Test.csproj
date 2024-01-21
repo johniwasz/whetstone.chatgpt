@@ -21,6 +21,7 @@
     <None Remove="ImageFiles\full-alpha.png" />
     <None Remove="ImageFiles\sailboat-alpha.png" />
     <None Remove="ImageFiles\sailboat.png" />
+    <None Remove="Responses\tuningjobs.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +35,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ImageFiles\sailboat.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Responses\tuningjobs.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
