@@ -5,7 +5,14 @@ namespace Whetstone.ChatGPT
     /// The name of the base model to fine-tune. You can select one of "ada", "babbage", "curie", "davinci", or a fine-tuned model created after 2022-04-21.
     /// </summary>
     /// <remarks>
-    /// <para>See <see cref="Models.ChatGPTCreateFineTuneRequest.Model">Fine Tune Model</see> for more information.</para>
+
+    /* Unmerged change from project 'Whetstone.ChatGPT (net8.0)'
+    Before:
+        /// <para>See <see cref="Models.ChatGPTCreateFineTuneRequest.Model">Fine Tune Model</see> for more information.</para>
+    After:
+        /// <para>See <see cref="ChatGPTCreateFineTuneRequest.Model">Fine Tune Model</see> for more information.</para>
+    */
+    /// <para>See <see cref="FineTuning.ChatGPTCreateFineTuneRequest.Model">Fine Tune Model</see> for more information.</para>
     /// </remarks>
     public static class ChatGPTFineTuneModels
     {

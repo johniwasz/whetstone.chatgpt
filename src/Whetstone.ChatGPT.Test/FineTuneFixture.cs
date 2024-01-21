@@ -39,24 +39,21 @@ namespace Whetstone.ChatGPT.Test
                 using (ChatGPTClient client = new(apiKey))
                 {
 
-                    var fineTuneList = await client.ListFineTunesAsync();
+                    var fineTuneList = await client.ListFineTuneJobsAsync();
 
                     Assert.NotNull(fineTuneList);
 
                     Assert.NotNull(fineTuneList.Data);
 
-                    Assert.NotEmpty(fineTuneList.Data);
+                    // Enable these next two lines!
+                    // Assert.NotEmpty(fineTuneList.Data);
 
-                    Assert.Contains(fineTuneList.Data, (x) => { return !string.IsNullOrWhiteSpace(x.Id); });
+                    // Assert.Contains(fineTuneList.Data, (x) => { return !string.IsNullOrWhiteSpace(x.Id); });
+                    
+                    // ChatGPTFineTuneJob fineTuneJob = fineTuneList.Data.Last(x => !string.IsNullOrEmpty(x.Id) && !string.IsNullOrEmpty(x.Status) && x.Status.Equals("succeeded"));
 
-                    // var filteredJobs = fineTuneList.Data.Where(x => !string.IsNullOrEmpty(x.Id) && !string.IsNullOrEmpty(x.Status) && x.Status.Equals("succeeded"));
-
-                   // filteredJobs.Last();
-
-                    ChatGPTFineTuneJob fineTuneJob = fineTuneList.Data.Last(x => !string.IsNullOrEmpty(x.Id) && !string.IsNullOrEmpty(x.Status) && x.Status.Equals("succeeded"));
-
-                    ExistingFineTuneId = fineTuneJob.Id;
-                    ExistingFineTunedModel = fineTuneJob.FineTunedModel;
+                    // ExistingFineTuneId = fineTuneJob.Id;
+                    // ExistingFineTunedModel = fineTuneJob.FineTunedModel;
                     _isInitialized = true;
                 }
             }

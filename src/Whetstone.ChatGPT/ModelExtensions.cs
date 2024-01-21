@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.FineTuning;
 
 namespace Whetstone.ChatGPT
 {

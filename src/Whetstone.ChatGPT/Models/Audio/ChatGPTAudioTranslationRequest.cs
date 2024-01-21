@@ -3,31 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Whetstone.ChatGPT.Models.File;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.Audio
 {
-    public enum AudioResponseFormatText
-    {
-        [EnumMember(Value = "text")]
-        Text = 0,
-        [EnumMember(Value = "srt")]
-        SubRip = 1,
-        [EnumMember(Value = "vtt")]
-        WebVtt = 2
-    }
-
     /// <summary>
-    /// Transcribes audio into the input language.
+    /// Translates audio into into English.
     /// </summary>
     /// <remarks>
-    /// Related guide: <see href="https://platform.openai.com/docs/guides/speech-to-text">Speech to Text</see>
+    /// See <see href="https://platform.openai.com/docs/api-reference/audio/create">Create Translation</see>
     /// </remarks>
     [DebuggerDisplay("Text = {Text}")]
-    public class ChatGPTAudioTranscriptionRequest
+    public class ChatGPTAudioTranslationRequest
     {
         /// <summary>
         /// The audio file to transcribe, in one of these formats: mp3, mp4, mpeg, mpga, m4a, wav, or webm.
@@ -37,7 +27,7 @@ namespace Whetstone.ChatGPT.Models
 
         /// <summary>
         /// ID of the model to use. Only <c>whisper-1</c> is currently available.
-        /// </summary>       
+        /// </summary>
         [JsonPropertyName("model")]
         public string? Model { get; set; } = "whisper-1";
 
@@ -52,12 +42,5 @@ namespace Whetstone.ChatGPT.Models
         /// </summary>
         [JsonPropertyName("temperature")]
         public float Temperature { get; set; } = 0.0f;
-
-        /// <summary>
-        /// The language of the input audio. Supplying the input language in <see href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">ISO-639-1</see> format will improve accuracy and latency.
-        /// </summary>
-        [JsonPropertyName("language")]
-        public string? Language { get; set; }
-
     }
 }

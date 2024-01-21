@@ -8,10 +8,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Net;
-using Whetstone.ChatGPT.Models;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 using System.Diagnostics.CodeAnalysis;
+using Whetstone.ChatGPT.Models.File;
 
 namespace Whetstone.ChatGPT.Test
 {

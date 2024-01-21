@@ -1,7 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 using System.Text.Json.Serialization;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.FineTuning
 {
 
     /// <summary>
@@ -19,8 +19,8 @@ namespace Whetstone.ChatGPT.Models
 
         public ChatGPTFineTuneLine(string prompt, string completion)
         {
-            this.Prompt = prompt ?? throw new ArgumentNullException(nameof(prompt));
-            this.Completion = completion ?? throw new ArgumentNullException(nameof(completion));
+            Prompt = prompt ?? throw new ArgumentNullException(nameof(prompt));
+            Completion = completion ?? throw new ArgumentNullException(nameof(completion));
         }
 
         /// <summary>

@@ -3,26 +3,36 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.Image
 {
-    public class ChatGPTCreateImageEditRequest
+    public enum CreatedImageSize
     {
-        /// <summary>
-        /// The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
-        /// </summary>
-        [JsonPropertyName("image")]
-        public ChatGPTFileContent? Image { get; set; }
+        [EnumMember(Value = "256x256")]
+        Size256,
+        [EnumMember(Value = "512x512")]
+        Size512,
+        [EnumMember(Value = "1024x1024")]
+        Size1024
+    }
 
-        /// <summary>
-        /// An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
-        /// </summary>
-        [JsonPropertyName("mask")]
-        public ChatGPTFileContent? Mask { get; set; }
+    public enum CreatedImageFormat
+    {
+        [EnumMember(Value = "url")]
+        Url,
+        [EnumMember(Value = "b64_json")]
+        Base64
+    }
 
+    /// <summary>
+    /// Request to create an image given a prompt.
+    /// </summary>
+    public class ChatGPTCreateImageRequest
+    {
         /// <summary>
         /// A text description of the desired image(s). The maximum length is 1000 characters.
         /// </summary>
@@ -60,8 +70,5 @@ namespace Whetstone.ChatGPT.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("user")]
         public string? User { get; set; }
-
-
-
     }
 }

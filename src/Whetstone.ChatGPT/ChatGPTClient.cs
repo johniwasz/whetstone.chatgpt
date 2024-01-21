@@ -9,6 +9,13 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.Audio;
+using Whetstone.ChatGPT.Models.Embeddings;
+using Whetstone.ChatGPT.Models.File;
+using Whetstone.ChatGPT.Models.FineTuning;
+using Whetstone.ChatGPT.Models.Image;
+using Whetstone.ChatGPT.Models.Moderation;
+using Whetstone.ChatGPT.Models.Vision;
 
 namespace Whetstone.ChatGPT;
 
@@ -517,7 +524,7 @@ public class ChatGPTClient : IChatGPTClient
 
         if (string.IsNullOrWhiteSpace(createFineTuneRequest.Model))
         {
-            createFineTuneRequest.Model = ChatGPTFineTuneModels.Ada;
+            throw new ArgumentNullException(nameof(createFineTuneRequest), "Model property cannot be null or empty.");
         }
 
         if (string.IsNullOrWhiteSpace(createFineTuneRequest.TrainingFileId))
@@ -525,14 +532,17 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException("TrainingFileId cannot be null or whitespace.", nameof(createFineTuneRequest));
         }
 
-        return await SendRequestAsync<ChatGPTCreateFineTuneRequest, ChatGPTFineTuneJob>(HttpMethod.Post, "fine-tunes", createFineTuneRequest, cancellationToken).ConfigureAwait(false);
+        return await SendRequestAsync<ChatGPTCreateFineTuneRequest, ChatGPTFineTuneJob>(HttpMethod.Post, "fine_tuning/jobs", createFineTuneRequest, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="IChatGPTClient.ListFineTunesAsync"/>
-    public async Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTunesAsync(CancellationToken? cancellationToken = null)
+    /// <inheritdoc cref="IChatGPTClient.ListFineTuneJobsAsync"/>
+    public async Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTuneJobsAsync(int limit = 20, string? after = null, CancellationToken? cancellationToken = null)
     {
-
-        return await SendRequestAsync<ChatGPTListResponse<ChatGPTFineTuneJob>>(HttpMethod.Get, "fine-tunes", cancellationToken).ConfigureAwait(false);
+        string route = string.IsNullOrEmpty(after) ?
+            $"fine_tuning/jobs?limit={limit}" :
+            $"fine_tuning/jobs?limit={limit}&after={after}";
+        
+        return await SendRequestAsync<ChatGPTListResponse<ChatGPTFineTuneJob>>(HttpMethod.Get, route, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="IChatGPTClient.RetrieveFineTuneAsync"/>
@@ -543,7 +553,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
         }
 
-        return await SendRequestAsync<ChatGPTFineTuneJob>(HttpMethod.Get, $"fine-tunes/{fineTuneId}", cancellationToken).ConfigureAwait(false);
+        return await SendRequestAsync<ChatGPTFineTuneJob>(HttpMethod.Get, $"fine_tuning/jobs/{fineTuneId}", cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="IChatGPTClient.CancelFineTuneAsync"/>
@@ -554,7 +564,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
         }
 
-        return await SendRequestAsync<ChatGPTFineTuneJob>(HttpMethod.Post, $"fine-tunes/{fineTuneId}/cancel", cancellationToken).ConfigureAwait(false);
+        return await SendRequestAsync<ChatGPTFineTuneJob>(HttpMethod.Post, $"fine_tuning/jobs/{fineTuneId}/cancel", cancellationToken).ConfigureAwait(false);
     }
 
 
@@ -566,7 +576,7 @@ public class ChatGPTClient : IChatGPTClient
             throw new ArgumentException("Cannot be null or whitespace.", nameof(fineTuneId));
         }
 
-        return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events", cancellationToken).ConfigureAwait(false);
+        return await SendRequestAsync<ChatGPTListResponse<ChatGPTEvent>>(HttpMethod.Get, $"fine_tuning/jobs/{fineTuneId}/events", cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="IChatGPTClient.ListFineTuneEventsAsync"/>
@@ -581,7 +591,7 @@ public class ChatGPTClient : IChatGPTClient
 
         CancellationToken cancelToken = cancellationToken ?? CancellationToken.None;
 
-        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Get, $"fine-tunes/{fineTuneId}/events?stream=true");
+        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Get, $"fine_tuning/jobs/{fineTuneId}/events?stream=true");
 
         HttpResponseMessage responseMessage = await _client.SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).ConfigureAwait(false);
 

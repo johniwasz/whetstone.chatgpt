@@ -1,5 +1,12 @@
 ﻿// SPDX-License-Identifier: MIT
 using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.Audio;
+using Whetstone.ChatGPT.Models.Embeddings;
+using Whetstone.ChatGPT.Models.File;
+using Whetstone.ChatGPT.Models.FineTuning;
+using Whetstone.ChatGPT.Models.Image;
+using Whetstone.ChatGPT.Models.Moderation;
+using Whetstone.ChatGPT.Models.Vision;
 
 namespace Whetstone.ChatGPT
 {
@@ -50,6 +57,7 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        [Obsolete("Use CreateChatCompletionAsync")]
         Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
 
         /// <summary>
@@ -166,12 +174,14 @@ namespace Whetstone.ChatGPT
         /// List your organization's fine-tuning jobs.
         /// </summary>
         /// <remarks>
-        /// <para>See <seealso cref="https://api.openai.com/v1/fine-tunes">List fine-tunes</seealso>.</para>
+        /// <para>See <seealso cref="https://api.openai.com/v1/fine_tuning/jobs">List fine_tunes</seealso>.</para>
         /// </remarks>
+        /// <param name="limit">Number of events to retrieve.</param>
+        /// <param name="after">Identifier for the last event from the previous pagination request.</param>
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
         /// <returns><see cref="ChatGPTFileInfo">A list of fine-tunes.</see></returns>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-        Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTunesAsync(CancellationToken? cancellationToken = null);
+        Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTuneJobsAsync(int limit = 20, string? after = null, CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Gets info about the fine-tune job.
@@ -287,6 +297,7 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
+        [Obsolete("Use StreamChatCompletionAsync")]
         IAsyncEnumerable<ChatGPTCompletionStreamResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
 
 

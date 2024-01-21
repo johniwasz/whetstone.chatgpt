@@ -1,7 +1,7 @@
 ﻿// SPDX-License-Identifier: MIT
 using System;
 using System.Text.Json;
-using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.Moderation;
 
 namespace Whetstone.ChatGPT.Test
 {

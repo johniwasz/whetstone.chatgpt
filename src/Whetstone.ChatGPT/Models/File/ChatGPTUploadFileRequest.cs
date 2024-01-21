@@ -1,7 +1,6 @@
 ﻿// SPDX-License-Identifier: MIT
 
-
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.File
 {
     public class ChatGPTUploadFileRequest
     {

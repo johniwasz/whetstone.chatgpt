@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.Audio;
+using Whetstone.ChatGPT.Models.File;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Whetstone.ChatGPT.Test

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.Image;
+using Whetstone.ChatGPT.Models.Vision;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -45,7 +47,7 @@ namespace Whetstone.ChatGPT.Test
             };
 
             using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
-            
+
             var response = await client.CreateChatCompletionAsync(gptRequest);
 
             Assert.NotNull(response);
@@ -63,6 +65,112 @@ namespace Whetstone.ChatGPT.Test
             Assert.Equal("stop", response.Choices[0].FinishReason);
 
             Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+        }
+
+
+
+        [Fact]
+        public async Task TestWeatherToolRequest()
+        {
+            var tools = new List<ChatGPTTool>()
+            {
+                new()
+                {
+                    Type = "function",
+                    Function = new ChatGPTFunction ()
+                    {
+                        Name = "get_current_weather",
+                        Description = "Get the current weather",
+                        Parameters = 
+                            new ChatGPTParameter()
+                            {
+                                Type = "object",
+                                Properties = new Dictionary<string, ChatGPTParameter>()
+                                {
+                                    {"location", new ChatGPTParameter()
+                                        {   Type = "string",
+                                            Description = "The city and state, e.g. San Francisco, CA," } },
+                                    {"format", new ChatGPTParameter()
+                                        {  Type = "string",
+                                           Enum = new List<string>() { "celsius", "fahrenheit" },
+                                           Description = "The temperature unit to use. Infer this from the users location." } },
+                                }
+                        },
+                        Required = ["location", "format"]
+                    }
+                },
+                new()
+                {
+                    Type = "function",
+                    Function = new ChatGPTFunction ()
+                    {
+                        Name = "get_n_day_weather_forecast",
+                        Description = "Get an N-day weather forecast",
+                        Parameters = 
+                          new ChatGPTParameter()
+                          {
+                                Type = "object",
+                                Properties = new Dictionary<string, ChatGPTParameter>()
+                                {
+                                    {"location", new ChatGPTParameter()
+                                        {   Type = "string",
+                                            Description = "The city and state, e.g. San Francisco, CA," } },
+                                    {"format", new ChatGPTParameter()
+                                        {  Type = "string",
+                                            Enum = new List<string>() { "celsius", "fahrenheit" },
+                                            Description = "The temperature unit to use. Infer this from the users location." } },
+                                    {"num_days", new ChatGPTParameter()
+                                        {  Type = "integer",
+                                            Description = "The number of days to forecast" } },
+                                }
+                        
+                    },
+                    Required = ["location", "format", "num_days"]
+                    }
+                },
+            };
+
+
+            var gptRequest = new ChatGPTChatCompletionRequest
+            {
+                Model = ChatGPT35Models.Turbo0613,
+                Messages = new List<ChatGPTChatCompletionMessage>()
+                    {
+                        new ChatGPTChatCompletionMessage()
+                        {
+                            Role = ChatGPTMessageRoles.System,
+                            Content = "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."
+                        },
+                        new ChatGPTChatCompletionMessage()
+                        {
+                            Role = ChatGPTMessageRoles.User,
+                            Content = "What is the weather like today?"
+                        }
+                    },
+                Tools = tools,
+                Temperature = 0.9f,
+                MaxTokens = 100
+            };
+
+            using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
+
+            var response = await client.CreateChatCompletionAsync(gptRequest);
+
+            Assert.NotNull(response);
+
+            ChatGPTChatCompletionMessage? message = response.GetMessage();
+
+            Assert.NotNull(message);
+
+            Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
+
+            Assert.NotNull(response.Choices);
+
+            Assert.Single(response.Choices);
+
+            Assert.Equal("tool_calls", response.Choices[0].FinishReason);
+
+            // Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
         }
 
         [Fact]

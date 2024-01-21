@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Whetstone.ChatGPT.Models.File;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.FineTuning
 {
 
     /// <summary>
@@ -56,21 +57,21 @@ namespace Whetstone.ChatGPT.Models
         public string? FineTunedModel { get; set; }
 
         [JsonPropertyName("hyperparams")]
-        public HyperParams? HyperParams { get; set; }
+        public Hyperparams? HyperParams { get; set; }
 
         [JsonPropertyName("organization_id")]
         public string? OrganizationId { get; set; }
 
         [JsonPropertyName("result_files")]
         public List<ChatGPTFileInfo>? ResultFiles { get; set; }
-        
+
         /// <summary>
         /// Current status of the fine-tune job.
         /// </summary>
         [JsonPropertyName("status")]
         public string? Status { get; set; }
 
-        
+
         [JsonPropertyName("validation_files")]
         public List<ChatGPTFileInfo>? ValidationFiles { get; set; }
 
@@ -82,18 +83,5 @@ namespace Whetstone.ChatGPT.Models
         public DateTime UpdatedAt { get; set; }
     }
 
-    public class HyperParams
-    {
-        [JsonPropertyName("batch_size")]
-        public int? BatchSize { get; set; }
-        
-        [JsonPropertyName("learning_rate_multiplier")]
-        public float? LearningRateMultiplier { get; set; }
-        
-        [JsonPropertyName("n_epochs")]
-        public int NumberOfEpochs { get; set; }
 
-        [JsonPropertyName("prompt_loss_weight")]
-        public float PromptLossWeight { get; set; }
-    }
 }

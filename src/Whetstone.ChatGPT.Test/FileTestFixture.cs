@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.File;
+using Whetstone.ChatGPT.Models.FineTuning;
 using Xunit.Abstractions;
 
 namespace Whetstone.ChatGPT.Test
