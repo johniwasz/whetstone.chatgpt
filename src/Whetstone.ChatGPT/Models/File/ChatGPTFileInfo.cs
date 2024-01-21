@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.File
 {
 
 

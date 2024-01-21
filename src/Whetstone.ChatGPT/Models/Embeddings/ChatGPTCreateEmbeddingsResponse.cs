@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.Embeddings
 {
     public class ChatGPTCreateEmbeddingsResponse
     {
@@ -41,7 +41,7 @@ namespace Whetstone.ChatGPT.Models
         [JsonPropertyName("index")]
         public int Index { get; set; }
     }
-    
+
     /// <summary>
     /// Detailed breakdown of tokens used to process the embedding request.
     /// </summary>

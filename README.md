@@ -10,7 +10,6 @@ Supported features include:
 - Audio Transcription and Translation (Whisper API)
 - Chat Completions
 - Vision Completions
-- Edits
 - Files
 - Fine Tunes
 - Images
@@ -64,14 +63,6 @@ using Whetstone.ChatGPT;
 using Whetstone.ChatGPT.Models;
 
 . . .
-
-IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
-
-var gptRequest = new ChatGPTCompletionRequest
-{
-    Model = ChatGPT35Models.Davinci003,
-    Prompt = "How is the weather?"
-};
 
 var gptRequest = new ChatGPTChatCompletionRequest
 {
@@ -135,7 +126,7 @@ var gptRequest = new ChatGPTCompletionRequest
 
 using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
-var response = await client.CreateCompletionAsync(gptRequest);
+var response = await client.CreateChatCompletionAsync(gptRequest);
 
 Console.WriteLine(response.GetCompletionText());
 ```
@@ -155,33 +146,6 @@ This sample includes:
 - Authentication
 - Created a completion request using a prompt
 - Processing completion responses
-
-## Editing Quickstart
-
-To use submit an edit completion request:
-
-``` C#
-using Whetstone.ChatGPT;
-using Whetstone.ChatGPT.Models;
-
-. . .
-
-using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
-
-var gptEditRequest = new ChatGPTCreateEditRequest
-{             
-    Input = "What day of the wek is it?",
-    Instruction = "Fix spelling mistakes"
-};
-
-var response = await client.CreateEditAsync(gptEditRequest);
-
-Console.WriteLine(response.GetEditedText());
-```
-
-One of the test runs returned:
-
-> What day of the week is it?
 
 ## File Quickstart
 
@@ -229,7 +193,8 @@ var foundFile =  fileList.Data.First(x => x.Filename.Equals("finetuningsample.js
 
 ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
 {
-    TrainingFileId = foundFile.Id
+    TrainingFileId = foundFile.Id,
+    Model = "gpt-3.5-turbo-1106"
 };
 
 ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);

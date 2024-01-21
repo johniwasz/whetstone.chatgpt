@@ -8,6 +8,7 @@ namespace Whetstone.ChatGPT.Models
     /// <summary>
     /// OpenAI generated response to a <c>ChatGPTCompletionRequest</c>.
     /// </summary>
+    [Obsolete("Use ChatGPTChatCompletionResponse")]
     public class ChatGPTCompletionResponse
     {
         /// <summary>

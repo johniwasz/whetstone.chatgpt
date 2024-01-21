@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Whetstone.ChatGPT.Blazor.App.Models;
 using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.Image;
 
 namespace Whetstone.ChatGPT.Blazor.App.Pages
 {
-    
+
     public partial class ImageGenerator
     {
         private ImageRequest imageRequest = new();

@@ -6,21 +6,29 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Whetstone.ChatGPT.Models.File;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.Image
 {
-    /// <summary>
-    /// Request to create an image given a prompt.
-    /// </summary>
-
-    public class ChatGPTCreateImageVariationRequest
+    public class ChatGPTCreateImageEditRequest
     {
-
         /// <summary>
         /// The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
         /// </summary>
         [JsonPropertyName("image")]
         public ChatGPTFileContent? Image { get; set; }
+
+        /// <summary>
+        /// An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
+        /// </summary>
+        [JsonPropertyName("mask")]
+        public ChatGPTFileContent? Mask { get; set; }
+
+        /// <summary>
+        /// A text description of the desired image(s). The maximum length is 1000 characters.
+        /// </summary>
+        [JsonPropertyName("prompt")]
+        public string? Prompt { get; set; }
 
         /// <summary>
         /// The number of images to generate. Must be between 1 and 10.
@@ -53,6 +61,8 @@ namespace Whetstone.ChatGPT.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("user")]
         public string? User { get; set; }
+
+
 
     }
 }

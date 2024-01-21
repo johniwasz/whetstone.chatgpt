@@ -65,12 +65,12 @@ namespace Whetstone.WebhookCommander.Commands
                 }
                 catch(WebhookManagerException manEx)
                 {
-                    Logger.LogError("Error registering webhook", manEx);
+                    Logger.LogError(manEx, "Error registering webhook");
                 }
 
                 catch (Exception ex)
                 {
-                    Logger.LogError("Error registering webhook", ex);
+                    Logger.LogError(ex, "Error registering webhook");
                 }
 
             }

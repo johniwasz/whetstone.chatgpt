@@ -3,41 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Whetstone.ChatGPT.Models.File;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.Image
 {
-    public enum CreatedImageSize
-    {
-        [EnumMember(Value = "256x256")]
-        Size256,
-        [EnumMember(Value = "512x512")]
-        Size512,
-        [EnumMember(Value = "1024x1024")]
-        Size1024
-    }
-
-    public enum CreatedImageFormat
-    {
-        [EnumMember(Value = "url")]
-        Url,
-        [EnumMember(Value = "b64_json")]
-        Base64
-    }
-
     /// <summary>
     /// Request to create an image given a prompt.
     /// </summary>
-    public class ChatGPTCreateImageRequest
+
+    public class ChatGPTCreateImageVariationRequest
     {
+
         /// <summary>
-        /// A text description of the desired image(s). The maximum length is 1000 characters.
+        /// The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
         /// </summary>
-        [JsonPropertyName("prompt")]
-        public string? Prompt { get; set; }
+        [JsonPropertyName("image")]
+        public ChatGPTFileContent? Image { get; set; }
 
         /// <summary>
         /// The number of images to generate. Must be between 1 and 10.
@@ -70,5 +54,6 @@ namespace Whetstone.ChatGPT.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("user")]
         public string? User { get; set; }
+
     }
 }

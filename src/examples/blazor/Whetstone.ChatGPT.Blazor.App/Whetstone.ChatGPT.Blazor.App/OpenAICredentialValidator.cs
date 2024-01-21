@@ -55,7 +55,7 @@ namespace Whetstone.ChatGPT.Blazor.App
 
             _chatClient.Credentials = credentials;
 
-            await _chatClient.ListFineTunesAsync();
+            await _chatClient.ListFineTuneJobsAsync();
 
             isValid = true;
 
@@ -92,7 +92,7 @@ namespace Whetstone.ChatGPT.Blazor.App
                 _chatClient.Credentials = credentials;
                 try
                 {
-                    await _chatClient.ListFineTunesAsync();
+                    await _chatClient.ListFineTuneJobsAsync();
                     isValid = true;
                     appState.IsOpenAIAuthenticated = isValid;
                 }

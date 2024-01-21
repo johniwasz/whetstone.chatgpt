@@ -1,5 +1,12 @@
 ﻿// SPDX-License-Identifier: MIT
 using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.Audio;
+using Whetstone.ChatGPT.Models.Embeddings;
+using Whetstone.ChatGPT.Models.File;
+using Whetstone.ChatGPT.Models.FineTuning;
+using Whetstone.ChatGPT.Models.Image;
+using Whetstone.ChatGPT.Models.Moderation;
+using Whetstone.ChatGPT.Models.Vision;
 
 namespace Whetstone.ChatGPT
 {
@@ -50,24 +57,8 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
+        [Obsolete("Use CreateChatCompletionAsync")]
         Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
-
-
-        /// <summary>
-        /// Given a prompt and an instruction, the model will return an edited version of the prompt.
-        /// </summary>
-        /// <remarks>
-        /// <para>If <c>Model</c> is not provided, the default of "text-davinci-edit-001" is used. <see cref="ChatGPTEditModels.Davinci">Davinci</see></para>
-        /// <para>An example of using this would be to fix any spelling mistakes in the prompt by setting <c>Instruction</c> to "Fix the spelling mistakes".</para>
-        /// <para>See <seealso cref="https://beta.openai.com/docs/api-reference/edits/create">Create Edits</seealso></para>
-        /// </remarks>
-        /// <param name="createEditRequest">Submit an instruction to edit a propmpt.</param>
-        /// <param name="cancellationToken">Optional. Propagates notifications that opertions should be cancelled.</param>
-        /// <returns>Response to the <c>CreateEditRequest</c> request.</returns>
-        /// <exception cref="ArgumentException"><c>CreateEditRequest</c> requires an <c>Instruction</c></exception>
-        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-        Task<ChatGPTCreateEditResponse?> CreateEditAsync(ChatGPTCreateEditRequest createEditRequest, CancellationToken? cancellationToken = null);
-
 
         /// <summary>
         /// Delete a file.
@@ -183,12 +174,14 @@ namespace Whetstone.ChatGPT
         /// List your organization's fine-tuning jobs.
         /// </summary>
         /// <remarks>
-        /// <para>See <seealso cref="https://api.openai.com/v1/fine-tunes">List fine-tunes</seealso>.</para>
+        /// <para>See <seealso cref="https://api.openai.com/v1/fine_tuning/jobs">List fine_tunes</seealso>.</para>
         /// </remarks>
+        /// <param name="limit">Number of events to retrieve.</param>
+        /// <param name="after">Identifier for the last event from the previous pagination request.</param>
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
         /// <returns><see cref="ChatGPTFileInfo">A list of fine-tunes.</see></returns>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-        Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTunesAsync(CancellationToken? cancellationToken = null);
+        Task<ChatGPTListResponse<ChatGPTFineTuneJob>?> ListFineTuneJobsAsync(int limit = 20, string? after = null, CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Gets info about the fine-tune job.
@@ -222,10 +215,12 @@ namespace Whetstone.ChatGPT
         /// </summary>
         /// <param name="fineTuneId">The ID of the fine-tune job to get events for.</param>
         /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
+        /// <param name="limit">Number of events to retrieve.</param>
+        /// <param name="after">Identifier for the last event from the previous pagination request.</param>
         /// <returns>A list of events associated with the fineTuneId</returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception>
-        Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
+        Task<ChatGPTListResponse<ChatGPTEvent>?> ListFineTuneEventsAsync(string? fineTuneId, int limit = 20, string? after = null, CancellationToken? cancellationToken = null);
 
 
         /// <summary>
@@ -304,6 +299,7 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentNullException">completionRequest is required.</exception>
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
+        [Obsolete("Use StreamChatCompletionAsync")]
         IAsyncEnumerable<ChatGPTCompletionStreamResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
 
 
@@ -322,16 +318,6 @@ namespace Whetstone.ChatGPT
         /// <exception cref="ArgumentException">Model is required.</exception>
         /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
         IAsyncEnumerable<ChatGPTChatCompletionStreamResponse?> StreamChatCompletionAsync(ChatGPTChatCompletionRequest completionRequest, CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Streams the fine tune events for a given fine tune job.
-        /// </summary>
-        /// <param name="fineTuneId">Id of a submitted fine tune job.</param>
-        /// <param name="cancellationToken">Propagates notifications that opertions should be cancelled.</param>
-        /// <returns>An async enumerable that returns fine tune events as they are reported.</returns>
-        /// <exception cref="ArgumentException">Requires finetuneid</exception>
-        /// <exception cref="ChatGPTException">Exception generated while processing request.</exception> 
-        IAsyncEnumerable<ChatGPTEvent?> StreamFineTuneEventsAsync(string? fineTuneId, CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieves a byte[] of a generated image.

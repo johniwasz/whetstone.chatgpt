@@ -1,0 +1,52 @@
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "fine_tuning.job",
+      "id": "ftjob-g8K8c8ymtQzmyjb7xQ5bOc6N",
+      "model": "gpt-3.5-turbo-1106",
+      "created_at": 1705863294,
+      "finished_at": 1705863587,
+      "fine_tuned_model": "ft:gpt-3.5-turbo-1106:personal::8jXKla2g",
+      "organization_id": "org-uRCfPaw6DsIrBRhVjdeQkDm8",
+      "result_files": [
+        "file-4a2XSR9dsZgfiaUl7zF30Hhw"
+      ],
+      "status": "succeeded",
+      "validation_file": null,
+      "training_file": "file-wPwDCB3edkyyOUpS0uVTH8ts",
+      "hyperparameters": {
+        "n_epochs": 10,
+        "batch_size": 1,
+        "learning_rate_multiplier": 2
+      },
+      "trained_tokens": 4910,
+      "error": null
+    },
+    {
+      "object": "fine_tuning.job",
+      "id": "ftjob-upHlynIpAbQNlrVuA3gLOeCD",
+      "model": "gpt-3.5-turbo-1106",
+      "created_at": 1705861758,
+      "finished_at": null,
+      "fine_tuned_model": null,
+      "organization_id": "org-uRCfPaw6DsIrBRhVjdeQkDm8",
+      "result_files": [],
+      "status": "failed",
+      "validation_file": null,
+      "training_file": "file-pea7KYqifxCREZ4jZfu8noVY",
+      "hyperparameters": {
+        "n_epochs": "auto",
+        "batch_size": "auto",
+        "learning_rate_multiplier": "auto"
+      },
+      "trained_tokens": null,
+      "error": {
+        "code": "invalid_n_examples",
+        "param": "training_file",
+        "message": "Training file has 3 example(s), but must have at least 10 examples"
+      }
+    }
+  ],
+  "has_more": false
+}

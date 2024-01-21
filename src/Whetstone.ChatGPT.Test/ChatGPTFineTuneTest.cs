@@ -3,6 +3,8 @@ using System;
 using System.Net;
 using System.Text;
 using Whetstone.ChatGPT.Models;
+using Whetstone.ChatGPT.Models.File;
+using Whetstone.ChatGPT.Models.FineTuning;
 using Xunit.Abstractions;
 
 namespace Whetstone.ChatGPT.Test
@@ -19,23 +21,21 @@ namespace Whetstone.ChatGPT.Test
             _testOutputHelper = testOutputHelper ?? throw new ArgumentNullException(nameof(testOutputHelper));
             _fileTestFixture = fileTestFixture ?? throw new ArgumentNullException(nameof(fileTestFixture));
             _fineTuneFixture = fineTuneFixture ?? throw new ArgumentNullException(nameof(fineTuneFixture));
-            
             _fileTestFixture.TestOutputHelper = _testOutputHelper;
+            _fileTestFixture.InitializeAsync().Wait();
+            _fineTuneFixture.InitializeAsync().Wait();
         }
 
         [Fact(Skip = "Cancelling a fine tune job leaves an orphaned job. Until there is a way to clean up orphaned jobs, this will be skipped.")]
         public async Task SubmitFineTuningRequestCancelAndDeleteAsync()
-
         {
-
-            await InitializeTest();
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
-                ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
+                ChatGPTCreateFineTuneRequest tuningRequest = new()
                 {
-                    TrainingFileId = _fileTestFixture.ExistingFileId
+                    TrainingFileId = _fileTestFixture.NewTurboTestFile?.Id
                 };
 
                 ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
@@ -68,18 +68,19 @@ namespace Whetstone.ChatGPT.Test
         }
        
         
-        [Fact(Skip = "Takes too long to validate during an automated test run. Run manually.")]
+        [Fact(Skip = "Takes too long to validate during an automated test run. Run manually.")]        
         public async Task SubmitFineTuneJobAndGetEventsAsync()
         {
 
-            await InitializeTest();
+            // await InitializeTest();
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
                 ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
                 {
-                    TrainingFileId = _fileTestFixture.ExistingFileId
+                    Model = "gpt-3.5-turbo-1106",
+                    TrainingFileId = _fileTestFixture.NewTurboTestFile?.Id,
                 };
 
                 ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
@@ -91,9 +92,13 @@ namespace Whetstone.ChatGPT.Test
                 _testOutputHelper.WriteLine($"Status: {tuneResponse.Status}");
 
 
+                ChatGPTListResponse<ChatGPTEvent>? events = await client.ListFineTuneEventsAsync(tuneResponse.Id);
 
+                Assert.NotNull(events);
+                Assert.NotNull(events.Data);
+                
                 string jobId = tuneResponse.Id;
-                await foreach(ChatGPTEvent? fineTuneEvent in client.StreamFineTuneEventsAsync(tuneResponse.Id))
+                foreach(ChatGPTEvent fineTuneEvent in events.Data)
                 {
                     if(fineTuneEvent is not null)
                         _testOutputHelper.WriteLine($"Event: {fineTuneEvent.Level} - {fineTuneEvent.Message} - {fineTuneEvent.CreatedAt}");
@@ -121,14 +126,11 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task SubmitBadFineTuningRequestAsync()
         {
-
-            await InitializeTest();
-
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
                 ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest();
-                tuningRequest.TrainingFileId = _fileTestFixture.ExistingFileId;
+                tuningRequest.TrainingFileId = "bad-file-id";
                 tuningRequest.Model = Guid.NewGuid().ToString();
 
                 ChatGPTException badFileException = await Assert.ThrowsAsync<ChatGPTException>(async () => await client.CreateFineTuneAsync(tuningRequest));
@@ -144,9 +146,6 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task RetrieveFineTuningAsync()
         {
-
-            await InitializeTest();
-
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
                 ChatGPTFineTuneJob? tuneResponse = await client.RetrieveFineTuneAsync(_fineTuneFixture.ExistingFineTuneId);
@@ -162,12 +161,12 @@ namespace Whetstone.ChatGPT.Test
 
                     foreach (var resultFile in tuneResponse.ResultFiles)
                     {
-                        _testOutputHelper.WriteLine($"Result File: {resultFile.Filename}");
+                        _testOutputHelper.WriteLine($"Result File: {resultFile}");
                     }
 
-                    ChatGPTFileInfo fileInfo = tuneResponse.ResultFiles.First();
+                    string resultFileId = tuneResponse.ResultFiles.First();
 
-                    ChatGPTFileContent? fileContent = await client.RetrieveFileContentAsync(fileInfo.Id);
+                    ChatGPTFileContent? fileContent = await client.RetrieveFileContentAsync(resultFileId);
 
                     Assert.NotNull(fileContent);
 
@@ -183,8 +182,6 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task RetrieveFineTuningEventsAsync()
         {
-
-            await InitializeTest();
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
@@ -205,14 +202,11 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task CancelCompletedFineTuneJobAsync()
         {
-
-            await InitializeTest();
-
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
                 ChatGPTException completedJobException = await Assert.ThrowsAsync<ChatGPTException>(async () => await client.CancelFineTuneAsync(_fineTuneFixture.ExistingFineTuneId));
 
-                Assert.Contains("Cannot cancel a job", completedJobException.Message, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains("Job has already completed", completedJobException.Message, StringComparison.OrdinalIgnoreCase);
 
                 Assert.Equal(HttpStatusCode.BadRequest, completedJobException.StatusCode);
             }
@@ -222,8 +216,6 @@ namespace Whetstone.ChatGPT.Test
         [Fact(Skip = "Testing model deletes is expensive, so it's a manual test.")]
         public async Task DeleteModelAsync()
         {
-
-            await InitializeTest();
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
@@ -242,9 +234,11 @@ namespace Whetstone.ChatGPT.Test
         {
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
+                Assert.NotNull(client);
+
                 var gptRequest = new ChatGPTCompletionRequest
                 {
-                    Model = "ada:ft-personal-2023-01-02-03-04-14",
+                    Model = _fineTuneFixture.ExistingFineTunedModel,
                     Prompt = "How is the weather?",
                     Temperature = 0.9f,
                     MaxTokens = 10
@@ -258,16 +252,5 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-
-        private async Task InitializeTest()
-        {
-            await _fileTestFixture.InitializeFirstFromListAsync();
-            Assert.NotNull(_fileTestFixture.ExistingFileId);
-            
-            await _fineTuneFixture.InitializeAsync();
-            Assert.NotNull(_fineTuneFixture.ExistingFineTuneId);
-            Assert.NotNull(_fineTuneFixture.ExistingFineTunedModel);
-
-        }
     }
 }

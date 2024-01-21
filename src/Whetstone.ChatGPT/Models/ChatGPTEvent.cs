@@ -14,6 +14,9 @@ namespace Whetstone.ChatGPT.Models
     [DebuggerDisplay("Message = {Message}, Object = {@Object}, Level = {Level}, CreatedAt = {CreatedAt}")]
     public class ChatGPTEvent
     {
+        [JsonPropertyName("id")]
+        public string? Id { get; set; }
+
         [JsonPropertyName("object")]
         [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "This is the name of the property returned by the API.")]
         public string? @Object { get; set; }

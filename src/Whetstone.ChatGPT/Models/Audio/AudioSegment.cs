@@ -1,32 +1,13 @@
-﻿// SPDX-License-Identifier: MIT
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.Audio
 {
-    public class ChatGPTAudioResponse
-    {
-        [JsonPropertyName("task")]
-        public string? Task { get; set; }
-
-        [JsonPropertyName("language")]
-        public string? Language { get; set; }
-        
-        [JsonPropertyName("duration")]
-        public float? Duration { get; set; }
-
-        [JsonPropertyName("segments")]
-        public List<GPTAudioSegment>? Segments { get; set; }
-
-        [JsonPropertyName("text")]
-        public string? Text { get; set; }
-    }
-
-    public class GPTAudioSegment
+    public class AudioSegment
     {
         [JsonPropertyName("id")]
         public int? Id { get; set; }
@@ -60,7 +41,7 @@ namespace Whetstone.ChatGPT.Models
 
         [JsonPropertyName("no_speech_prob")]
         public double? NoSpeechProbability { get; set; }
-        
+
         [JsonPropertyName("transient")]
         public bool Transient { get; set; }
     }

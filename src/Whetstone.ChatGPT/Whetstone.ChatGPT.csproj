@@ -7,12 +7,18 @@
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+# 1.8.0
+- Include Breaking changes
+- Removed deprecated edit endpoint
+- Updated fine tune endpoints and models
+- Refactored Model namespaces
+- Marked legacy completions as obsolete
+
 # 1.7.1
 - Replaced deprecated models with gpt-3.5-turbo-instruct
 - Added vision completion
 
 # 1.7.0
-
 - Updated to target .NET 8.
 - Added deserialization error checks.
 
@@ -63,7 +69,7 @@
     <PackageTags>chatgpt; api; openai; gpt; gpt-3; gpt-35; gpt-35-turbo; whisper; whisper-ai; gpt-4</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2024</Copyright>
-    <Version>1.7.1</Version>
+    <Version>1.8.0</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps the ChatGPT API. Includes support for dependency injection.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
@@ -106,10 +112,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0' and '$(TargetFramework)'!='netstandard2.1'">
-    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>    
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.1" />
   </ItemGroup>
 </Project>

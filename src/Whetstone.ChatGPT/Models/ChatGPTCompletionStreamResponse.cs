@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Whetstone.ChatGPT.Models
 {
+    [Obsolete("Use ChatGPTChatCompletionStreamResponse")]
     public class ChatGPTCompletionStreamResponse
     {
         [JsonPropertyName("id")]

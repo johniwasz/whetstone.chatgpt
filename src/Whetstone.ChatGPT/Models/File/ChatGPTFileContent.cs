@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Whetstone.ChatGPT.Models
+namespace Whetstone.ChatGPT.Models.File
 {
     /// <summary>
     /// Represents contents of a file for use with the GPT-3 file endpoint.
@@ -23,12 +23,12 @@ namespace Whetstone.ChatGPT.Models
         {
             if (content == null || content.Length == 0)
             {
-                throw new ArgumentException($"{nameof(content)} is required");
+                throw new ArgumentException("Cannot be null or empty", nameof(content));
             }
 
             if (string.IsNullOrWhiteSpace(fileName))
             {
-                throw new ArgumentException($"{nameof(fileName)} is required");
+                throw new ArgumentException("Cannot be null or empty", nameof(fileName));
             }
 
             Content = content;
@@ -44,12 +44,12 @@ namespace Whetstone.ChatGPT.Models
 
         public static ChatGPTFileContent Load(string file)
         {
-            var bytes = File.ReadAllBytes(file);
+            var bytes = System.IO.File.ReadAllBytes(file);
 
             var name = Path.GetFileName(file);
-            
+
             return new ChatGPTFileContent(bytes, name);
         }
-        
+
     }
 }
