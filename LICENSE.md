@@ -1,6 +1,6 @@
 MIT License
 
-Copyright © 2023 John Iwasz
+Copyright © 2024 John Iwasz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
