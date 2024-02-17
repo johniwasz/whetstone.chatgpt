@@ -114,7 +114,7 @@ jobs:
       - name: Generate SPDX SBOM
         run: |
           md spdxoutput
-          sbom-tool generate -b spdxoutput -bc ./src -pn Whetstone.ChatGPT -pv 1.18.0 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
+          sbom-tool generate -b spdxoutput -bc ./src -pn Whetstone.ChatGPT -pv 1.8.1 -ps "Whetstone Technologies" -nsb https://sbom.whetstonetechnologies.com -V Verbose
 
       - name: Upload SPDX SBOM Build Artifact
         uses: actions/upload-artifact@v4.3.1
@@ -125,7 +125,7 @@ jobs:
       - name: Generate Full CycloneDX SBOM
         run: |
           md cyclonedx-full-output
-          dotnet CycloneDX ./src/Whetstone.ChatGPT.sln -o ./cyclonedx-full-output -j -sv 1.18.0 -st library -dpr -f whetstone.chatgpt.full.bom
+          dotnet CycloneDX ./src/Whetstone.ChatGPT.sln -o ./cyclonedx-full-output -j -sv 1.8.1 -st library -dpr -f whetstone.chatgpt.full.bom
 
       - name: Upload Full CycloneDX SBOM Build Artifact
         uses: actions/upload-artifact@v4.3.1
@@ -136,7 +136,7 @@ jobs:
       - name: Generate Production CycloneDX SBOM
         run: |
           md cyclonedx-prod-output
-          dotnet CycloneDX ./src/Whetstone.ChatGPT/Whetstone.ChatGPT.csproj -o ./cyclonedx-prod-output -j -sv 1.18.0 -st library -dpr -r -f whetstone.chatgpt.prod.bom
+          dotnet CycloneDX ./src/Whetstone.ChatGPT/Whetstone.ChatGPT.csproj -o ./cyclonedx-prod-output -j -sv 1.8.1 -st library -dpr -r -f whetstone.chatgpt.prod.bom
 
       - name: Upload Production CycloneDX SBOM Build Artifact
         uses: actions/upload-artifact@v4.3.1

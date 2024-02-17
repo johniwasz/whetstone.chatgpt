@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
 using Whetstone.ChatGPT.Models.Image;
 using Whetstone.ChatGPT.Models.Vision;
+using Xunit;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -46,26 +47,31 @@ namespace Whetstone.ChatGPT.Test
                 MaxTokens = 100
             };
 
-            using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
+                var response = await client.CreateChatCompletionAsync(gptRequest);
 
-            var response = await client.CreateChatCompletionAsync(gptRequest);
+                Assert.NotNull(response);
 
-            Assert.NotNull(response);
+#if NETFRAMEWORK
+                ChatGPTChatCompletionMessage message = response.GetMessage();
+#else
+                ChatGPTChatCompletionMessage? message = response.GetMessage();
+#endif
+                Assert.NotNull(message);
 
-            ChatGPTChatCompletionMessage? message = response.GetMessage();
+                Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
 
-            Assert.NotNull(message);
+                Assert.NotNull(response.Choices);
 
-            Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
+                Assert.Single(response.Choices);
 
-            Assert.NotNull(response.Choices);
+                Assert.Equal("stop", response.Choices[0].FinishReason);
 
-            Assert.Single(response.Choices);
-
-            Assert.Equal("stop", response.Choices[0].FinishReason);
-
-            Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+                Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+            }
         }
+
 
 
 
@@ -74,14 +80,14 @@ namespace Whetstone.ChatGPT.Test
         {
             var tools = new List<ChatGPTTool>()
             {
-                new()
+                new ChatGPTTool()
                 {
                     Type = "function",
                     Function = new ChatGPTFunction ()
                     {
                         Name = "get_current_weather",
                         Description = "Get the current weather",
-                        Parameters = 
+                        Parameters =
                             new ChatGPTParameter()
                             {
                                 Type = "object",
@@ -96,17 +102,17 @@ namespace Whetstone.ChatGPT.Test
                                            Description = "The temperature unit to use. Infer this from the users location." } },
                                 }
                         },
-                        Required = ["location", "format"]
+                        Required = new List<string> { "location", "format" }
                     }
                 },
-                new()
+                new ChatGPTTool()
                 {
                     Type = "function",
                     Function = new ChatGPTFunction ()
                     {
                         Name = "get_n_day_weather_forecast",
                         Description = "Get an N-day weather forecast",
-                        Parameters = 
+                        Parameters =
                           new ChatGPTParameter()
                           {
                                 Type = "object",
@@ -123,9 +129,9 @@ namespace Whetstone.ChatGPT.Test
                                         {  Type = "integer",
                                             Description = "The number of days to forecast" } },
                                 }
-                        
+
                     },
-                    Required = ["location", "format", "num_days"]
+                    Required = new List<string> {"location", "format", "num_days" }
                     }
                 },
             };
@@ -152,27 +158,31 @@ namespace Whetstone.ChatGPT.Test
                 MaxTokens = 100
             };
 
-            using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
+                var response = await client.CreateChatCompletionAsync(gptRequest);
 
-            var response = await client.CreateChatCompletionAsync(gptRequest);
+                Assert.NotNull(response);
+#if NETFRAMEWORK
+                ChatGPTChatCompletionMessage message = response.GetMessage();
+#else
+                ChatGPTChatCompletionMessage? message = response.GetMessage();
+#endif
+                Assert.NotNull(message);
 
-            Assert.NotNull(response);
+                Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
 
-            ChatGPTChatCompletionMessage? message = response.GetMessage();
+                Assert.NotNull(response.Choices);
 
-            Assert.NotNull(message);
+                Assert.Single(response.Choices);
 
-            Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
+                Assert.Equal("tool_calls", response.Choices[0].FinishReason);
 
-            Assert.NotNull(response.Choices);
-
-            Assert.Single(response.Choices);
-
-            Assert.Equal("tool_calls", response.Choices[0].FinishReason);
-
-            // Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+                // Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+            }
         }
 
+#if !NETFRAMEWORK
         [Fact]
         public async Task TestGPT35StreamRequest()
         {
@@ -206,24 +216,29 @@ namespace Whetstone.ChatGPT.Test
                 MaxTokens = 100
             };
 
-            using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
-
-            StringBuilder sb = new();
-
-            await foreach (var completion in client.StreamChatCompletionAsync(gptRequest).ConfigureAwait(false))
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-                if (completion is not null)
+
+                StringBuilder sb = new StringBuilder();
+
+                await foreach (var completion in client.StreamChatCompletionAsync(gptRequest).ConfigureAwait(false))
                 {
-                    string? responseText = completion.GetCompletionText();
-                    Assert.NotNull(responseText);
+                    if (!(completion is null))
+                    {
 
-                    sb.Append(responseText);
+                        string? responseText = completion.GetCompletionText();
+
+                        Assert.NotNull(responseText);
+
+                        sb.Append(responseText);
+                    }
                 }
+
+                string aggregateResponse = sb.ToString();
             }
-
-            string aggregateResponse = sb.ToString();
         }
-
+#endif
+        
         [Fact(Skip="Processing image too expensive for an every day test.")]
         public async Task TestGPTVisionRequest()
         {
@@ -232,10 +247,10 @@ namespace Whetstone.ChatGPT.Test
                 Model = "gpt-4-vision-preview",
                 Messages = new List<ChatGPTCompletionVisionMessage>()
                 {
-                    new()
+                    new ChatGPTCompletionVisionMessage()
                     {
-                        Content =
-                        [
+                        Content = new List<object>()
+                        {
                             new ChatGPTVisionTextContent()
                             {
                                 Text = "What’s in this image?"
@@ -247,32 +262,36 @@ namespace Whetstone.ChatGPT.Test
                                     Url = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
                                 }
                             }
-                        ]
+                        }
                     },
                 },
                 MaxTokens = 300
             };
 
-            using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
 
-            var response = await client.CreateVisionCompletionAsync(gptRequest);
+                var response = await client.CreateVisionCompletionAsync(gptRequest);
 
-            Assert.NotNull(response);
+                Assert.NotNull(response);
 
-            ChatGPTChatCompletionMessage? message = response.GetMessage();
+#if NETFRAMEWORK
+                ChatGPTChatCompletionMessage message = response.GetMessage();
+#else
+                ChatGPTChatCompletionMessage? message = response.GetMessage();
+#endif
+                Assert.NotNull(message);
 
-            Assert.NotNull(message);
+                Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
 
-            Assert.Equal(ChatGPTMessageRoles.Assistant, message.Role);
+                Assert.NotNull(response.Choices);
 
-            Assert.NotNull(response.Choices);
+                Assert.Single(response.Choices);
 
-            Assert.Single(response.Choices);
+                Assert.Equal("stop", response.Choices[0].FinishReason);
 
-            Assert.Equal("stop", response.Choices[0].FinishReason);
-
-            Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+                Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+            }
         }
-
     }
 }

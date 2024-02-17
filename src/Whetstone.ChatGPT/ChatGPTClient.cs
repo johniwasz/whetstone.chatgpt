@@ -259,6 +259,7 @@ public class ChatGPTClient : IChatGPTClient
     #region Completions
 
     /// <inheritdoc cref="IChatGPTClient.CreateCompletionAsync"/>
+    [Obsolete("Use CreateChatCompletionAsync instead")]
     public async Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
     {
         if (completionRequest is null)
@@ -311,6 +312,7 @@ public class ChatGPTClient : IChatGPTClient
     }
 
     /// <inheritdoc cref="IChatGPTClient.StreamCompletionAsync"/>
+    [Obsolete("Use StreamChatCompletion instead")]
     public async IAsyncEnumerable<ChatGPTCompletionStreamResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
     {
 

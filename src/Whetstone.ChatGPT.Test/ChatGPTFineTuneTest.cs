@@ -6,6 +6,10 @@ using Whetstone.ChatGPT.Models;
 using Whetstone.ChatGPT.Models.File;
 using Whetstone.ChatGPT.Models.FineTuning;
 using Xunit.Abstractions;
+using Xunit;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -33,13 +37,16 @@ namespace Whetstone.ChatGPT.Test
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
-                ChatGPTCreateFineTuneRequest tuningRequest = new()
+                ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest()
                 {
                     TrainingFileId = _fileTestFixture.NewTurboTestFile?.Id
                 };
 
+#if NETFRAMEWORK
+                ChatGPTFineTuneJob tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
+#else
                 ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
-
+#endif
                 Assert.NotNull(tuneResponse);
                 Assert.NotNull(tuneResponse.Status);
                 Assert.NotNull(tuneResponse.Id);
@@ -83,16 +90,22 @@ namespace Whetstone.ChatGPT.Test
                     TrainingFileId = _fileTestFixture.NewTurboTestFile?.Id,
                 };
 
+#if NETFRAMEWORK
+                ChatGPTFineTuneJob tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
+#else
                 ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
-
+#endif
                 Assert.NotNull(tuneResponse);
                 Assert.NotNull(tuneResponse.Status);
                 Assert.NotNull(tuneResponse.Id);
 
                 _testOutputHelper.WriteLine($"Status: {tuneResponse.Status}");
 
-
+#if NETFRAMEWORK
+                ChatGPTListResponse<ChatGPTEvent> events = await client.ListFineTuneEventsAsync(tuneResponse.Id);
+#else
                 ChatGPTListResponse<ChatGPTEvent>? events = await client.ListFineTuneEventsAsync(tuneResponse.Id);
+#endif
 
                 Assert.NotNull(events);
                 Assert.NotNull(events.Data);
@@ -100,21 +113,23 @@ namespace Whetstone.ChatGPT.Test
                 string jobId = tuneResponse.Id;
                 foreach(ChatGPTEvent fineTuneEvent in events.Data)
                 {
-                    if(fineTuneEvent is not null)
+                    if(!(fineTuneEvent is null))
                         _testOutputHelper.WriteLine($"Event: {fineTuneEvent.Level} - {fineTuneEvent.Message} - {fineTuneEvent.CreatedAt}");
 
 
                     tuneResponse = await client.RetrieveFineTuneAsync(jobId);
 
-                    if (tuneResponse is not null)
+                    if (!(tuneResponse is null))
                         _testOutputHelper.WriteLine($"Status: {tuneResponse.Status}");
                     
                     _testOutputHelper.WriteLine(string.Empty);
 
                 }
-
+#if NETFRAMEWORK
+                ChatGPTDeleteResponse deleteResponse = await client.DeleteModelAsync(tuneResponse?.FineTunedModel);
+#else
                 ChatGPTDeleteResponse? deleteResponse = await client.DeleteModelAsync(tuneResponse?.FineTunedModel);
-
+#endif
                 Assert.NotNull(deleteResponse);
                 Assert.NotNull(deleteResponse.Object);
 
@@ -148,8 +163,11 @@ namespace Whetstone.ChatGPT.Test
         {
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
+#if NETFRAMEWORK
+                ChatGPTFineTuneJob tuneResponse = await client.RetrieveFineTuneAsync(_fineTuneFixture.ExistingFineTuneId);
+#else
                 ChatGPTFineTuneJob? tuneResponse = await client.RetrieveFineTuneAsync(_fineTuneFixture.ExistingFineTuneId);
-
+#endif
                 Assert.NotNull(tuneResponse);
                 Assert.NotNull(tuneResponse.Status);
 
@@ -166,8 +184,11 @@ namespace Whetstone.ChatGPT.Test
 
                     string resultFileId = tuneResponse.ResultFiles.First();
 
+#if NETFRAMEWORK
+                    ChatGPTFileContent fileContent = await client.RetrieveFileContentAsync(resultFileId);
+#else
                     ChatGPTFileContent? fileContent = await client.RetrieveFileContentAsync(resultFileId);
-
+#endif
                     Assert.NotNull(fileContent);
 
                     Assert.NotNull(fileContent.Content);
@@ -185,8 +206,11 @@ namespace Whetstone.ChatGPT.Test
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
+#if NETFRAMEWORK
+                ChatGPTListResponse<ChatGPTEvent> eventResponse = await client.ListFineTuneEventsAsync(_fineTuneFixture.ExistingFineTuneId);
+#else
                 ChatGPTListResponse<ChatGPTEvent>? eventResponse = await client.ListFineTuneEventsAsync(_fineTuneFixture.ExistingFineTuneId);
-
+#endif
                 Assert.NotNull(eventResponse);
                 Assert.NotNull(eventResponse.Data);
                 Assert.NotEmpty(eventResponse.Data);
@@ -219,8 +243,11 @@ namespace Whetstone.ChatGPT.Test
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
+#if NETFRAMEWORK
+                ChatGPTDeleteResponse deleteResponse = await client.DeleteModelAsync(_fineTuneFixture.ExistingFineTunedModel);
+#else
                 ChatGPTDeleteResponse? deleteResponse = await client.DeleteModelAsync(_fineTuneFixture.ExistingFineTunedModel);
-
+#endif
                 Assert.NotNull(deleteResponse);
                 Assert.NotNull(deleteResponse.Object);
 
@@ -236,6 +263,7 @@ namespace Whetstone.ChatGPT.Test
             {
                 Assert.NotNull(client);
 
+#pragma warning disable CS0618 // Type or member is obsolete
                 var gptRequest = new ChatGPTCompletionRequest
                 {
                     Model = _fineTuneFixture.ExistingFineTunedModel,
@@ -244,11 +272,13 @@ namespace Whetstone.ChatGPT.Test
                     MaxTokens = 10
                 };
 
+
                 var response = await client.CreateCompletionAsync(gptRequest);
 
                 Assert.NotNull(response);
 
                 Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
 

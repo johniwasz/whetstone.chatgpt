@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models.Embeddings;
+using Xunit;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -27,7 +28,7 @@ namespace Whetstone.ChatGPT.Test
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-                ChatGPTCreateEmbeddingsResponse? embeddingsResponse = await client.CreateEmbeddingsAsync(embeddingsRequest);
+                ChatGPTCreateEmbeddingsResponse embeddingsResponse = await client.CreateEmbeddingsAsync(embeddingsRequest);
 
                 Assert.NotNull(embeddingsResponse);
 
