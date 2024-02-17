@@ -236,6 +236,7 @@ namespace Whetstone.ChatGPT.Test
             {
                 Assert.NotNull(client);
 
+#pragma warning disable CS0618 // Type or member is obsolete
                 var gptRequest = new ChatGPTCompletionRequest
                 {
                     Model = _fineTuneFixture.ExistingFineTunedModel,
@@ -244,11 +245,13 @@ namespace Whetstone.ChatGPT.Test
                     MaxTokens = 10
                 };
 
+
                 var response = await client.CreateCompletionAsync(gptRequest);
 
                 Assert.NotNull(response);
 
                 Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
 

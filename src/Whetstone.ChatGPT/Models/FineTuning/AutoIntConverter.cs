@@ -24,8 +24,7 @@ namespace Whetstone.ChatGPT.Models.FineTuning
                 {
                     throw new System.Text.Json.JsonException("Invalid value for AutoFloatConverter");
                 }
-
-                if (autoText.Equals("auto", StringComparison.OrdinalIgnoreCase))
+                else if (autoText!.Equals("auto", StringComparison.OrdinalIgnoreCase))
                 {
                     return null;
                 }

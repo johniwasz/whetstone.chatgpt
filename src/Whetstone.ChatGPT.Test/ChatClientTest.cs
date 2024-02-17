@@ -1,5 +1,6 @@
 ﻿// SPDX-License-Identifier: MIT
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 using Whetstone.ChatGPT.Models;
 using Xunit.Abstractions;
 
@@ -18,9 +19,7 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task TestGPTClientCompletion()
         {
-
-            // Using Ada in this test to keep costs down.
-
+#pragma warning disable CS0618 // Type or member is obsolete
             var gptRequest = new ChatGPTCompletionRequest
             {
                 Model = ChatGPTCompletionModels.Gpt35TurboInstruct,
@@ -28,7 +27,8 @@ namespace Whetstone.ChatGPT.Test
                 Temperature = 0.9f,
                 MaxTokens = 10
             };
-            
+
+
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
@@ -37,6 +37,7 @@ namespace Whetstone.ChatGPT.Test
                 Assert.NotNull(response);
 
                 Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
 
@@ -86,6 +87,7 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public async Task TestGPTClientStreamCompletion()
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             var gptRequest = new ChatGPTCompletionRequest
             {
                 Model = ChatGPTCompletionModels.Gpt35TurboInstruct,
@@ -93,18 +95,23 @@ namespace Whetstone.ChatGPT.Test
                 Temperature = 0.9f,
                 MaxTokens = 10
             };
+#pragma warning restore CS0618 // Type or member is obsolete
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
                 // Using Ada in this test to keep costs down.
+#pragma warning disable CS0618 // Type or member is obsolete
                 await foreach(var completion in  client.StreamCompletionAsync(gptRequest).ConfigureAwait(false))
                 {
                     if (completion is not null)
                     {
+#pragma warning disable CS0618 // Type or member is obsolete
                         Assert.NotNull(completion.GetCompletionText());
+#pragma warning restore CS0618 // Type or member is obsolete
                     }
                 }
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
 
