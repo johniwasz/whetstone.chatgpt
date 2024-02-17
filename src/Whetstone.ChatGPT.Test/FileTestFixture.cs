@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models.File;
 using Whetstone.ChatGPT.Models.FineTuning;
 using Xunit.Abstractions;
+using Xunit;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -14,12 +15,19 @@ namespace Whetstone.ChatGPT.Test
     {
         private bool _isDisposed;
 
+#if NETFRAMEWORK
+        public ChatGPTFileInfo NewTestFile { get; set; }
+
+        public ChatGPTFileInfo NewTurboTestFile { get; set; }
+
+        internal ITestOutputHelper TestOutputHelper { get; set; }
+#else
         public ChatGPTFileInfo? NewTestFile { get; set; }
 
         public ChatGPTFileInfo? NewTurboTestFile { get; set; }
 
         internal ITestOutputHelper? TestOutputHelper { get; set; }
-
+#endif
 
         public async Task InitializeAsync()
         {
@@ -43,13 +51,17 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
+#if NETFRAMEWORK
+        private void DeleteTestFile(ChatGPTFileInfo fileInfo)
+#else
         private void DeleteTestFile(ChatGPTFileInfo? fileInfo)
+#endif
         {
-            if (fileInfo is not null)
+            if (!(fileInfo is null))
             {
                 string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
 
-                using (ChatGPTClient client = new(apiKey))
+                using (ChatGPTClient client = new ChatGPTClient(apiKey))
                 {
                     try
                     {
@@ -59,7 +71,7 @@ namespace Whetstone.ChatGPT.Test
                     {
                         string message = $"Error deleting file while cleaning up TestFile {fileInfo.Id}\n: {ex}";
 
-                        if (TestOutputHelper is not null)
+                        if (!(TestOutputHelper is null))
                         {
                             TestOutputHelper.WriteLine(message);
                         }
@@ -78,96 +90,96 @@ namespace Whetstone.ChatGPT.Test
             if (NewTurboTestFile is null)
             {
                 // Build a fine tine file to upload.
-                List<ChatGPTTurboFineTuneLine> tuningInput = new() 
+                List<ChatGPTTurboFineTuneLine> tuningInput = new List<ChatGPTTurboFineTuneLine>() 
                 {
                     new ChatGPTTurboFineTuneLine()
                         { 
-                            Messages =
-                            [
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "What's the capital of France?"),
-                                 new(ChatGPTMessageRoles.Assistant, "Paris, as if everyone doesn't know that already.")
-                            ],
-                        },
-                    new ChatGPTTurboFineTuneLine()
-                        {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "Who wrote 'Romeo and Juliet'?"),
-                                 new(ChatGPTMessageRoles.Assistant, "Oh, just some guy named William Shakespeare. Ever heard of him?")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "What's the capital of France?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "Paris, as if everyone doesn't know that already.")
                             },
                         },
                     new ChatGPTTurboFineTuneLine()
                         {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "How far is the Moon from Earth?"),
-                                 new(ChatGPTMessageRoles.Assistant, "Around 384,400 kilometers. Give or take a few, like that really matters.")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "Who wrote 'Romeo and Juliet'?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "Oh, just some guy named William Shakespeare. Ever heard of him?")
+                            },
+                        },
+                    new ChatGPTTurboFineTuneLine()
+                        {
+                            Messages = new List<ChatGPTTurboFineTuneLineMessage>()
+                            {
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "How far is the Moon from Earth?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "Around 384,400 kilometers. Give or take a few, like that really matters.")
                             },
                         },
                         new ChatGPTTurboFineTuneLine()
                         {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "Who won the 1934 World Series?"),
-                                 new(ChatGPTMessageRoles.Assistant, "It was the St. Louis Cardinals. As if anyone can stay away to watch baseball.")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "Who won the 1934 World Series?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "It was the St. Louis Cardinals. As if anyone can stay away to watch baseball.")
                             },
                         },
                         new ChatGPTTurboFineTuneLine()
                         {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "How deep is the ocean?"),
-                                 new(ChatGPTMessageRoles.Assistant, "About 3,682 meters. Now go soak your head in it.")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "How deep is the ocean?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "About 3,682 meters. Now go soak your head in it.")
                             },
                         },
                         new ChatGPTTurboFineTuneLine()
                         {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "When will the sun burn out?"),
-                                 new(ChatGPTMessageRoles.Assistant, "In five billion years, not that you'll ever live to see it.")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "When will the sun burn out?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "In five billion years, not that you'll ever live to see it.")
                             },
                         },
                         new ChatGPTTurboFineTuneLine()
                         {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "Who invented the light bulb?"),
-                                 new(ChatGPTMessageRoles.Assistant, "Thomas Edison is credited with it, but he was a copy cat.")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "Who invented the light bulb?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "Thomas Edison is credited with it, but he was a copy cat.")
                             },
                         },
                         new ChatGPTTurboFineTuneLine()
                         {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "When was the Hoover dam completed?"),
-                                 new(ChatGPTMessageRoles.Assistant, "In was finished in 1935 and it's a gigantic monstrosity.")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "When was the Hoover dam completed?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "In was finished in 1935 and it's a gigantic monstrosity.")
                             },
                         },
                         new ChatGPTTurboFineTuneLine()
                         {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "Who was the fourth president of the United States?"),
-                                 new(ChatGPTMessageRoles.Assistant, "Just some old guy named James Madison, as though it makes a difference.")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "Who was the fourth president of the United States?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "Just some old guy named James Madison, as though it makes a difference.")
                             },
                         },
                         new ChatGPTTurboFineTuneLine()
                         {
                             Messages = new List<ChatGPTTurboFineTuneLineMessage>()
                             {
-                                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
-                                 new(ChatGPTMessageRoles.User, "Who wrote the book of love?"),
-                                 new(ChatGPTMessageRoles.Assistant, "Warren Davis, George Malone, and Charles Patrick. Were you expecting a different answer?")
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.User, "Who wrote the book of love?"),
+                                 new ChatGPTTurboFineTuneLineMessage(ChatGPTMessageRoles.Assistant, "Warren Davis, George Malone, and Charles Patrick. Were you expecting a different answer?")
                             },
                         },
                 };
@@ -176,7 +188,7 @@ namespace Whetstone.ChatGPT.Test
 
                 string fileName = "marvin.jsonl";
 
-                ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
+                ChatGPTUploadFileRequest uploadRequest = new ChatGPTUploadFileRequest
                 {
                     File = new ChatGPTFileContent
                     {
@@ -207,7 +219,7 @@ namespace Whetstone.ChatGPT.Test
             if (NewTestFile == null)
             {
                 // Build a fine tine file to upload.
-                List<ChatGPTFineTuneLine> tuningInput = new()
+                List<ChatGPTFineTuneLine> tuningInput = new List<ChatGPTFineTuneLine>()
                 {
                     new ChatGPTFineTuneLine("I don't even know where to start!\n", "Can't go wrong with rabbits, doc.\n"),
 
@@ -237,7 +249,7 @@ namespace Whetstone.ChatGPT.Test
 
                 string fileName = "bugstuning.jsonl";
 
-                ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
+                ChatGPTUploadFileRequest uploadRequest = new ChatGPTUploadFileRequest
                 {
                     File = new ChatGPTFileContent
                     {
@@ -255,7 +267,7 @@ namespace Whetstone.ChatGPT.Test
                 }
 
                 Assert.NotNull(NewTestFile);
-                Assert.Equal(fileName, NewTestFile.Filename);                
+                Assert.Equal(fileName, NewTestFile.Filename);
             }
 
             return NewTestFile;

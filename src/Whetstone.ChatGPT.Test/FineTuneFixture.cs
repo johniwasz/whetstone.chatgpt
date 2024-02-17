@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
 using Whetstone.ChatGPT.Models.FineTuning;
+using Xunit;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -18,7 +19,20 @@ namespace Whetstone.ChatGPT.Test
         {
 
         }
-        
+
+#if NETFRAMEWORK
+        internal string ExistingFineTuneId
+        {
+            get;
+            private set;
+        }
+
+        internal string ExistingFineTunedModel
+        {
+            get;
+            private set;
+        }
+#else
         internal string? ExistingFineTuneId
         {
             get;
@@ -30,14 +44,15 @@ namespace Whetstone.ChatGPT.Test
             get;
             private set;
         }
-
+#endif
+        
         internal async Task InitializeAsync()
         {
             if (!_isInitialized)
             {
 
                 string apiKey = ChatGPTTestUtilties.GetChatGPTKey();
-                using (ChatGPTClient client = new(apiKey))
+                using (ChatGPTClient client = new ChatGPTClient(apiKey))
                 {
 
                     var fineTuneList = await client.ListFineTuneJobsAsync();

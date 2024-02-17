@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,6 +11,7 @@ using Xunit.Abstractions;
 using Xunit.Sdk;
 using System.Diagnostics.CodeAnalysis;
 using Whetstone.ChatGPT.Models.File;
+using Xunit;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -64,8 +64,11 @@ namespace Whetstone.ChatGPT.Test
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
+#if NETFRAMEWORK
+                ChatGPTFileInfo retrieveResponse = await client.RetrieveFileAsync(_fileTestFixture.NewTurboTestFile?.Id);
+#else
                 ChatGPTFileInfo? retrieveResponse = await client.RetrieveFileAsync(_fileTestFixture.NewTurboTestFile?.Id);
-
+#endif
                 Assert.NotNull(retrieveResponse);
 
                 Assert.NotNull(retrieveResponse.Object);
@@ -82,8 +85,11 @@ namespace Whetstone.ChatGPT.Test
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
+#if NETFRAMEWORK
+                ChatGPTFileContent retrieveResponse = await client.RetrieveFileContentAsync(_fileTestFixture.NewTurboTestFile?.Id);
+#else
                 ChatGPTFileContent? retrieveResponse = await client.RetrieveFileContentAsync(_fileTestFixture.NewTurboTestFile?.Id);
-
+#endif
                 Assert.NotNull(retrieveResponse);
                 Assert.NotNull(retrieveResponse.Content);
 
@@ -129,7 +135,7 @@ namespace Whetstone.ChatGPT.Test
             // Build a fine tine file to upload.
             string fileName = "badfile.jsonl";
 
-            ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
+            ChatGPTUploadFileRequest uploadRequest = new ChatGPTUploadFileRequest
             {
                 File = new ChatGPTFileContent
                 {
@@ -138,13 +144,15 @@ namespace Whetstone.ChatGPT.Test
                 }
             };
 
-            using IChatGPTClient client = ChatGPTTestUtilties.GetClient();
+            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
+            {
 
-            ChatGPTException badFileException = await Assert.ThrowsAsync<ChatGPTException>(async () => await client.UploadFileAsync(uploadRequest));
+                ChatGPTException badFileException = await Assert.ThrowsAsync<ChatGPTException>(async () => await client.UploadFileAsync(uploadRequest));
 
-            Assert.NotNull(badFileException.ChatGPTError);
+                Assert.NotNull(badFileException.ChatGPTError);
 
-            Assert.Equal(HttpStatusCode.BadRequest, badFileException.StatusCode);
+                Assert.Equal(HttpStatusCode.BadRequest, badFileException.StatusCode);
+            }
         }
 
 

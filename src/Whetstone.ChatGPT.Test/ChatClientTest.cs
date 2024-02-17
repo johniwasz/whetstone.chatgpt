@@ -1,7 +1,11 @@
 ﻿// SPDX-License-Identifier: MIT
 using Microsoft.Extensions.Options;
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Whetstone.ChatGPT.Test
@@ -48,8 +52,11 @@ namespace Whetstone.ChatGPT.Test
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
+#if NETFRAMEWORK
+                ChatGPTListResponse<ChatGPTModel> modelResponse = await client.ListModelsAsync();
+#else
                 ChatGPTListResponse<ChatGPTModel>? modelResponse = await client.ListModelsAsync();
-
+#endif
                 Assert.NotNull(modelResponse);
 
                 Assert.Equal("list", modelResponse.Object);
@@ -60,6 +67,8 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
+#if !NETFRAMEWORK
+
         [Fact]
         public async Task GPTModelsListWithHttpClient()
         {
@@ -69,17 +78,18 @@ namespace Whetstone.ChatGPT.Test
                 ApiKey = ChatGPTTestUtilties.GetChatGPTKey()
             });
 
-            using (HttpClient httpClient = new())
+            using (HttpClient httpClient = new HttpClient())
             {
-                IChatGPTClient client = new ChatGPTClient(credsOptions, httpClient);
+                using (IChatGPTClient client = new ChatGPTClient(credsOptions, httpClient))
+                {
+                    ChatGPTListResponse<ChatGPTModel>? modelResponse = await client.ListModelsAsync();
 
-                ChatGPTListResponse<ChatGPTModel>? modelResponse = await client.ListModelsAsync();
+                    Assert.NotNull(modelResponse);
 
-                Assert.NotNull(modelResponse);
+                    Assert.NotNull(modelResponse.Data);
 
-                Assert.NotNull(modelResponse.Data);
-
-                Assert.NotEmpty(modelResponse.Data);
+                    Assert.NotEmpty(modelResponse.Data);
+                }
             }
 
         }
@@ -95,25 +105,26 @@ namespace Whetstone.ChatGPT.Test
                 Temperature = 0.9f,
                 MaxTokens = 10
             };
-#pragma warning restore CS0618 // Type or member is obsolete
+
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
                 // Using Ada in this test to keep costs down.
-#pragma warning disable CS0618 // Type or member is obsolete
-                await foreach(var completion in  client.StreamCompletionAsync(gptRequest).ConfigureAwait(false))
+
+                await foreach(var completion in client.StreamCompletionAsync(gptRequest).ConfigureAwait(false))
                 {
-                    if (completion is not null)
+                    if (!(completion is null))
                     {
-#pragma warning disable CS0618 // Type or member is obsolete
+
                         Assert.NotNull(completion.GetCompletionText());
-#pragma warning restore CS0618 // Type or member is obsolete
+
                     }
                 }
 #pragma warning restore CS0618 // Type or member is obsolete
             }
         }
+#endif
 
         [Fact]
         public async Task GPTModel()
@@ -133,7 +144,11 @@ namespace Whetstone.ChatGPT.Test
         [Fact]
         public void NullSessionConstruction()
         {
-            IChatGPTClient constructedClient = new ChatGPTClient((string?) null);
+#if NETFRAMEWORK
+            IChatGPTClient constructedClient = new ChatGPTClient((string) null);
+#else
+            IChatGPTClient constructedClient = new ChatGPTClient((string?)null);
+#endif
             Assert.NotNull(constructedClient);
         }
 

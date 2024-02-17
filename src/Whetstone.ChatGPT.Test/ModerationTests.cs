@@ -1,7 +1,10 @@
 ﻿// SPDX-License-Identifier: MIT
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Whetstone.ChatGPT.Models.Moderation;
+using Xunit;
 
 namespace Whetstone.ChatGPT.Test
 {
@@ -24,8 +27,11 @@ namespace Whetstone.ChatGPT.Test
             
             Assert.Contains("text-moderation-stable", json);
 
+#if NETFRAMEWORK
+            ChatGPTCreateModerationRequest modRequestDeser = JsonSerializer.Deserialize<ChatGPTCreateModerationRequest>(json);
+#else
             ChatGPTCreateModerationRequest? modRequestDeser = JsonSerializer.Deserialize<ChatGPTCreateModerationRequest>(json);
-
+#endif
             Assert.NotNull(modRequestDeser);
 
             Assert.Equal(ModerationModels.Stable, modRequestDeser.Model);
@@ -43,9 +49,12 @@ namespace Whetstone.ChatGPT.Test
             };
 
             string json = JsonSerializer.Serialize(moderationRequest);
-
+            
+#if NETFRAMEWORK
+            ChatGPTCreateModerationRequest modRequestDeser = JsonSerializer.Deserialize<ChatGPTCreateModerationRequest>(json);
+#else
             ChatGPTCreateModerationRequest? modRequestDeser = JsonSerializer.Deserialize<ChatGPTCreateModerationRequest>(json);
-
+#endif
             Assert.NotNull(modRequestDeser);
             
         }
@@ -66,8 +75,12 @@ namespace Whetstone.ChatGPT.Test
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-                ChatGPTCreateModerationResponse? moderationResponse = await client.CreateModerationAsync(moderationRequest);
 
+#if NETFRAMEWORK
+                ChatGPTCreateModerationResponse moderationResponse = await client.CreateModerationAsync(moderationRequest);
+#else
+                ChatGPTCreateModerationResponse? moderationResponse = await client.CreateModerationAsync(moderationRequest);
+#endif
                 Assert.NotNull(moderationResponse);
 
                 Assert.NotNull(moderationResponse.Results);
