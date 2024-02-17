@@ -69,26 +69,10 @@ var gptRequest = new ChatGPTChatCompletionRequest
     Model = ChatGPT35Models.Turbo,
     Messages = new List<ChatGPTChatCompletionMessage>()
         {
-            new ChatGPTChatCompletionMessage()
-            {
-                Role = MessageRole.System,
-                Content = "You are a helpful assistant."
-            },
-            new ChatGPTChatCompletionMessage()
-            {
-                Role = MessageRole.User,
-                Content = "Who won the world series in 2020?"
-            },
-            new ChatGPTChatCompletionMessage()
-            {
-                Role = MessageRole.Assistant,
-                Content = "The Los Angeles Dodgers won the World Series in 2020."
-            },
-            new ChatGPTChatCompletionMessage()
-            {
-                Role = MessageRole.User,
-                Content = "Where was it played?"
-            }
+            new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.System, "You are a helpful assistant."),
+            new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.User, "Who won the world series in 2020?"),
+            new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.Assistant, "The Los Angeles Dodgers won the World Series in 2020."),
+            new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.User, "Where was it played?")
         },
     Temperature = 0.9f,
     MaxTokens = 100
@@ -98,7 +82,7 @@ using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 var response = await client.CreateChatCompletionAsync(gptRequest);
 
-Console.WriteLine(response.GetCompletionText());
+Console.WriteLine(response?.GetCompletionText());
 
 ```
 
@@ -110,7 +94,9 @@ Completions use [models](https://beta.openai.com/docs/models) to answer a wide v
 
 ### Completion Quickstart
 
-This shows a direct useage of the __text-davinci-003__ model without any prompts.
+This shows a direct useage of the __gpt-3.5-turbo-instruct__ model without any prompts.
+
+Please note, _CreateCompletionAsync_ is obsolete. Use _ChatGPTChatCompletionRequest_, _ChatGPTChatCompletionResponse_, and the _CreateChatCompletionAsync_ method instead.
 
 ``` C#
 using Whetstone.ChatGPT;
@@ -120,13 +106,13 @@ using Whetstone.ChatGPT.Models;
 
 var gptRequest = new ChatGPTCompletionRequest
 {
-    Model = ChatGPT35Models.Davinci003,
+    Model =  ChatGPT35Models.Gpt35TurboInstruct,
     Prompt = "How is the weather?"
 };
 
 using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
-var response = await client.CreateChatCompletionAsync(gptRequest);
+var response = await client.CreateCompletionAsync(gptRequest);
 
 Console.WriteLine(response.GetCompletionText());
 ```
@@ -153,16 +139,32 @@ How to create a upload a new fine tuning file.
 
 ``` C#
 
-List<ChatGPTFineTuneLine> tuningInput = new()
+List<ChatGPTTurboFineTuneLine> tuningInput = new() 
 {
-    new ChatGPTFineTuneLine("<PROMPT>", "<COMPLETION>"),
-    new ChatGPTFineTuneLine("<PROMPT>", "<COMPLETION>"),
+    new ChatGPTTurboFineTuneLine()
+        { 
+            Messages = new List<ChatGPTTurboFineTuneLineMessage>()
+            { 
+                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                 new(ChatGPTMessageRoles.User, "What's the capital of France?"),
+                 new(ChatGPTMessageRoles.Assistant, "Paris, as if everyone doesn't know that already.")
+            },
+        },
+    new ChatGPTTurboFineTuneLine()
+        {
+            Messages = new List<ChatGPTTurboFineTuneLineMessage>()
+            {
+                 new(ChatGPTMessageRoles.System, "Marv is a factual chatbot that is also sarcastic."),
+                 new(ChatGPTMessageRoles.User, "Who wrote 'Romeo and Juliet'?"),
+                 new(ChatGPTMessageRoles.Assistant, "Oh, just some guy named William Shakespeare. Ever heard of him?")
+            },
+        },
     . . .
 };
 
 byte[] tuningText = tuningInput.ToJsonLBinary();
 
-string fileName = "finetuningsample.jsonl";
+string fileName = "marvin.jsonl";
 
 ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
 {
@@ -173,11 +175,12 @@ ChatGPTUploadFileRequest? uploadRequest = new ChatGPTUploadFileRequest
     }
 };
 
-ChatGPTFileInfo? uploadedFileInfo;
+ChatGPTFileInfo? newTurboTestFile;
 
-IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
-
-uploadedFileInfo = await client.UploadFileAsync(uploadRequest);
+using (IChatGPTClient client = new ChatGPTClient("YOURAPIKEY"))
+{
+    newTurboTestFile = await client.UploadFileAsync(uploadRequest);
+}
 
 ```
 
@@ -188,18 +191,20 @@ Once the file has been created, get the fileId, and reference it when creating a
 ```C#
 IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
+uploadedFileInfo = await client.UploadFileAsync(uploadRequest);
+
 var fileList = await client.ListFilesAsync();
-var foundFile =  fileList.Data.First(x => x.Filename.Equals("finetuningsample.jsonl"));
+var foundFile = fileList?.Data?.First(x => x.Filename.Equals("marvin.jsonl"));
 
 ChatGPTCreateFineTuneRequest tuningRequest = new ChatGPTCreateFineTuneRequest
 {
-    TrainingFileId = foundFile.Id,
+    TrainingFileId = foundFile?.Id,
     Model = "gpt-3.5-turbo-1106"
 };
 
 ChatGPTFineTuneJob? tuneResponse = await client.CreateFineTuneAsync(tuningRequest);
 
-string fineTuneId = tuneResponse.Id;
+string? fineTuneId = tuneResponse?.Id;
 
 ```
 
@@ -210,18 +215,25 @@ using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 ChatGPTFineTuneJob? tuneResponse = await client.RetrieveFineTuneAsync("FINETUNEID");
 
-if(tuneResponse.Status.Equals("succeeded"))
+if (tuneResponse.Status.Equals("succeeded"))
 {
-    var gptRequest = new ChatGPTCompletionRequest
+    var gptRequest = new ChatGPTChatCompletionRequest
     {
-        Model = ChatGPTCompletionModels.Davinci,
-        Prompt = "How is the weather?"
+        Model = "FINETUNEID",
+        Messages = new List<ChatGPTChatCompletionMessage>()
+        {
+            new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.System, "You are a helpful assistant."),
+            new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.User, "Who won the world series in 2020?"),
+            new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.Assistant, "The Los Angeles Dodgers won the World Series in 2020."),
+            new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.User, "Where was it played?")
+        },
+        Temperature = 0.9f,
+        MaxTokens = 100
     };
+    
+    var response = await client.CreateChatCompletionAsync(gptRequest);
 
-    var response = await client.CreateCompletionAsync(gptRequest);
-
-    Console.WriteLine(response.GetCompletionText());
-}
+    Console.WriteLine(response?.GetCompletionText());
 
 ```
 
@@ -241,11 +253,11 @@ using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 ChatGPTImageResponse? imageResponse = await client.CreateImageAsync(imageRequest);
 
-var imageData = imageResponse?.Data[0];
+var imageData = imageResponse?.Data?[0];
 
 if (imageData != null)
 {
-    byte[] imageBytes = await client.DownloadImageAsync(imageData);
+    byte[]? imageBytes = await client.DownloadImageAsync(imageData);
 }
 ```
 
@@ -273,5 +285,5 @@ using IChatGPTClient client = new ChatGPTClient("YOURAPIKEY");
 
 ChatGPTAudioResponse? audioResponse = await client.CreateTranscriptionAsync(transcriptionRequest, true);
 
-Console.WriteLine(response?.Text);
+Console.WriteLine(audioResponse?.Text);
 ```

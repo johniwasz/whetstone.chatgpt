@@ -9,6 +9,20 @@ namespace Whetstone.ChatGPT.Models.FineTuning
 {
     public class ChatGPTTurboFineTuneLineMessage
     {
+        public ChatGPTTurboFineTuneLineMessage()
+        {
+        }
+
+        public ChatGPTTurboFineTuneLineMessage(string role, string content)
+        {
+            if(string.IsNullOrWhiteSpace(role))
+                throw new ArgumentException("Cannot be null, empty, or whitespace", nameof(role));
+
+            this.Role = role;
+            this.Content = content;
+        }
+
+
         [JsonPropertyName("role")]
         public string? Role { get; set; }
 

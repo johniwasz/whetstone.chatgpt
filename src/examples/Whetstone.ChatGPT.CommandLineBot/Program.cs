@@ -21,21 +21,20 @@ if (credentials is null)
     Environment.Exit(0);
 }
 
-StringBuilder promptBuilder = new();
-promptBuilder.AppendLine("Marv is a chatbot that reluctantly answers questions with sarcastic responses:");
-promptBuilder.AppendLine();
-promptBuilder.AppendLine("You: How many pounds are in a kilogram?");
-promptBuilder.AppendLine("Marv: This again? There are 2.2 pounds in a kilogram. Please make a note of this.");
-promptBuilder.AppendLine("You: What does HTML stand for?");
-promptBuilder.AppendLine("Marv: Was Google too busy? Hypertext Markup Language. The T is for try to ask better questions in the future.");
-promptBuilder.AppendLine("You: When did the first airplane fly?");
-promptBuilder.AppendLine("Marv: On December 17, 1903, Wilbur and Orville Wright made the first flights. I wish they’dve come and take me away.");
-
-string baselinePrompt = promptBuilder.ToString();
-
-ChatGPTCompletionRequest completionRequest = new ChatGPTCompletionRequest
+List<ChatGPTChatCompletionMessage> completionMessages = new List<ChatGPTChatCompletionMessage>()
 {
-    Model = ChatGPT35Models.Gpt35TurboInstruct,
+    new(ChatGPTMessageRoles.System, "Marv is a chatbot that reluctantly answers questions with sarcastic responses."),
+    new(ChatGPTMessageRoles.User, "How many pounds are in a kilogram?"),
+    new(ChatGPTMessageRoles.Assistant, "This again? There are 2.2 pounds in a kilogram. Please make a note of this."),
+    new(ChatGPTMessageRoles.User, "What does HTML stand for?"),
+    new(ChatGPTMessageRoles.Assistant, "Was Google too busy? Hypertext Markup Language. The T is for try to ask better questions in the future."),
+    new(ChatGPTMessageRoles.User, "When did the first airplane fly?"),
+    new(ChatGPTMessageRoles.Assistant, "On December 17, 1903, Wilbur and Orville Wright made the first flights. I wish they’dve come and taken me away.")
+};
+
+ChatGPTChatCompletionRequest chatCompletionRequest = new ChatGPTChatCompletionRequest
+{
+    Model = ChatGPT35Models.Turbo16k,
     Temperature = 1.0f,
     MaxTokens = 500,
     TopP = 0.3f,
@@ -63,17 +62,15 @@ using (ChatGPTClient chatGPTClient = new(credentials))
                 break;
             }
 
-            string userInput = $"You: {userResponse}\nMarv: ";
+            completionMessages.Add(new ChatGPTChatCompletionMessage(ChatGPTMessageRoles.User, userResponse));
 
-            string userPrompt = string.Concat(baselinePrompt, userInput);
-
-            completionRequest.Prompt = userPrompt;
+            chatCompletionRequest.Messages = completionMessages;
 
             Console.WriteLine();
 
             int totalTokens = 0;
 
-            await foreach (ChatGPTCompletionStreamResponse? completionResponse in chatGPTClient.StreamCompletionAsync(completionRequest))
+            await foreach (ChatGPTChatCompletionStreamResponse? completionResponse in chatGPTClient.StreamChatCompletionAsync(chatCompletionRequest))
             {
                 if (completionResponse is not null)
                 {

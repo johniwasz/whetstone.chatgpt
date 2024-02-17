@@ -15,6 +15,19 @@ namespace Whetstone.ChatGPT.Models
 {
     public class ChatGPTChatCompletionMessage : IChatCompletionMessage
     {
+        public ChatGPTChatCompletionMessage()
+        {
+        }
+
+        public ChatGPTChatCompletionMessage(string role, string content)
+        {
+            if (string.IsNullOrWhiteSpace(role))
+                throw new ArgumentException("Cannot be null, empty, or whitespace", nameof(role));
+
+            this.Role = role;
+            this.Content = content;
+        }
+        
         /// <summary>
         /// The role of the messages author, supported values include `assistant`, `system`, `user`, `tool`. `function` is deprecated.
         /// </summary>
