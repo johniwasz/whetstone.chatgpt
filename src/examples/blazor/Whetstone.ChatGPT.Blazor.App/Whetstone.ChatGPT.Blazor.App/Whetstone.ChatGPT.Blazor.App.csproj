@@ -19,7 +19,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-		<PackageReference Include="Blazorise.Components" Version="1.4.1" />
+		<PackageReference Include="Blazorise.Components" Version="1.4.2" />
 		<PackageReference Include="Blazorise.DataGrid" Version="1.4.2" />
 		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.4.2" />
 		<PackageReference Include="Markdig.Signed" Version="0.35.0" />
