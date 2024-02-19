@@ -114,6 +114,6 @@
   
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
   </ItemGroup>
 </Project>
