@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Whetstone.ChatGPT.Blazor.App",
   "resources": {
-    "hash": "sha256-rFsGlh0MLTKY+32WSV2CeDwgDMTHNposcbVqMz7Vj68=",
+    "hash": "sha256-PooJ+Efb6HJ72Mo0SpaKt0QHbci61mrl2PZlPbuSNZE=",
     "jsModuleNative": {
       "dotnet.native.8.0.2.nbuh5ba5mj.js": "sha256-d17hNF8qyyHtYNWAn4HNk5NcrcIEgT/9nyGW2BpEqCA="
     },
@@ -21,7 +21,7 @@
       "Blazorise.Bootstrap5.wasm": "sha256-8PWimzHkuroRcFZ7HTOFxgSXqATYxXH2bvFYZl5cSzc=",
       "Blazorise.Components.wasm": "sha256-GV6yEqGm+4yLzKNxrNtxOYjVW1DDe5BjYhLaMuVa0r4=",
       "Blazorise.DataGrid.wasm": "sha256-h34CfYE/b7ULDLbkTfhFMfjOshx1uCJNTBD8O8yVKqs=",
-      "Blazorise.Icons.FontAwesome.wasm": "sha256-iva3BI8t91wHFVgcK7qHmyo32225iODQIZ9UMSuyUs0=",
+      "Blazorise.Icons.FontAwesome.wasm": "sha256-GSN7S3KTGJTw6PPjk5+Nc8bVPgUsc5tQm/n/xieQUUs=",
       "Blazorise.Licensing.wasm": "sha256-vmNGzxXoM2MA6rFUp99OvXbE3FJlYnUDr6zyA1Nc3Xc=",
       "Blazorise.LoadingIndicator.wasm": "sha256-nTGtxeNe6A5ixSTdk3JLWKqgtILmE0tc+c/uXXG+RPw=",
       "Blazorise.Snackbar.wasm": "sha256-V2h193YPliLTUvuMkjEYDx771N6SpWE3d05c1YdZ+RM=",
@@ -107,8 +107,8 @@
       "System.Xml.ReaderWriter.wasm": "sha256-dhbtVifsa1NOmK6xeRRAMq9rjoo7FqhevQ1EZLGYKqk=",
       "System.Xml.XDocument.wasm": "sha256-5UUaysLexycYvGksdOlCKz3r+k9YcpeMsKsH3akv9bQ=",
       "System.Xml.XPath.XDocument.wasm": "sha256-x4354hHa5P+vgtkJ2dA8WAZebIrkqhthxJZ4dCbkIMc=",
-      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-TDDKgX5ZOG4jjwpNCo826vJ97YH1qf5576LL4MW08ks=",
-      "Whetstone.ChatGPT.wasm": "sha256-FbFcmVrcDE5Kg7o6FG9qjNJJjKTPVEc3pwBv2KCqZ8Y="
+      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-J5HfKfR2Qx0GKsiTHyKnHiJu8qoAPjoyvJkyURAlgf4=",
+      "Whetstone.ChatGPT.wasm": "sha256-oj/UyE97lcAudXHIG4S/TPKfoqEsJLmjVNKmB6GDCmw="
     },
     "satelliteResources": {
       "cs": {
