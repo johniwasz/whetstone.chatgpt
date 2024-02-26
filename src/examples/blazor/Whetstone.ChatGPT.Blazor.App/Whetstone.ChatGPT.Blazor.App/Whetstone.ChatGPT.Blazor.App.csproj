@@ -30,7 +30,7 @@
 	<ItemGroup>
 		<PackageReference Include="Blazorise" Version="1.4.2" />
 		<PackageReference Include="Blazorise.Bootstrap5" Version="1.4.2" />
-		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.4.1" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.4.2" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
