@@ -16,7 +16,7 @@
 	<ItemGroup>
 		<PackageReference Include="Blazorise.Bootstrap" Version="1.4.2" />
 		<PackageReference Include="Blazorise.Bootstrap5" Version="1.4.2" />
-		<PackageReference Include="bunit" Version="1.26.64" />
+		<PackageReference Include="bunit" Version="1.27.17" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 		<PackageReference Include="coverlet.collector" Version="6.0.1">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
