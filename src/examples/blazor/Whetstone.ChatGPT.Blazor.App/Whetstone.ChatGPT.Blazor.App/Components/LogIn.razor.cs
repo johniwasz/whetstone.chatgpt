@@ -18,7 +18,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         public Exception? exception { get; set; } = default!;
         
-        private Blazorise.Bootstrap5.Modal? loginDialog { get; set; } = default!;
+        private Modal? loginDialog { get; set; } = default!;
 
         private Validations? validations = default!;
         private bool isLoading { get; set; } = false;

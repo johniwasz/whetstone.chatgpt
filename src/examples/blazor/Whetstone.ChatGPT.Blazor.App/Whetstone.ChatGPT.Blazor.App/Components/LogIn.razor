@@ -3,8 +3,8 @@
 
 @inject IOpenAICredentialValidator credentialValidator
 
-<Blazorise.Bootstrap5.Modal @ref="loginDialog">
-    <Blazorise.Bootstrap5.ModalContent Centered>
+<Modal @ref="loginDialog">
+    <ModalContent Centered>
         <ModalHeader>
         <ModalTitle>Log In</ModalTitle>
         <CloseButton />
@@ -37,5 +37,5 @@
             } Apply
             </Blazorise.Bootstrap5.Button>
        </ModalFooter>
-    </Blazorise.Bootstrap5.ModalContent>
-</Blazorise.Bootstrap5.Modal>
+    </ModalContent>
+</Modal>

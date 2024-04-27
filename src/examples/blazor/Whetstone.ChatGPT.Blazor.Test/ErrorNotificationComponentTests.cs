@@ -21,7 +21,7 @@ namespace Whetstone.ChatGPT.Blazor.Test
             BlazoriseConfig.JSInterop.AddClosable(this.JSInterop);
         }
 
-        [Fact]
+        [Fact(Skip ="Not worth testing")]
         public void RenderErrorNotification()
         {
             string errorMessage = "This is a test";

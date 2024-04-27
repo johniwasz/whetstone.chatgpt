@@ -83,6 +83,7 @@
    <LangVersion>12</LangVersion>
    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
    <AnalysisLevel>latest</AnalysisLevel>
+   <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
