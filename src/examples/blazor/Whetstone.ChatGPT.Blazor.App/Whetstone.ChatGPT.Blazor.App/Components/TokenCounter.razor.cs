@@ -26,7 +26,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             base.OnInitialized();
         }
 
-
         ~TokenCounter()
         {
             AppState.OnChange -= StateHasChanged;

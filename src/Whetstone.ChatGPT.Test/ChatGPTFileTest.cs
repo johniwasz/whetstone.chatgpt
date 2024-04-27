@@ -129,10 +129,10 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [Fact]
+        [Fact(Skip = "API File processing has changed to accept a file that was previously considered bad.")]
         public async Task FileUploadBadFile()
         {
-            // Build a fine tine file to upload.
+            // Build a fine tune file to upload.
             string fileName = "badfile.jsonl";
 
             ChatGPTUploadFileRequest uploadRequest = new ChatGPTUploadFileRequest
