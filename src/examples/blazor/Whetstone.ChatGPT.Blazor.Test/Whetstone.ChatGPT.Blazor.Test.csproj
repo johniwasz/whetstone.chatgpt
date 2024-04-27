@@ -34,7 +34,4 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Whetstone.ChatGPT.Blazor.App\Whetstone.ChatGPT.Blazor.App\Whetstone.ChatGPT.Blazor.App.csproj" />
 	</ItemGroup>
-
-
-
 </Project>
