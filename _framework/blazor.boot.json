@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Whetstone.ChatGPT.Blazor.App",
   "resources": {
-    "hash": "sha256-Ynro5OFjnP8GYEB9g1SA1oRU47SGy+KwiGtioAndsmY=",
+    "hash": "sha256-znGX1d21Vlcr78VkGTRNJBz4YrSgameOimD80GkXShY=",
     "jsModuleNative": {
       "dotnet.native.8.0.6.nbuh5ba5mj.js": "sha256-tBrFUP6mn9w5eOC6cYeZKl4SDo2TnZbqKbhJ9pZLyW8="
     },
@@ -27,10 +27,10 @@
       "Blazorise.Snackbar.wasm": "sha256-Eqm2xvX/YKQ0XzPtrvVNzA8RXHc4ecD4qZZ8YbCfd8U=",
       "Blazorise.wasm": "sha256-BXEk+Xzbc8TU4t6cRd0bhQbY736DHx9ob5Mac0XkX1w=",
       "Markdig.Signed.wasm": "sha256-W7Mlzd7J90TJMCELeNvSoxP3/aE8J9RgDrwouJkotf0=",
-      "Microsoft.AspNetCore.Components.Forms.wasm": "sha256-w59DyMtsV8aqXd151QDyE/8kVKjGWay/psUp6Jx2ECA=",
-      "Microsoft.AspNetCore.Components.wasm": "sha256-UE1S6M+JanWKf6SEJipkgziFa3Obg5cpRK6OYaLsfCY=",
-      "Microsoft.AspNetCore.Components.Web.wasm": "sha256-oOLRX9eHfPtfMEUDDBzzyiU0ZD1oMog4ZiYAfQxIad8=",
-      "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-At95VljQdyLEmxImXFaDtr+qAFOXNrrnr4rgYUid8h8=",
+      "Microsoft.AspNetCore.Components.Forms.wasm": "sha256-VkkQFggK1hvcb5AsuUVgMXDSm9sNUlZEJ7ptJsmakN4=",
+      "Microsoft.AspNetCore.Components.wasm": "sha256-I9f5aN8IohJDDkMbPt3Z5R4DwfF/4uf41BxfRjqY6zs=",
+      "Microsoft.AspNetCore.Components.Web.wasm": "sha256-0oVfYjr87ei7H03QWYRgWDRUBxmdPcD2vzXwqfLMbLQ=",
+      "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-Q/+cR1AuC0iMZFzQ7UGPfKCNQfD9Gp2r1ZK9Zt3JJxA=",
       "Microsoft.CodeAnalysis.CSharp.wasm": "sha256-r5SnpugMbWjYU54WzwC5KgVHzi6am+f5XHeCNtaZSuQ=",
       "Microsoft.CodeAnalysis.wasm": "sha256-940J/0Pkr7A0AyrgNJODWyU2RI62QAk42H2VhuXg/04=",
       "Microsoft.Extensions.Configuration.Abstractions.wasm": "sha256-87sn2TYqgdZ95sXmavjKEzoEfMgHnYQ9LOvnMX+aZcI=",
@@ -45,8 +45,8 @@
       "Microsoft.Extensions.Logging.wasm": "sha256-UNn4eAqAPtbSHgJnCReGvnpT50olnwgaf/pMvcWBHkI=",
       "Microsoft.Extensions.Options.wasm": "sha256-iRFKIZppdsDcIezL/0NgJnvtz8gfDuEqQxGRoAhklXM=",
       "Microsoft.Extensions.Primitives.wasm": "sha256-Ms2HR5Gpug/0uRAzdk4SUNT76Ml3CjFv9Jo+dUIMGac=",
-      "Microsoft.JSInterop.wasm": "sha256-zZKPkY7NPr8Y4COcLOc3CdMmeIj1ujgb3r/fIrAUuVU=",
-      "Microsoft.JSInterop.WebAssembly.wasm": "sha256-nJo9AftA2/mHxtXapqHsgjzQgIHOpue2DnVtxkgTSME=",
+      "Microsoft.JSInterop.wasm": "sha256-wxhgqdZIKxVhf0W66IQ0osHd/ESEKHfI61w2iPZsZQk=",
+      "Microsoft.JSInterop.WebAssembly.wasm": "sha256-ZyIqQss3I64BQC2gc7JEDrkYq14vXKEXuw5vBJ5oFYM=",
       "Microsoft.VisualBasic.Core.wasm": "sha256-uL/99EWUd85uJWrrE+MN3thaOB4l26e4rohsS52a4ws=",
       "System.Collections.Concurrent.wasm": "sha256-i+UAOBCoQJbpY9lX8yUzAPcJW+45//Q1FFVxNeN2JJ0=",
       "System.Collections.Immutable.wasm": "sha256-rrWwtTZP1+U5KBWoGi+P3Zc78c+B3llUl4b0aePEnrg=",
@@ -103,8 +103,8 @@
       "System.Xml.ReaderWriter.wasm": "sha256-8qpdnX8w5ioACdvZ76xrQQV6FLG0xLUVSSyHLxOwTbM=",
       "System.Xml.XDocument.wasm": "sha256-EBLwP44YncIMzWXBtypt0rToP5vybsDcgtwl81qu0v4=",
       "System.Xml.XPath.XDocument.wasm": "sha256-Cxb9y+/kHHMMKR+j25MXiive5L/GcsJam2hUQH4msEc=",
-      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-cftthjmaNEoA0SS8GAru6kb1vk5HlI4Ydj27YLLpODA=",
-      "Whetstone.ChatGPT.wasm": "sha256-bzycvlBZDp1cgA1uccMQM0QEWrkvMzXIVtceveQWoSw="
+      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-Mv6QMHWfatdnC2BCJF69FqBmlqPXd7rHC3wHPQT3lyY=",
+      "Whetstone.ChatGPT.wasm": "sha256-YQgLE0PxI7H7spTzec6VAzr6dRPeZe+zrX8let0g+wM="
     },
     "satelliteResources": {
       "cs": {
