@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Whetstone.ChatGPT.Blazor.App",
   "resources": {
-    "hash": "sha256-YEKw/zowvfPcqB0PxQ3Rql8Kcu2xih+YW4OpoOF3u7A=",
+    "hash": "sha256-XxnXs5K1CaMesnwSjP2WyCd7f/YQkvsJTQCaCt9gcDc=",
     "jsModuleNative": {
       "dotnet.native.8.0.6.nbuh5ba5mj.js": "sha256-tBrFUP6mn9w5eOC6cYeZKl4SDo2TnZbqKbhJ9pZLyW8="
     },
@@ -21,9 +21,9 @@
       "Blazorise.Bootstrap5.wasm": "sha256-E+iwFaevz2v8EpZRGMxh7pMMR84vHUCRnefOBrU267A=",
       "Blazorise.Components.wasm": "sha256-30Op6z4vMa2WfU7vQ82UBukPPeUi5fS712/0gql703g=",
       "Blazorise.DataGrid.wasm": "sha256-ava9wvupkK9uk9bV+zwTFFzDZ8PHhwgbrnelIuvJ33c=",
-      "Blazorise.Icons.FontAwesome.wasm": "sha256-Lt5VHOuE+BnW9kaXC9DcnyLb6aUIWTOSXa+m1urL5nY=",
+      "Blazorise.Icons.FontAwesome.wasm": "sha256-kk/82Xa3IZDPL5JZqdFC7Dm5uR23q7yfd8P+/c9caYE=",
       "Blazorise.Licensing.wasm": "sha256-vmNGzxXoM2MA6rFUp99OvXbE3FJlYnUDr6zyA1Nc3Xc=",
-      "Blazorise.LoadingIndicator.wasm": "sha256-QouqnSgh5mJnCRRXapMDDBC2HAvtQcIAIqemIjKMabU=",
+      "Blazorise.LoadingIndicator.wasm": "sha256-Nx3jERihBoh4JTP606+9Bv/OdAHTAsVEONWrdDvEVGk=",
       "Blazorise.Snackbar.wasm": "sha256-/+mYrnLmKcftfgVk6DwZXnGcMt8kLjw7enKm7UkO5Ok=",
       "Blazorise.wasm": "sha256-RKOQuEJpYF8onKjts7Kbsk0hgHFi8K6ZlZvIBimZtGo=",
       "Markdig.Signed.wasm": "sha256-W7Mlzd7J90TJMCELeNvSoxP3/aE8J9RgDrwouJkotf0=",
@@ -103,8 +103,8 @@
       "System.Xml.ReaderWriter.wasm": "sha256-8qpdnX8w5ioACdvZ76xrQQV6FLG0xLUVSSyHLxOwTbM=",
       "System.Xml.XDocument.wasm": "sha256-EBLwP44YncIMzWXBtypt0rToP5vybsDcgtwl81qu0v4=",
       "System.Xml.XPath.XDocument.wasm": "sha256-Cxb9y+/kHHMMKR+j25MXiive5L/GcsJam2hUQH4msEc=",
-      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-wS5lhTrMrIgzmFxZ64Rbxz7OB/s5Kel6CIDXMaQfeiE=",
-      "Whetstone.ChatGPT.wasm": "sha256-iaK4D7y+mQXRlN1OqcqPDYnrqYRhPh6IjExdNFsi0lo="
+      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-n+gipfMxmB2B6sIp1ZySh4q+1tNAyE6dNdz657Hy9xg=",
+      "Whetstone.ChatGPT.wasm": "sha256-5pnVrRHuZV0wYAtP42lF865MZqiYlSpKCZJGkE59+/g="
     },
     "satelliteResources": {
       "cs": {
