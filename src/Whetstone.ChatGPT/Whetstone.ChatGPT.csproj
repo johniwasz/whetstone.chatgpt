@@ -7,6 +7,12 @@
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+		
+# 1.8.2
+- Upgrated to safe version of System.Text.Json
+- Added GPT-4o constant
+- Marked ChatGPT35Models.Turbo0613 as Obsolete
+
 # 1.8.1
 - Added a constructor to ChatGPTChatCompletionMessage
 - Added a constructor to ChatGPTTurboFineTuneLineMessage
