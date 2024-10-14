@@ -63,6 +63,8 @@ namespace Whetstone.ChatGPT
         /// </remarks>
         public readonly static string GPT4 = "gpt-4";
 
+        public readonly static string GPT4o = "gpt-4o";
+
         /// <summary>
         /// Snapshot of gpt-4 from March 14th 2023. Unlike <c>gpt-4</c>, this model will not receive updates, and will only be supported for a three month period ending on June 14th 2023.
         /// </summary>
@@ -184,6 +186,7 @@ namespace Whetstone.ChatGPT
         /// <summary>
         /// Same function calling as GPT-4 as well as more reliable steerability via the system message, two features that allow developers to guide the model's responses more effectively.
         /// </summary>
+        [Obsolete("This model is no longer supported as of 2023-03-23. Please use gpt-3.5-turbo (Turbo) instead.")]
         public readonly static string Turbo0613 = "gpt-3.5-turbo-0613";
 
         /// <summary>

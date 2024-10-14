@@ -139,7 +139,7 @@ namespace Whetstone.ChatGPT.Test
 
             var gptRequest = new ChatGPTChatCompletionRequest
             {
-                Model = ChatGPT35Models.Turbo0613,
+                Model = ChatGPT35Models.Turbo,
                 Messages = new List<ChatGPTChatCompletionMessage>()
                     {
                         new ChatGPTChatCompletionMessage()
