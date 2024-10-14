@@ -223,7 +223,7 @@ namespace Whetstone.ChatGPT.Test
         }
 
 
-        [Fact]
+        [Fact(Skip = "Cancelled job not found.")]
         public async Task CancelCompletedFineTuneJobAsync()
         {
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
