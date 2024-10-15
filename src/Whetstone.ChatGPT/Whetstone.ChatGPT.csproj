@@ -7,6 +7,12 @@
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+		
+# 1.8.2
+- Upgrated to safe version of System.Text.Json
+- Added GPT-4o constant
+- Marked ChatGPT35Models.Turbo0613 as Obsolete
+
 # 1.8.1
 - Added a constructor to ChatGPTChatCompletionMessage
 - Added a constructor to ChatGPTTurboFineTuneLineMessage
@@ -74,7 +80,7 @@
     <PackageTags>chatgpt; api; openai; gpt; gpt-3; gpt-35; gpt-35-turbo; whisper; whisper-ai; gpt-4</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
     <Copyright>2024</Copyright>
-    <Version>1.8.1</Version>
+    <Version>1.8.2</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps the ChatGPT API. Includes support for dependency injection.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
