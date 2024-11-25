@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Whetstone.ChatGPT.Blazor.App",
   "resources": {
-    "hash": "sha256-12apWjZJbXY3PePO/ln7p0E9jKYlJN+RtJoWszE/GAQ=",
+    "hash": "sha256-t/eI42BGRfQ2sS6H3Ez2TMwi1YyfjxsldPvadiYHh2c=",
     "jsModuleNative": {
       "dotnet.native.8.0.11.nbuh5ba5mj.js": "sha256-NRq3sZacuCYwAiAXbEQpy/pF5lYW3jx62n/pPqCNiac="
     },
@@ -104,7 +104,7 @@
       "System.Xml.ReaderWriter.wasm": "sha256-5InRekKVfK8D1c6eP9SenL4uL8HX3YTmhcdWgrU8T60=",
       "System.Xml.XDocument.wasm": "sha256-pDmh1ylt/w8J2POvLX4f2k8iv29/iDhuSpCHlP8nzcE=",
       "System.Xml.XPath.XDocument.wasm": "sha256-IiY/y+hYDwrOmzZH3yBbcCOQjEs4Rj294RR4oXiatQY=",
-      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-ge2yjNCNkvd6vGH6eviDcTM0SjTKw/be/E8IRp1d5r4=",
+      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-yuGy7o9OxhG7gLbNGmKQaqg4N7mEwa/OV4BIPFYDLOU=",
       "Whetstone.ChatGPT.wasm": "sha256-T1o3txnv88kD3nLk/fXC4XLCaTHrxlP68JI/6GYEDl4="
     },
     "satelliteResources": {
