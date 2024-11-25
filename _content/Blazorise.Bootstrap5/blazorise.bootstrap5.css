@@ -16,11 +16,15 @@
   background-color: rgba(10, 10, 10, 0.4);
 }
 
-.nav .nav-link:hover {
+.navbar-nav .nav-item:hover {
   cursor: pointer;
 }
 
 .navbar-nav .nav-link:hover {
+  cursor: pointer;
+}
+
+.nav .nav-link:hover {
   cursor: pointer;
 }
 
@@ -4475,17 +4479,6 @@ ol.ordered-list-upper-roman {
     font-size: calc(1.275rem + 0.3vw) !important;
   }
 }
-.text-decoration-overline {
-  text-decoration: overline !important;
-}
-.text-decoration-inherit {
-  text-decoration: inherit !important;
-}
-
-.text-justify {
-  text-align: justify !important;
-}
-
 .flatpickr-months {
   margin: 0.5rem 0;
 }
