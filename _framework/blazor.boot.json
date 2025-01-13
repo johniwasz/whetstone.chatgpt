@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Whetstone.ChatGPT.Blazor.App",
   "resources": {
-    "hash": "sha256-V1pv3fE5GeOYBAIgkWwKzfw0Hxj/15wruxOHp/bjn9o=",
+    "hash": "sha256-KM6UPO4An1f0WrZE8lDjS0NXyhiYX91G4aBj2njyY30=",
     "jsModuleNative": {
       "dotnet.native.8.0.11.nbuh5ba5mj.js": "sha256-NRq3sZacuCYwAiAXbEQpy/pF5lYW3jx62n/pPqCNiac="
     },
@@ -26,7 +26,7 @@
       "Blazorise.LoadingIndicator.wasm": "sha256-egJd6Fr/w25UTOUBR55Z4R12Kd61AsCXzGQtvj1YXzc=",
       "Blazorise.Snackbar.wasm": "sha256-wguVBnCe1svTQmP2e5C3sd16GO00K0454Wu5XJ7Cd74=",
       "Blazorise.wasm": "sha256-xxD9NSKffP9aAy7DSA1ChZ4QH1R9zcBuRFyaqW04GCg=",
-      "Markdig.Signed.wasm": "sha256-l+Wqwp7JChefp2VBxUB2KsbLQKzC6hmQq6TdPakki9s=",
+      "Markdig.Signed.wasm": "sha256-HZcTr5BxszLnxrkKZO+aq+YCQfZen37xa2jIWKN3v88=",
       "Microsoft.AspNetCore.Components.Forms.wasm": "sha256-o8KF2YSlaJydyjpEdE9dsm/UEgUeR3/M+NTxOOMOChs=",
       "Microsoft.AspNetCore.Components.wasm": "sha256-YtLyLQZ4qUelp+rqq3dEnZ/3ZWRJVrK4BmuocTlSuyo=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-3tBwM/Ny4DNP+r8VFojoIIoXnSD+We+mWUG0U7mGG4k=",
@@ -104,8 +104,8 @@
       "System.Xml.ReaderWriter.wasm": "sha256-5InRekKVfK8D1c6eP9SenL4uL8HX3YTmhcdWgrU8T60=",
       "System.Xml.XDocument.wasm": "sha256-pDmh1ylt/w8J2POvLX4f2k8iv29/iDhuSpCHlP8nzcE=",
       "System.Xml.XPath.XDocument.wasm": "sha256-IiY/y+hYDwrOmzZH3yBbcCOQjEs4Rj294RR4oXiatQY=",
-      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-SPXAoWdsIVULxfzf3pbo2dEnwPxBZejCoGD+xct6W7c=",
-      "Whetstone.ChatGPT.wasm": "sha256-me5KLegUs9BpdieG6LTJJFLWXQ4ftO7UewVU7NUronI="
+      "Whetstone.ChatGPT.Blazor.App.wasm": "sha256-bucIEma63dSRdHqDy7rserVsVqZWJ2KcNYdmQK2MKNQ=",
+      "Whetstone.ChatGPT.wasm": "sha256-4TtNRtfAHlYCz+wTIQvpI7f6LB6FiT0O5VPwXnmtGAo="
     },
     "satelliteResources": {
       "cs": {
