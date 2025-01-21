@@ -1,4 +1,4 @@
-import { getRequiredElement } from "./utilities.js?v=1.7.3.0";
+import { getRequiredElement } from "./utilities.js?v=1.7.1.0";
 
 export function initializeTableFixedHeader(element, elementId) {
     element = getRequiredElement(element, elementId);
@@ -83,9 +83,9 @@ export function fixedHeaderScrollTableToRow(element, elementId, row) {
 }
 
 export function initializeResizable(element, elementId, mode) {
-    const RESIZER_CLASS = "b-table-resizer";
-    const RESIZING_CLASS = "b-table-resizing";
-    const RESIZER_HEADER_MODE = 0;
+    const resizerClass = "b-table-resizer";
+    const resizingClass = "b-table-resizing";
+    const resizerHeaderMode = 0;
     let cols = null;
 
     element = getRequiredElement(element, elementId);
@@ -113,7 +113,7 @@ export function initializeResizable(element, elementId, mode) {
         };
 
         const calculateModeHeight = () => {
-            return mode === RESIZER_HEADER_MODE
+            return mode === resizerHeaderMode
                 ? element !== null
                     ? element.querySelector('tr:first-child > th:first-child').offsetHeight
                     : 0
@@ -123,17 +123,11 @@ export function initializeResizable(element, elementId, mode) {
         let actualHeight = calculateModeHeight();
 
         const createResizableColumn = function (col) {
-            if (col.querySelector(`.${RESIZER_CLASS}`) !== null)
+            if (col.querySelector(`.${resizerClass}`) !== null)
                 return;
-
-            // if the column already has both min and max width set, then we don't need to resize it
-            if (((col.style.minWidth && col.style.maxWidth) || col.dataset.fixedPosition) && !col.dataset.resized) {
-                return;
-            }
-
             // Add a resizer element to the column
             const resizer = document.createElement('div');
-            resizer.classList.add(RESIZER_CLASS);
+            resizer.classList.add(resizerClass);
 
             // Set the height
             resizer.style.height = `${actualHeight}px`;
@@ -172,47 +166,43 @@ export function initializeResizable(element, elementId, mode) {
             col.appendChild(resizer);
 
             // Track the current position of mouse
-            let startX = 0;
-            let startWidth = 0;
+            let x = 0;
+            let w = 0;
 
             const mouseDownHandler = function (e) {
                 mouseDownDate = new Date();
 
                 // Get the current mouse position
-                startX = e.clientX;
+                x = e.clientX;
 
                 // Calculate the current width of column
                 const styles = window.getComputedStyle(col);
-                startWidth = parseInt(styles.width, 10);
+                w = parseInt(styles.width, 10);
 
                 // Attach listeners for document's events
                 document.addEventListener('pointermove', mouseMoveHandler);
                 document.addEventListener('pointerup', mouseUpHandler);
 
-                resizer.classList.add(RESIZING_CLASS);
+                resizer.classList.add(resizingClass);
             };
 
             const mouseMoveHandler = function (e) {
                 // Determine how far the mouse has been moved
-                const dx = e.clientX - startX;
+                const dx = e.clientX - x;
 
                 resizer.style.height = `${calculateTableActualHeight()}px`;
 
                 // Update the width of column
-                const widthStyle = `${startWidth + dx}px`;
-                col.style.width = widthStyle;
-                col.style.minWidth = widthStyle;
-                col.style.maxWidth = widthStyle;
-                col.dataset.resized = true;
+                col.style.width = `${w + dx}px`;
             };
 
             // When user releases the mouse, remove the existing event listeners
             const mouseUpHandler = function () {
                 mouseUpDate = new Date();
 
-                resizer.classList.remove(RESIZING_CLASS);
+                resizer.classList.remove(resizingClass);
 
-                element.querySelectorAll(`.${RESIZER_CLASS}`).forEach(x => x.style.height = `${calculateModeHeight()}px`);
+                element.querySelectorAll(`.${resizerClass}`).forEach(x => x.style.height = `${calculateModeHeight()}px`);
 
                 document.removeEventListener('pointermove', mouseMoveHandler);
                 document.removeEventListener('pointerup', mouseUpHandler);
