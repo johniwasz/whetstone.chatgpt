@@ -1,4 +1,4 @@
-import { getRequiredElement } from "../Blazorise/utilities.js?v=1.7.5.0";
+import { getRequiredElement } from "../Blazorise/utilities.js?v=1.7.0.0";
 
 const QUERYSELECTOR_ALL_COLUMNS = "tbody tr td";
 const QUERYSELECTOR_ALL_TABLE_HEAD_INPUT = "tbody tr td";
@@ -21,6 +21,7 @@ export function initializeTableCellNavigation(element, elementId) {
     element.addEventListener("click", clickCellNavigation);
     element.addEventListener("keydown", KeyDownCellNavigation)
 }
+
 
 export function scrollTo(table, rowUnselectedClass) {
     let allTr = table.querySelectorAll("tbody tr");
@@ -65,7 +66,7 @@ function keyPressPreventSubmitOnEnter(e) {
 }
 
 function findAncestorByTagName(el, tagName) {
-    while ((el = el.parentElement) && el.tagName !== tagName);
+    while ((el = el.parentElement) && el.tagName !== tagName );
     return el;
 }
 
@@ -104,7 +105,6 @@ function KeyDownCellNavigation(e) {
     let isDown = e.keyCode == 40;
     let isArrow = isLeft | isUp | isRight | isDown;
     let isEnterKey = e.keyCode == 13;
-    let isEscKey = e.keyCode == 27;
 
     let focusedElement = document.activeElement;
     let allCells = element.querySelectorAll(QUERYSELECTOR_ALL_COLUMNS);
@@ -116,7 +116,7 @@ function KeyDownCellNavigation(e) {
     let index = [].indexOf.call(allCells, focusedElement);
     let isInputFocused = focusedElement && TAG_NAMES_INPUT.includes(focusedElement.tagName);
 
-    if (isInputFocused && (isEnterKey || isEscKey)) {
+    if (isInputFocused && isEnterKey) {
         focusedElement.addEventListener("blur", () => {
             window.setTimeout(() => {
                 let inputStillExists = element.contains(focusedElement);
