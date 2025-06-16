@@ -19,22 +19,22 @@
 
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-		<PackageReference Include="Blazorise.Components" Version="1.7.1" />
-		<PackageReference Include="Blazorise.DataGrid" Version="1.7.0" />
-		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.6.2" />
-		<PackageReference Include="Markdig.Signed" Version="0.41.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.15" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.4" PrivateAssets="all" />
+		<PackageReference Include="Blazorise.Components" Version="1.7.7" />
+		<PackageReference Include="Blazorise.DataGrid" Version="1.7.7" />
+		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.7.7" />
+		<PackageReference Include="Markdig.Signed" Version="0.41.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.17" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.6" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazorise" Version="1.7.5" />
-		<PackageReference Include="Blazorise.Bootstrap5" Version="1.7.3" />
-		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.7.5" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+		<PackageReference Include="Blazorise" Version="1.7.7" />
+		<PackageReference Include="Blazorise.Bootstrap5" Version="1.7.7" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.7.7" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Text.Encodings.Web" Version="9.0.4" />
+		<PackageReference Include="System.Text.Encodings.Web" Version="9.0.6" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 	</ItemGroup>
 
