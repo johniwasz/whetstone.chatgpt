@@ -1,8 +1,7 @@
-import "./vendors/flatpickr.js?v=1.8.0.0";
-import "./vendors/flatpickr-monthselect.js?v=1.8.0.0";
-import * as utilities from "./utilities.js?v=1.8.0.0";
-import * as inputmask from "./inputMask.js?v=1.8.0.0";
-import { ClassWatcher } from "./observer.js?v=1.8.0.0";
+import "./vendors/flatpickr.js?v=1.7.5.0";
+import * as utilities from "./utilities.js?v=1.7.5.0";
+import * as inputmask from "./inputMask.js?v=1.7.5.0";
+import { ClassWatcher } from "./observer.js?v=1.7.5.0";
 
 const _pickers = [];
 
@@ -63,14 +62,11 @@ export function initialize(dotnetAdapter, element, elementId, options) {
             firstDayOfWeek: options.firstDayOfWeek
         },
         time_24hr: options.timeAs24hr ? options.timeAs24hr : false,
-        clickOpens: !(utilities.coalesce(options.readOnly, false)),
+        clickOpens: !(options.readOnly || false),
         disable: disableDatesOptions.concat(disableDaysOptions),
-        inline: utilities.coalesce(options.inline, false),
-        disableMobile: utilities.coalesce(options.disableMobile, true),
+        inline: options.inline || false,
+        disableMobile: options.disableMobile || true,
         static: options.staticPicker,
-        weekNumbers: options.showWeekNumbers,
-        todayButton: options.showTodayButton,
-        clearButton: options.showClearButton,
         errorHandler: (error) => {
             // do nothing to prevent warnings in the console
         },
@@ -107,8 +103,8 @@ export function initialize(dotnetAdapter, element, elementId, options) {
     picker.altInput.dotnetAdapter = dotnetAdapter;
 
     if (options) {
-        picker.altInput.disabled = utilities.coalesce(options.disabled, false);
-        picker.altInput.readOnly = utilities.coalesce(options.readOnly, false);
+        picker.altInput.disabled = options.disabled || false;
+        picker.altInput.readOnly = options.readOnly || false;
         picker.altInput.placeholder = utilities.coalesce(options.placeholder, "");
 
         picker.altInput.addEventListener("blur", (e) => {
@@ -324,11 +320,11 @@ export function updateOptions(element, elementId, options) {
         }
 
         if (options.inline.changed) {
-            picker.set("inline", utilities.coalesce(options.inline.value, false));
+            picker.set("inline", options.inline.value || false);
         }
 
         if (options.disableMobile.changed) {
-            picker.set("disableMobile", utilities.coalesce(options.disableMobile.value, true));
+            picker.set("disableMobile", options.disableMobile.value || true);
         }
 
         if (options.placeholder.changed) {
@@ -337,18 +333,6 @@ export function updateOptions(element, elementId, options) {
 
         if (options.staticPicker.changed) {
             picker.set("static", options.staticPicker.value);
-        }
-
-        if (options.showWeekNumbers.changed) {
-            picker.set("weekNumbers", options.showWeekNumbers.value);
-        }
-
-        if (options.showTodayButton.changed) {
-            picker.set("todayButton", options.showTodayButton.value);
-        }
-
-        if (options.showClearButton.changed) {
-            picker.set("clearButton", options.showClearButton.value);
         }
     }
 }
@@ -404,9 +388,6 @@ export function updateLocalization(element, elementId, localization) {
             picker.amPM.innerHtml = localization.amPM[index];
             picker.amPM.innerText = localization.amPM[index];
         }
-
-        picker.l10n.today = localization.today;
-        picker.l10n.clear = localization.clear;
 
         picker.redraw();
     }
