@@ -43,6 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+  	<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.19" />
 	  <Content Update="wwwroot\brand-logo.png">
 	    <PackagePath>\</PackagePath>
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
