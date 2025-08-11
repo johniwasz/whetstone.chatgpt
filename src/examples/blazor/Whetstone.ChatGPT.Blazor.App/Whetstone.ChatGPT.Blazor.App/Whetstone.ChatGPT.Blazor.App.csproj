@@ -43,6 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+  	<PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="9.0.8" />
 	  <Content Update="wwwroot\brand-logo.png">
 	    <PackagePath>\</PackagePath>
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
