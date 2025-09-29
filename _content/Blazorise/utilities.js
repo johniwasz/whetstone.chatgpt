@@ -1,5 +1,5 @@
-import "./vendors/jsencrypt.js?v=1.8.2.0";
-import "./vendors/sha512.js?v=1.8.2.0";
+import "./vendors/jsencrypt.js?v=1.8.3.0";
+import "./vendors/sha512.js?v=1.8.3.0";
 
 // adds a classname to the specified element
 export function addClass(element, classname) {
@@ -331,8 +331,12 @@ export function verifyRsa(publicKey, content, signature) {
     return false;
 }
 
-export function log(message, args) {
+export function log(showBanner, message, args) {
     console.log(message, args);
+
+    if (!showBanner) {
+        return;
+    }
 
     const HOST_ID = "blazorise-license-banner-host";
     const GLOBAL = "__blazoriseBannerState__";
