@@ -109,6 +109,7 @@ namespace Whetstone.ChatGPT.Test
         {
 
             var createdFile = await _fileTestFixture.CreateTestFileAsync();
+            Assert.NotNull(createdFile);
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
