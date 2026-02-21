@@ -1,7 +1,3 @@
-﻿[![CodeQL](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml/badge.svg)](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml)
-
-# Whetstone.ChatGPT
-
 > **⚠️ DEPRECATED - This library is no longer maintained.**
 > 
 > Please use the official OpenAI .NET package instead: <https://www.nuget.org/packages/OpenAI>
@@ -11,6 +7,12 @@
 In 2023, this repo was cited in Visual Studio Magazine as an emerging Blazor front end making use of ChatGPT:
 
 [ChatGPT Demos for Blazor and Other Projects with New API for 'Turbo' Model](https://visualstudiomagazine.com/articles/2023/03/07/chatgpt-demos.aspx)
+
+So long, and thanks for all the fish.
+
+----
+
+# Whetstone.ChatGPT
 
 A simple light-weight library that wraps the Open AI API with support for dependency injection.
 
