@@ -1,6 +1,10 @@
-[![CodeQL](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml/badge.svg)](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml)
+﻿[![CodeQL](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml/badge.svg)](https://github.com/johniwasz/whetstone.chatgpt/actions/workflows/codeql.yml)
 
 # Whetstone.ChatGPT
+
+> **⚠️ DEPRECATED - This library is no longer maintained.**
+> 
+> Please use the official OpenAI .NET package instead: <https://www.nuget.org/packages/OpenAI>
 
 A simple light-weight library that wraps the Open AI API with support for dependency injection.
 

@@ -30,15 +30,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
 
         private IEnumerable<IEnumerable<string>>? DataRows = default!;
 
-        private ChatGPTCompletionRequest gptCompletionRequest = new();
-
-        private ChatGPTCompletionResponse gptCompletionResponse = new();
-
         private ChatGPTChatCompletionRequest? gptChatCompletionRequest = default!;
 
         private ChatGPTChatCompletionResponse gptChatCompletionResponse = default!;
-
-        private ChatGPTUsage completionUsage = new();
 
         private Visibility completionDetailsVisibility = Visibility.Invisible;
 
@@ -76,11 +70,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                     if (tableResponse.Content is not null)
                     {
                         rawResponse = tableResponse.Content;
-
-                        if (tableResponse.Usage is not null)
-                        {
-                            AppState.UpdateTokenUsage(tableResponse.Usage);
-                        }
 
                         completionDetailsVisibility = Visibility.Visible;
                     }
@@ -163,13 +152,10 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
         private async Task<TableResponse> BuildTablesAsync(string prompt, ChatOptionsSelector compOptions, CancellationToken cancelToken)
         {
             TableResponse tableResponse = new();
-            
+
 
             if (compOptions.SelectedModel!.StartsWith("gpt-4") || compOptions.SelectedModel.StartsWith("gpt-3.5"))
-            {
-
-                gptCompletionRequest = new();
-                gptCompletionResponse = new();
+            { 
 
                 gptChatCompletionRequest = new()
                 {
@@ -200,33 +186,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Pages.Prompts
                     }
                 }
             }
-            else
-            {
-                gptChatCompletionRequest = new();
-                gptChatCompletionResponse = new();
-
-                gptCompletionRequest = new()
-                {
-                    Prompt = prompt,
-                    Model = optionsSelector!.SelectedModel,
-                    MaxTokens = optionsSelector!.MaxTokens,
-                    Temperature = optionsSelector!.Temperature,
-                };
-
-                ChatGPTCompletionResponse? completionResponse = await ChatClient.CreateCompletionAsync(gptCompletionRequest, cancelToken);
-
-                if (completionResponse is not null)
-                {
-                    gptCompletionResponse = completionResponse;
-
-                    tableResponse.Content = gptCompletionResponse.GetCompletionText()!.Trim();
-
-                    if (gptCompletionResponse.Usage is not null)
-                    {
-                        tableResponse.Usage = gptCompletionResponse.Usage;
-                    }
-                }
-            }
+          
             return tableResponse;
         }
 

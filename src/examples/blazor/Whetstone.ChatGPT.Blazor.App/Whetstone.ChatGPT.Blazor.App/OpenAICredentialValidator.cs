@@ -123,7 +123,7 @@ namespace Whetstone.ChatGPT.Blazor.App
             T retVal = default!;
             try
             {
-                retVal = await _localStorage.GetItemAsync<T>(storeName);
+                retVal = await _localStorage.GetItemAsync<T>(storeName) ?? default!;
             }
             catch (Exception ex)
             {

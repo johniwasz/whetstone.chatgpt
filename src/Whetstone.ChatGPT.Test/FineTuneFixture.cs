@@ -20,31 +20,17 @@ namespace Whetstone.ChatGPT.Test
 
         }
 
-#if NETFRAMEWORK
-        internal string ExistingFineTuneId
-        {
-            get;
-            private set;
-        }
+internal string? ExistingFineTuneId
+{
+    get;
+    private set;
+}
 
-        internal string ExistingFineTunedModel
-        {
-            get;
-            private set;
-        }
-#else
-        internal string? ExistingFineTuneId
-        {
-            get;
-            private set;
-        }
-
-        internal string? ExistingFineTunedModel
-        {
-            get;
-            private set;
-        }
-#endif
+internal string? ExistingFineTunedModel
+{
+    get;
+    private set;
+}
         
         internal async Task InitializeAsync()
         {

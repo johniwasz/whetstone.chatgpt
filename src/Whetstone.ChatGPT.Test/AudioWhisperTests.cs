@@ -23,13 +23,8 @@ namespace Whetstone.ChatGPT.Test
             };
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-#if NETFRAMEWORK
-                ChatGPTAudioResponse audioResponse = await client.CreateTranscriptionAsync(uploadRequest, true);
-                string text = audioResponse?.Text;
-#else
                 ChatGPTAudioResponse? audioResponse = await client.CreateTranscriptionAsync(uploadRequest, true);
                 string? text = audioResponse?.Text;
-#endif
 
                 Assert.NotNull(text);
             }
@@ -45,11 +40,7 @@ namespace Whetstone.ChatGPT.Test
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-#if NETFRAMEWORK
-                string textReponse = await client.CreateTranscriptionAsync(uploadRequest, AudioResponseFormatText.WebVtt);
-#else
                 string? textReponse = await client.CreateTranscriptionAsync(uploadRequest, AudioResponseFormatText.WebVtt);
-#endif
                 Assert.NotNull(textReponse);
             }
         }
@@ -64,13 +55,8 @@ namespace Whetstone.ChatGPT.Test
             
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-#if NETFRAMEWORK
-                ChatGPTAudioResponse audioResponse = await client.CreateTranslationAsync(uploadRequest, true);
-                string text = audioResponse?.Text;
-#else
                 ChatGPTAudioResponse? audioResponse = await client.CreateTranslationAsync(uploadRequest, true);
                 string? text = audioResponse?.Text;
-#endif
                 Assert.NotNull(text);
             }
         }
@@ -85,11 +71,7 @@ namespace Whetstone.ChatGPT.Test
             
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-#if NETFRAMEWORK
-                string textReponse = await client.CreateTranslationAsync(uploadRequest, AudioResponseFormatText.WebVtt);
-#else
                 string? textReponse = await client.CreateTranslationAsync(uploadRequest, AudioResponseFormatText.WebVtt);
-#endif
                 Assert.NotNull(textReponse);
             }
         }

@@ -34,7 +34,7 @@ List<ChatGPTChatCompletionMessage> completionMessages = new List<ChatGPTChatComp
 
 ChatGPTChatCompletionRequest chatCompletionRequest = new ChatGPTChatCompletionRequest
 {
-    Model = ChatGPT35Models.Turbo16k,
+    Model = ChatGPT5Models.GPT_5_MINI,
     Temperature = 1.0f,
     MaxTokens = 500,
     TopP = 0.3f,

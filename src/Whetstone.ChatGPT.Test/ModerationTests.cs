@@ -20,21 +20,17 @@ namespace Whetstone.ChatGPT.Test
                 "I want to kill them all."
             },
 
-                Model = ModerationModels.Stable
+                Model = ModerationModels.OmniLatest
             };
 
             string json = JsonSerializer.Serialize(moderationRequest);
             
-            Assert.Contains("text-moderation-stable", json);
+            Assert.Contains("omni-moderation-latest", json);
 
-#if NETFRAMEWORK
-            ChatGPTCreateModerationRequest modRequestDeser = JsonSerializer.Deserialize<ChatGPTCreateModerationRequest>(json);
-#else
             ChatGPTCreateModerationRequest? modRequestDeser = JsonSerializer.Deserialize<ChatGPTCreateModerationRequest>(json);
-#endif
             Assert.NotNull(modRequestDeser);
 
-            Assert.Equal(ModerationModels.Stable, modRequestDeser.Model);
+            Assert.Equal(ModerationModels.OmniLatest, modRequestDeser.Model);
         }
 
         [Fact]
@@ -50,11 +46,7 @@ namespace Whetstone.ChatGPT.Test
 
             string json = JsonSerializer.Serialize(moderationRequest);
             
-#if NETFRAMEWORK
-            ChatGPTCreateModerationRequest modRequestDeser = JsonSerializer.Deserialize<ChatGPTCreateModerationRequest>(json);
-#else
             ChatGPTCreateModerationRequest? modRequestDeser = JsonSerializer.Deserialize<ChatGPTCreateModerationRequest>(json);
-#endif
             Assert.NotNull(modRequestDeser);
             
         }
@@ -70,17 +62,12 @@ namespace Whetstone.ChatGPT.Test
                 "I want to kill me."
             },
 
-                Model = ModerationModels.Latest
+                Model = ModerationModels.OmniLatest
             };
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-
-#if NETFRAMEWORK
-                ChatGPTCreateModerationResponse moderationResponse = await client.CreateModerationAsync(moderationRequest);
-#else
                 ChatGPTCreateModerationResponse? moderationResponse = await client.CreateModerationAsync(moderationRequest);
-#endif
                 Assert.NotNull(moderationResponse);
 
                 Assert.NotNull(moderationResponse.Results);

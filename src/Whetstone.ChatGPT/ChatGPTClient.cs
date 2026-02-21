@@ -258,30 +258,6 @@ public class ChatGPTClient : IChatGPTClient
 
     #region Completions
 
-    /// <inheritdoc cref="IChatGPTClient.CreateCompletionAsync"/>
-    [Obsolete("Use CreateChatCompletionAsync instead")]
-    public async Task<ChatGPTCompletionResponse?> CreateCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
-    {
-        if (completionRequest is null)
-        {
-            throw new ArgumentNullException(nameof(completionRequest));
-        }
-
-        if (string.IsNullOrWhiteSpace(completionRequest.Model))
-        {
-            throw new ArgumentException("Model is required", nameof(completionRequest));
-        }
-
-        if (string.IsNullOrWhiteSpace(completionRequest.Prompt))
-        {
-            throw new ArgumentException("Prompt is required", nameof(completionRequest));
-        }
-
-        completionRequest.Stream = false;
-
-        return await SendRequestAsync<ChatGPTCompletionRequest, ChatGPTCompletionResponse>(HttpMethod.Post, "completions", completionRequest, cancellationToken);
-    }
-
     /// <inheritdoc cref="IChatGPTClient.ListModelsAsync"/>
     public async Task<ChatGPTListResponse<ChatGPTModel>?> ListModelsAsync(CancellationToken? cancellationToken = null)
     {
@@ -309,89 +285,6 @@ public class ChatGPTClient : IChatGPTClient
         }
 
         return await SendRequestAsync<ChatGPTDeleteResponse>(HttpMethod.Delete, $"models/{modelId}", cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <inheritdoc cref="IChatGPTClient.StreamCompletionAsync"/>
-    [Obsolete("Use StreamChatCompletion instead")]
-    public async IAsyncEnumerable<ChatGPTCompletionStreamResponse?> StreamCompletionAsync(ChatGPTCompletionRequest completionRequest, CancellationToken? cancellationToken = null)
-    {
-
-        if (completionRequest is null)
-        {
-            throw new ArgumentNullException(nameof(completionRequest));
-        }
-
-        if (string.IsNullOrWhiteSpace(completionRequest.Model))
-        {
-            throw new ArgumentException("Model is required", nameof(completionRequest));
-        }
-
-        if (string.IsNullOrWhiteSpace(completionRequest.Prompt))
-        {
-            throw new ArgumentException("Prompt is required", nameof(completionRequest));
-        }
-
-        completionRequest.Stream = true;
-
-        using HttpRequestMessage httpReq = CreateRequestMessage(HttpMethod.Post, "completions");
-
-        CancellationToken cancelToken = cancellationToken ?? CancellationToken.None;
-
-        string requestString = JsonSerializer.Serialize(completionRequest);
-
-        httpReq.Content = new StringContent(requestString, Encoding.UTF8, "application/json");
-
-        HttpResponseMessage responseMessage = await _client.
-            SendAsync(httpReq, HttpCompletionOption.ResponseHeadersRead, cancelToken).
-            ConfigureAwait(false);
-
-        if (responseMessage.IsSuccessStatusCode)
-        {
-
-#if NETSTANDARD2_1 || NETSTANDARD2_0
-            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-#else
-            using Stream responseStream = await responseMessage.Content.ReadAsStreamAsync(cancelToken).ConfigureAwait(false);
-#endif
-            using StreamReader reader = new(responseStream);
-            string? line = null;
-
-
-            while ((line = await reader.ReadLineAsync()) is not null)
-            {
-
-                if (line.StartsWith(ResponseLinePrefix, System.StringComparison.OrdinalIgnoreCase))
-                    line = line.Substring(ResponseLinePrefix.Length);
-
-                if (!string.IsNullOrWhiteSpace(line) && line != "[DONE]")
-                {
-                    ChatGPTCompletionStreamResponse? streamedResponse;
-
-                    string trimmedLine = line.Trim();
-                    try
-                    {
-                        streamedResponse = JsonSerializer.Deserialize<ChatGPTCompletionStreamResponse>(trimmedLine);
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        throw new ChatGPTException($"Error deserializing ChatGPT streamed chat response: {trimmedLine}",
-                            responseMessage.StatusCode,
-                            jsonEx);
-                    }
-
-                    yield return streamedResponse;
-                }
-            }
-        }
-        else
-        {
-#if NETSTANDARD2_1 || NETSTANDARD2_0
-            string? responseString = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-#else
-            string? responseString = await responseMessage.Content.ReadAsStringAsync(cancelToken).ConfigureAwait(false);
-#endif
-            ProcessErrorResponse(responseMessage.StatusCode, responseString);
-        }
     }
 
     #endregion Completions

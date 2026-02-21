@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Whetstone.ChatGPT.Models;
 using Whetstone.ChatGPT.Models.File;
 using Whetstone.ChatGPT.Models.Image;
 using Xunit;
@@ -11,45 +10,35 @@ namespace Whetstone.ChatGPT.Test
 {
     public class ImageTests
     {
-        [Fact(Skip = "Skipping due to cost.")]
+        [Fact(Skip = "Skipping due to cost.")]                
         public async Task GenerateImageAsync()
         {
 
-            ChatGPTCreateImageRequest imageRequest = new ChatGPTCreateImageRequest()
+            ChatGPTCreateImageRequest imageRequest = new()
             {
-                Prompt = "A sail boat",
-                Size = CreatedImageSize.Size256,
-                ResponseFormat = CreatedImageFormat.Url
+                Prompt = "A sail boat caught in a storm on a lake. There is a sea monster. Photorealistic.",
+                Size = CreatedImageSize.Size1024x1024,
+                ResponseFormat = CreatedImageFormat.Base64,
+                Model = ChatGPTImageModels.Dall_E_3
             };
 
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-#if NETFRAMEWORK
-                ChatGPTImageResponse imageResponse = await client.CreateImageAsync(imageRequest);
-#else
+
                 ChatGPTImageResponse? imageResponse = await client.CreateImageAsync(imageRequest);
-#endif                
+
                 Assert.NotNull(imageResponse);
 
                 Assert.NotNull(imageResponse.Data);
 
                 Assert.Single(imageResponse.Data);
 
-                Assert.NotNull(imageResponse.Data[0].Url);
-                
-#if NETFRAMEWORK
-                string imageData = imageResponse.Data[0].Url;
-#else
-                string? imageData = imageResponse.Data[0].Url;
-#endif
-                Assert.NotNull(imageData);
+                string? imageString = imageResponse.Data[0].Base64;
 
-#if NETFRAMEWORK
-                byte[] imageBytes = await client.DownloadImageAsync(imageResponse.Data[0]);
-#else
-                byte[]? imageBytes = await client.DownloadImageAsync(imageResponse.Data[0]);
-#endif
+                // Convert the base64 string to bytes
+                byte[]? imageBytes = Convert.FromBase64String(imageString!);
+
                 Assert.NotNull(imageBytes);
 
                 Assert.True(imageBytes.Length > 0);
@@ -62,34 +51,27 @@ namespace Whetstone.ChatGPT.Test
         {
             ChatGPTCreateImageVariationRequest imageRequest = new ChatGPTCreateImageVariationRequest()
             {
-#if NETFRAMEWORK
-                Image = LoadFile("ImageFiles/sailboat.png"),
-#else
+
                 Image = await LoadFileAsync("ImageFiles/sailboat.png"),
-#endif
-                Size = CreatedImageSize.Size1024,
+
+                Size = CreatedImageSize.Size1024x1024,
                 ResponseFormat = CreatedImageFormat.Base64
             };
 
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-#if NETFRAMEWORK
-                ChatGPTImageResponse imageResponse = await client.CreateImageVariationAsync(imageRequest);
-#else
+
                 ChatGPTImageResponse? imageResponse = await client.CreateImageVariationAsync(imageRequest);
-#endif
+
                 Assert.NotNull(imageResponse);
 
                 Assert.NotNull(imageResponse.Data);
 
                 Assert.Single(imageResponse.Data);
 
-#if NETFRAMEWORK
-                string imageData = imageResponse.Data[0].Base64;
-#else
                 string? imageData = imageResponse.Data[0].Base64;
-#endif
+
                 Assert.False(string.IsNullOrEmpty(imageData));
 
                 byte[] imageBytes = Convert.FromBase64String(imageData);
@@ -106,14 +88,11 @@ namespace Whetstone.ChatGPT.Test
             {
                 NumberOfImagesToGenerate = 1,
                 Prompt = "sail boat with clouds and a sunset",
-#if NETFRAMEWORK
-                Image = LoadFile("ImageFiles/sailboat.png"),
-                Mask = LoadFile("ImageFiles/sailboat-alpha.png"),
-#else
+
                 Image = await LoadFileAsync("ImageFiles/sailboat.png"),
                 Mask = await LoadFileAsync("ImageFiles/sailboat-alpha.png"),
-#endif
-                Size = CreatedImageSize.Size1024,
+
+                Size = CreatedImageSize.Size1024x1024,
                 ResponseFormat = CreatedImageFormat.Base64
             };
 
@@ -121,11 +100,8 @@ namespace Whetstone.ChatGPT.Test
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
 
-#if NETFRAMEWORK
-                ChatGPTImageResponse imageResponse = await client.CreateImageEditAsync(imageRequest);
-#else
                 ChatGPTImageResponse? imageResponse = await client.CreateImageEditAsync(imageRequest);
-#endif
+
 
                 Assert.NotNull(imageResponse);
 
@@ -135,11 +111,8 @@ namespace Whetstone.ChatGPT.Test
 
                 Assert.NotNull(imageResponse.Data[0].Base64);
 
-#if NETFRAMEWORK
-                string imageData = imageResponse.Data[0].Base64;
-#else
                 string? imageData = imageResponse.Data[0].Base64;
-#endif
+
                 Assert.False(string.IsNullOrEmpty(imageData));
 
                 byte[] imageBytes = Convert.FromBase64String(imageData);
@@ -148,27 +121,6 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-#if NETFRAMEWORK
-        private ChatGPTFileContent LoadFile(string filePath)
-        {
-
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"Test file {filePath} not found");
-            }
-
-            byte[] fileBytes = File.ReadAllBytes(filePath);
-
-            ChatGPTFileContent fileContents = new ChatGPTFileContent
-            {
-                FileName = Path.GetFileName(filePath),
-                Content = fileBytes
-            };
-
-            return fileContents;
-        }
-
-#else
         private async Task<ChatGPTFileContent> LoadFileAsync(string filePath)
         {
 
@@ -187,6 +139,5 @@ namespace Whetstone.ChatGPT.Test
 
             return fileContents;
         }
-#endif
     }
 }

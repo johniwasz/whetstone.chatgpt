@@ -43,10 +43,10 @@ namespace Whetstone.ChatGPT.Models.Image
         /// The size of the generated images. Must be one of <c>256x256</c>, <c>512x512</c>, or <c>1024x1024</c>.
         /// </summary>        
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        [DefaultValue(CreatedImageSize.Size1024)]
+        [DefaultValue(CreatedImageSize.Size1024x1024)]
         [JsonConverter(typeof(EnumConverter<CreatedImageSize>))]
         [JsonPropertyName("size")]
-        public CreatedImageSize Size { get; set; } = CreatedImageSize.Size1024;
+        public CreatedImageSize Size { get; set; } = CreatedImageSize.Size1024x1024;
 
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

@@ -22,12 +22,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         [Parameter]
         public EventCallback<Exception> OnException { get; set; } = default!;
 
-        [Parameter]
-        public EventCallback<ChatGPTCompletionRequest> OnCompletionRequestedAsync { get; set; } = default!;
-
-        [Parameter]
-        public EventCallback<ChatGPTCompletionResponse> OnCompletionResponseAsync { get; set; } = default!;
-
 
         [Parameter]
         public EventCallback<ChatGPTChatCompletionRequest> OnChatCompletionRequestedAsync { get; set; } = default!;
@@ -89,23 +83,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
                         ChatGPTChatCompletionResponse gptChatCompletionResponse = (await ChatClient.CreateChatCompletionAsync(gptChatCompletionRequest))!;
 
                         await OnChatCompletionResponseAsync.InvokeAsync(gptChatCompletionResponse);
-                    }
-                    else
-                    {
-                        ChatGPTCompletionRequest gptCompletionRequest = new()
-                        {
-                            Prompt = completionRequest.Prompt,
-                            Model = compOptions.SelectedModel,
-                            MaxTokens = compOptions.MaxTokens,
-                            Temperature = compOptions.Temperature,
-                        };
-
-                        await OnCompletionRequestedAsync.InvokeAsync(gptCompletionRequest);
-
-                        ChatGPTCompletionResponse gptCompletionResponse = (await ChatClient.CreateCompletionAsync(gptCompletionRequest))!;
-
-                        await OnCompletionResponseAsync.InvokeAsync(gptCompletionResponse);
-                    }
+                    }                   
 
                 }
             }

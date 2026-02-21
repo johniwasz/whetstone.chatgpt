@@ -43,7 +43,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
                     models = listResponse.Data.OrderBy(x => x.Id);
                 }
 
-                SelectedModel = ChatGPT35Models.Gpt35TurboInstruct;
+                SelectedModel = ChatGPT5Models.GPT_5_MINI;
 
                 if (DefaultMaxTokens is not null)
                 {
