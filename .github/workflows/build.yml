@@ -42,7 +42,7 @@ jobs:
         run: env
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: setup-dotnet 8.0
         uses: xt0rted/setup-dotnet@v1.5.0
@@ -91,7 +91,7 @@ jobs:
         run: env
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: setup-dotnet 8.0
         uses: xt0rted/setup-dotnet@v1.5.0
@@ -155,7 +155,7 @@ jobs:
         run: env
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: setup-dotnet
         uses: xt0rted/setup-dotnet@v1.5.0
