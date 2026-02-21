@@ -7,9 +7,9 @@ namespace Whetstone.ChatGPT.Models.Moderation
     public enum ModerationModels
     {
         [EnumMember(Value = "text-moderation-latest")]
-        Latest,
-        [EnumMember(Value = "text-moderation-stable")]
-        Stable
+        TextLatest,
+        [EnumMember(Value = "omni-moderation-latest")]
+        OmniLatest,
     }
 
     /// <summary>
@@ -30,13 +30,11 @@ namespace Whetstone.ChatGPT.Models.Moderation
         public List<string>? Inputs { get; set; }
 
         /// <summary>
-        /// Two content moderations models are available: <c>text-moderation-stable</c> and <c>text-moderation-latest.</c>
+        /// Two content moderations models are available: <c>omni-moderation-latest</c> and <c>text-moderation-latest (Legacy)</c>
         /// </summary>
         /// <remarks>
-        /// <para>The default is <c>text-moderation-latest</c> which will be automatically upgraded over time. 
-        /// This ensures you are always using our most accurate model. If you use <c>text-moderation-stable</c>, we will provide advanced notice before updating the model. 
-        /// Accuracy of <c>text-moderation-stable</c> may be slightly lower than for <c>text-moderation-latest</c>.</para>
-        /// <para>Defaults to <c><text-embedding-ada-002</c></para>
+        /// <para>Use the moderations endpoint to check whether text or images are potentially harmful. If harmful content is identified, you can take corrective action, 
+        /// like filtering content or intervening with user accounts creating offending content. The moderation endpoint is free to use.</para>
         /// <para>See <see cref="ChatGPTCompletionModels">ChatGPTCompletionModels</see> for recommended completion models.</para>
         /// </remarks>
         [JsonPropertyOrder(1)]

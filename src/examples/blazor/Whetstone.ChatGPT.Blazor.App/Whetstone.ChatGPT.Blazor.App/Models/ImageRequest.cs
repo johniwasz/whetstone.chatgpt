@@ -10,7 +10,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Models
         public string? ImageDescription { get; set; }
 
         [Required]
-        public CreatedImageSize ImageSize { get; set; } = CreatedImageSize.Size1024;
+        public CreatedImageSize ImageSize { get; set; } = CreatedImageSize.Size1024x1024;
         
     }
 }

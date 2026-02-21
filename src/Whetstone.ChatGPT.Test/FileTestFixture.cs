@@ -15,19 +15,12 @@ namespace Whetstone.ChatGPT.Test
     {
         private bool _isDisposed;
 
-#if NETFRAMEWORK
-        public ChatGPTFileInfo NewTestFile { get; set; }
 
-        public ChatGPTFileInfo NewTurboTestFile { get; set; }
-
-        internal ITestOutputHelper TestOutputHelper { get; set; }
-#else
         public ChatGPTFileInfo? NewTestFile { get; set; }
 
         public ChatGPTFileInfo? NewTurboTestFile { get; set; }
 
         internal ITestOutputHelper? TestOutputHelper { get; set; }
-#endif
 
         public async Task InitializeAsync()
         {
@@ -51,12 +44,8 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-#if NETFRAMEWORK
-        private void DeleteTestFile(ChatGPTFileInfo fileInfo)
-#else
-        private void DeleteTestFile(ChatGPTFileInfo? fileInfo)
-#endif
-        {
+private void DeleteTestFile(ChatGPTFileInfo? fileInfo)
+{
             if (!(fileInfo is null))
             {
                 string apiKey = ChatGPTTestUtilties.GetChatGPTKey();

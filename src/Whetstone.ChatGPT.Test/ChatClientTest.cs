@@ -21,42 +21,12 @@ namespace Whetstone.ChatGPT.Test
         }
 
         [Fact]
-        public async Task TestGPTClientCompletion()
-        {
-#pragma warning disable CS0618 // Type or member is obsolete
-            var gptRequest = new ChatGPTCompletionRequest
-            {
-                Model = ChatGPTCompletionModels.Gpt35TurboInstruct,
-                Prompt = "How is the weather?",
-                Temperature = 0.9f,
-                MaxTokens = 10
-            };
-
-
-            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
-            {
-
-                var response = await client.CreateCompletionAsync(gptRequest);
-
-                Assert.NotNull(response);
-
-                Assert.True(!string.IsNullOrWhiteSpace(response.GetCompletionText()));
-#pragma warning restore CS0618 // Type or member is obsolete
-            }
-        }
-
-        [Fact]
         public async Task GPTModelsList()
         {
-            
+
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-
-#if NETFRAMEWORK
-                ChatGPTListResponse<ChatGPTModel> modelResponse = await client.ListModelsAsync();
-#else
                 ChatGPTListResponse<ChatGPTModel>? modelResponse = await client.ListModelsAsync();
-#endif
                 Assert.NotNull(modelResponse);
 
                 Assert.Equal("list", modelResponse.Object);
@@ -67,7 +37,6 @@ namespace Whetstone.ChatGPT.Test
             }
         }
 
-#if !NETFRAMEWORK
 
         [Fact]
         public async Task GPTModelsListWithHttpClient()
@@ -94,37 +63,7 @@ namespace Whetstone.ChatGPT.Test
 
         }
 
-        [Fact]
-        public async Task TestGPTClientStreamCompletion()
-        {
-#pragma warning disable CS0618 // Type or member is obsolete
-            var gptRequest = new ChatGPTCompletionRequest
-            {
-                Model = ChatGPTCompletionModels.Gpt35TurboInstruct,
-                Prompt = "How is the weather?",
-                Temperature = 0.9f,
-                MaxTokens = 10
-            };
 
-
-            using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
-            {
-
-                // Using Ada in this test to keep costs down.
-
-                await foreach(var completion in client.StreamCompletionAsync(gptRequest).ConfigureAwait(false))
-                {
-                    if (!(completion is null))
-                    {
-
-                        Assert.NotNull(completion.GetCompletionText());
-
-                    }
-                }
-#pragma warning restore CS0618 // Type or member is obsolete
-            }
-        }
-#endif
 
         [Fact]
         public async Task GPTModel()
@@ -138,17 +77,11 @@ namespace Whetstone.ChatGPT.Test
 
         }
 
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-#pragma warning disable CS8604 // Possible null reference argument.
 
         [Fact]
         public void NullSessionConstruction()
         {
-#if NETFRAMEWORK
-            IChatGPTClient constructedClient = new ChatGPTClient((string) null);
-#else
             IChatGPTClient constructedClient = new ChatGPTClient((string?)null);
-#endif
             Assert.NotNull(constructedClient);
         }
 
@@ -163,8 +96,6 @@ namespace Whetstone.ChatGPT.Test
             Assert.Throws<ArgumentNullException>(() => new ChatGPTClient(apiKey, client));
         }
         */
-#pragma warning restore CS8604 // Possible null reference argument.
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-       
+
     }
 }

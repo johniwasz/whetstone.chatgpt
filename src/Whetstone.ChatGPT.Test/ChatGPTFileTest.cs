@@ -63,12 +63,7 @@ namespace Whetstone.ChatGPT.Test
         {
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-
-#if NETFRAMEWORK
-                ChatGPTFileInfo retrieveResponse = await client.RetrieveFileAsync(_fileTestFixture.NewTurboTestFile?.Id);
-#else
                 ChatGPTFileInfo? retrieveResponse = await client.RetrieveFileAsync(_fileTestFixture.NewTurboTestFile?.Id);
-#endif
                 Assert.NotNull(retrieveResponse);
 
                 Assert.NotNull(retrieveResponse.Object);
@@ -85,11 +80,7 @@ namespace Whetstone.ChatGPT.Test
 
             using (IChatGPTClient client = ChatGPTTestUtilties.GetClient())
             {
-#if NETFRAMEWORK
-                ChatGPTFileContent retrieveResponse = await client.RetrieveFileContentAsync(_fileTestFixture.NewTurboTestFile?.Id);
-#else
                 ChatGPTFileContent? retrieveResponse = await client.RetrieveFileContentAsync(_fileTestFixture.NewTurboTestFile?.Id);
-#endif
                 Assert.NotNull(retrieveResponse);
                 Assert.NotNull(retrieveResponse.Content);
 

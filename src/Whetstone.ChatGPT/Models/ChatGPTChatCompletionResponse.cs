@@ -58,12 +58,6 @@ namespace Whetstone.ChatGPT.Models
         /// </remarks>
         [JsonPropertyName("system_fingerprint")]
         public string? SystemFingerprint { get; set; }
-
-        /// <summary>
-        /// Details the number of tokens used to process the completion.
-        /// </summary>
-        [JsonPropertyName("usage")]
-        public ChatGPTUsage? Usage { get; set; }
     }
 
     public class ChatGPTChatChoice

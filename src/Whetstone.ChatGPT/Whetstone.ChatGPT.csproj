@@ -1,103 +1,98 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>Whetstone ChatGPT</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
+		# 1.9.0
+		- Removed .NET 6 target framework
+		- Added .NET 10 target framework
 		
-# 1.8.2
-- Upgrated to safe version of System.Text.Json
-- Added GPT-4o constant
-- Marked ChatGPT35Models.Turbo0613 as Obsolete
+		# 1.8.2
+		- Upgrated to safe version of System.Text.Json
+		- Added GPT-4o constant
+		- Marked ChatGPT35Models.Turbo0613 as Obsolete
 
-# 1.8.1
-- Added a constructor to ChatGPTChatCompletionMessage
-- Added a constructor to ChatGPTTurboFineTuneLineMessage
-- Removed unsupported examples (Twitter and simple command line client)
+		# 1.8.1
+		- Added a constructor to ChatGPTChatCompletionMessage
+		- Added a constructor to ChatGPTTurboFineTuneLineMessage
+		- Removed unsupported examples (Twitter and simple command line client)
 
-# 1.8.0
-- Include Breaking changes
-- Removed deprecated edit endpoint
-- Updated fine tune endpoints and models
-- Refactored Model namespaces
-- Marked legacy completions as obsolete
+		# 1.8.0
+		- Include Breaking changes
+		- Removed deprecated edit endpoint
+		- Updated fine tune endpoints and models
+		- Refactored Model namespaces
+		- Marked legacy completions as obsolete
 
-# 1.7.1
-- Replaced deprecated models with gpt-3.5-turbo-instruct
-- Added vision completion
+		# 1.7.1
+		- Replaced deprecated models with gpt-3.5-turbo-instruct
+		- Added vision completion
 
-# 1.7.0
-- Updated to target .NET 8.
-- Added deserialization error checks.
+		# 1.7.0
+		- Updated to target .NET 8.
+		- Added deserialization error checks.
 
-# 1.6.2
+		# 1.6.2
 
-- Updated dependencies
-- Updated roles for GPT-3.5 and GPT-4.0 messages to accept strings instead of an enumeration.
+		- Updated dependencies
+		- Updated roles for GPT-3.5 and GPT-4.0 messages to accept strings instead of an enumeration.
 
-# 1.6.1
+		# 1.6.1
 
-- Updated package dependencies to latest versions
-- Adjusted GPT model constants to match latest API
+		- Updated package dependencies to latest versions
+		- Adjusted GPT model constants to match latest API
 
-# 1.6.0
+		# 1.6.0
 
-- Added support for GPT-3.5
-- Added support for audio transcription and tranlation
+		- Added support for GPT-3.5
+		- Added support for audio transcription and tranlation
 
-# 1.5.0
+		# 1.5.0
 
-- Break Change: Updated the StreamCompletionAsync method to return the ChatGPTCompletionStreamResponse which does not include Usage. Stream responses do not include token usage.
+		- Break Change: Updated the StreamCompletionAsync method to return the ChatGPTCompletionStreamResponse which does not include Usage. Stream responses do not include token usage.
 
-# 1.4.0
+		# 1.4.0
 
-- Added support for .NET Standard 2.0
-- Built a working Blazor sample project
+		- Added support for .NET Standard 2.0
+		- Built a working Blazor sample project
 
-# 1.3.0
+		# 1.3.0
 
-- Added set-only Credentials property to IChatGPTClient so that credentials can be changed after instantiation.
-- Moved Credentials validation from constructor to API invocation pre-flight checks.
-- Started Blazor sample project.
+		- Added set-only Credentials property to IChatGPTClient so that credentials can be changed after instantiation.
+		- Moved Credentials validation from constructor to API invocation pre-flight checks.
+		- Started Blazor sample project.
 
-# 1.2.0
+		# 1.2.0
 
-- Added support for dependency injection
-- Some ChatGPTClient constructors were removed
+		- Added support for dependency injection
+		- Some ChatGPTClient constructors were removed
 
-# 1.1.0
+		# 1.1.0
 
-- Added IChatGPTClient interface method for:
-- StreamFineTuneEventsAsync
-- DownloadImageAsync
-- Small updates from code analysis suggestions
+		- Added IChatGPTClient interface method for:
+		- StreamFineTuneEventsAsync
+		- DownloadImageAsync
+		- Small updates from code analysis suggestions
 	</PackageReleaseNotes>
 
     <RepositoryType>git</RepositoryType>
-    <PackageTags>chatgpt; api; openai; gpt; gpt-3; gpt-35; gpt-35-turbo; whisper; whisper-ai; gpt-4</PackageTags>
+    <PackageTags>chatgpt; api; openai; gpt;whisper; whisper-ai; gpt-5</PackageTags>
     <RepositoryUrl>https://github.com/johniwasz/whetstone.chatgpt</RepositoryUrl>
-    <Copyright>2024</Copyright>
-    <Version>1.8.2</Version>
+    <Copyright>2026</Copyright>
+    <Version>1.9.0</Version>
     <PackageProjectUrl>https://github.com/johniwasz/whetstone.chatgpt</PackageProjectUrl>
     <Description>A simple light-weight library that wraps the ChatGPT API. Includes support for dependency injection.</Description>
     <PackageIcon>packlogo.png</PackageIcon>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-   <LangVersion>12</LangVersion>
+   <LangVersion>14</LangVersion>
    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
    <AnalysisLevel>latest</AnalysisLevel>
    <SignAssembly>False</SignAssembly>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -120,7 +115,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="9.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
+    <PackageReference Include="System.Net.Http" />
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
   </ItemGroup>
 </Project>

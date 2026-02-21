@@ -23,9 +23,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         public ApplicationState AppState { get; set; } = default!;
 
         [Parameter]
-        public EventCallback<ChatGPTCompletionResponse> OnCompletionResponseAsync { get; set; } = default!;
-
-        [Parameter]
         public EventCallback<ChatGPTChatCompletionResponse> OnChatCompletionResponseAsync { get; set; } = default!;
 
         [Parameter]
@@ -36,13 +33,9 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         private MarkupString? PromptResponse { get; set; } = default!;
 
-        private ChatGPTUsage? completionUsage { get; set; } = default!;
-
-        private ChatGPTCompletionRequest? gptCompletionRequest = default!;
 
         private ChatGPTChatCompletionRequest? gptChatCompletionRequest = default!;
 
-        private ChatGPTCompletionResponse gptCompletionResponse = default!;
 
         private ChatGPTChatCompletionResponse gptChatCompletionResponse = default!;
 
@@ -50,42 +43,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
 
         private ChatOptionsSelector? optionsSelector = default!;
 
-        public Task CompletionRequestedAsync(ChatGPTCompletionRequest completionRequest)
-        {
-            gptChatCompletionRequest = null;
-            gptCompletionRequest = completionRequest;
-            return Task.CompletedTask;
-        }
-
-        public Task ChatCompletionRequestedAsync(ChatGPTChatCompletionRequest completionRequest)
-        {
-            gptCompletionRequest = null;
-            gptChatCompletionRequest = completionRequest;
-            return Task.CompletedTask;
-        }
-
-        public Task ProcessCompletionResponseAsync(ChatGPTCompletionResponse completionResponse)
-        {
-            gptCompletionResponse = completionResponse;
-
-            string? rawResponse = gptCompletionResponse.GetCompletionText();
-
-            if (rawResponse is not null)
-            {
-                PromptResponse = FormatPromptResponse(rawResponse);
-            }
-
-            completionUsage = gptCompletionResponse.Usage;
-
-            if (completionUsage is not null)
-            {
-                AppState.UpdateTokenUsage(completionUsage);
-            }
-
-            OnCompletionResponseAsync.InvokeAsync(gptCompletionResponse);
-
-            return Task.CompletedTask;
-        }
 
         public Task ProcessChatCompletionResponseAsync(ChatGPTChatCompletionResponse completionResponse)
         {
@@ -96,13 +53,6 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
             if (rawResponse is not null)
             {
                 PromptResponse = FormatPromptResponse(rawResponse);
-            }
-
-            completionUsage = gptChatCompletionResponse.Usage;
-
-            if (completionUsage is not null)
-            {
-                AppState.UpdateTokenUsage(completionUsage);
             }
 
             OnChatCompletionResponseAsync.InvokeAsync(gptChatCompletionResponse);
@@ -125,7 +75,7 @@ namespace Whetstone.ChatGPT.Blazor.App.Components
         {
             CompletionOptions compOptions = new()
             {
-                SelectedModel = optionsSelector is null ? ChatGPT35Models.Gpt35TurboInstruct : optionsSelector.SelectedModel,
+                SelectedModel = optionsSelector is null ? ChatGPT5Models.GPT_5_MINI : optionsSelector.SelectedModel,
                 MaxTokens = optionsSelector is null ? 200 : optionsSelector.MaxTokens,
                 Temperature = optionsSelector is null ? 0.1f : optionsSelector.Temperature
             };

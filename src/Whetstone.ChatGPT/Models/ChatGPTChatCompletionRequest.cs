@@ -49,13 +49,21 @@ namespace Whetstone.ChatGPT.Models
         [DefaultValue(16)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("max_tokens")]
-        public int MaxTokens { get; set; } = 16;
+        public int? MaxTokens { get; set; } = 16;
+
+
+        [JsonPropertyOrder(3)]
+        [DefaultValue(16)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("max_completion_tokens")]
+        public int? MaxCompletionTokens { get; set; } = 16; 
+        
 
         /// <summary>
         /// What <see href="https://towardsdatascience.com/how-to-sample-from-language-models-682bceb97277">sampling temperature</see> to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.
         /// </summary>
         /// <remarks>We generally recommend altering this or <c>TopP</c> but not both.</remarks>
-        [JsonPropertyOrder(3)]
+        [JsonPropertyOrder(4)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("temperature")]
         public float Temperature
@@ -68,7 +76,7 @@ namespace Whetstone.ChatGPT.Models
         /// An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
         /// </summary>
         /// <remarks>We generally recommend altering this or <c>Temperature</c> but not both.</remarks>
-        [JsonPropertyOrder(4)]
+        [JsonPropertyOrder(5)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("top_p")]
         public float TopP
@@ -83,7 +91,7 @@ namespace Whetstone.ChatGPT.Models
         /// <remarks>
         ///  Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop.
         /// </remarks>
-        [JsonPropertyOrder(5)]
+        [JsonPropertyOrder(6)]
         [DefaultValue(1)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("n")]
@@ -96,7 +104,7 @@ namespace Whetstone.ChatGPT.Models
         /// <summary>
         /// Whether to stream back partial progress. If set, tokens will be sent as data-only <seealso href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format">server-sent</seealso> events as they become available, with the stream terminated by a data: <c>[DONE] message.</c>
         /// </summary>
-        [JsonPropertyOrder(6)]
+        [JsonPropertyOrder(7)]
         [DefaultValue(false)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("stream")]
@@ -109,7 +117,7 @@ namespace Whetstone.ChatGPT.Models
         /// <summary>
         /// Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
         /// </summary>   
-        [JsonPropertyOrder(7)]
+        [JsonPropertyOrder(8)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("stop")]
         public List<string>? Stop
@@ -122,7 +130,7 @@ namespace Whetstone.ChatGPT.Models
         /// Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
         /// </summary>
         /// <remarks><seealso href="https://beta.openai.com/docs/api-reference/parameter-details">See more information about frequency and presence penalites.</seealso> </remarks>
-        [JsonPropertyOrder(8)]
+        [JsonPropertyOrder(9)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("presence_penalty")]
         public float PresencePenalty
@@ -137,7 +145,7 @@ namespace Whetstone.ChatGPT.Models
         /// <remarks>
         /// <seealso href="https://beta.openai.com/docs/api-reference/parameter-details">See more information about frequency and presence penalites.</seealso>
         /// </remarks>
-        [JsonPropertyOrder(9)]
+        [JsonPropertyOrder(10)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("frequency_penalty")]
         public float FrequencyPenalty
@@ -154,7 +162,7 @@ namespace Whetstone.ChatGPT.Models
         /// <para>As an example, you can pass <c>{"50256": -100}</c> to prevent the <|endoftext|> token from being generated.</para>
         /// <seealso href="https://beta.openai.com/docs/guides/safety-best-practices/end-user-ids">End User Ids</seealso>
         /// </remarks>
-        [JsonPropertyOrder(10)]
+        [JsonPropertyOrder(11)]
         [DefaultValue(null)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("logit_bias")]
@@ -167,7 +175,7 @@ namespace Whetstone.ChatGPT.Models
         /// <summary>
         /// A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse
         /// </summary>
-        [JsonPropertyOrder(11)]
+        [JsonPropertyOrder(12)]
         [DefaultValue(null)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         [JsonPropertyName("user")]
